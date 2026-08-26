@@ -2,6 +2,8 @@
 
 An agent-native municipal planning desk for Bentonville and Rogers, Arkansas. The same five source-backed records are available to people through the interface and to browser agents through native WebMCP tools.
 
+**Live demo:** https://nwa-growth-signal-webmcp.pages.dev/
+
 ## What agents can do
 
 - `search_planning_cases` — filter the verified record by city, procedural status, residential relevance, and pending action
@@ -34,4 +36,4 @@ The included dataset was verified August 25, 2026 from official Bentonville and 
 
 ## Deployment
 
-Deploy the contents of `site/` to any static HTTPS host. Before submission, verify the live tools in ChatGPT's in-app browser and supported Chrome, then keep the submitted deployment unchanged during judging.
+Production is deployed from `site/` to Cloudflare Pages at https://nwa-growth-signal-webmcp.pages.dev/. Before submission, verify the live tools in ChatGPT's in-app browser and supported Chrome, then keep the submitted deployment unchanged during judging.
