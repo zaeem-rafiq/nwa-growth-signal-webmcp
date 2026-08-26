@@ -191,7 +191,8 @@
       const item = node("article", { className: "brief-item" });
       const heading = node("strong", { text: record.title });
       const statuses = node("div", { className: "detail-statuses" });
-      record.status_labels.forEach((status) => statuses.append(statusBadge(status)));
+      const selectedStatuses = record.selected_filings?.map(({ status }) => status) || record.status_labels;
+      selectedStatuses.forEach((status) => statuses.append(statusBadge(status)));
       item.append(heading, statuses, node("p", { text: record.summary }), node("p", { text: record.next_step }));
       elements.preview.append(item);
     });

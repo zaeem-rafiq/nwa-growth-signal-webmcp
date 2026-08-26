@@ -34,6 +34,10 @@ test("an agent receives the recorded status and official sources without an infe
   const cases = [{
     id: "signal-4",
     case_ids: ["VAR26-0397", "RZ26-00511"],
+    filings: [
+      { case_id: "VAR26-0397", status: "Withdrawn" },
+      { case_id: "RZ26-00511", status: "Scheduled" },
+    ],
     status_labels: ["Withdrawn", "Scheduled"],
     relationship: "Not stated in the official record.",
     sources: [{ title: "City outcome table", url: "https://www.rogersar.gov/1181/Public-Hearing-Items" }],
@@ -41,7 +45,24 @@ test("an agent receives the recorded status and official sources without an infe
 
   const record = inspectCaseRecord(cases, "RZ26-00511");
 
-  assert.deepEqual(record, cases[0]);
+  assert.deepEqual(record.requested_filing, { case_id: "RZ26-00511", status: "Scheduled" });
+  assert.equal(record.relationship, "Not stated in the official record.");
+});
+
+test("status filtering exposes only the filings that match", () => {
+  const cases = [{
+    id: "signal-4",
+    case_ids: ["VAR26-0397", "RZ26-00511"],
+    filings: [
+      { case_id: "VAR26-0397", status: "Withdrawn" },
+      { case_id: "RZ26-00511", status: "Scheduled" },
+    ],
+    status_labels: ["Withdrawn", "Scheduled"],
+  }];
+
+  const [record] = searchPlanningCases(cases, { status: "Scheduled" });
+
+  assert.deepEqual(record.matching_filings, [{ case_id: "RZ26-00511", status: "Scheduled" }]);
 });
 
 test("a staged brief preserves recommendation language instead of calling it approval", () => {
@@ -76,6 +97,10 @@ test("a staged brief includes a planning record only once when two case IDs reso
   const cases = [{
     id: "signal-4",
     case_ids: ["VAR26-0397", "RZ26-00511"],
+    filings: [
+      { case_id: "VAR26-0397", status: "Withdrawn" },
+      { case_id: "RZ26-00511", status: "Scheduled" },
+    ],
     title: "408 E. Poplar Street",
   }];
 
@@ -85,4 +110,16 @@ test("a staged brief includes a planning record only once when two case IDs reso
   });
 
   assert.equal(brief.items.length, 1);
+  assert.deepEqual(brief.items[0].selected_filings, cases[0].filings);
+});
+
+test("a staged brief rejects inputs outside its public contract", () => {
+  assert.throws(
+    () => stageSourceBackedBrief([], { case_ids: [], audience: "Lending and title" }),
+    /one to five unique case IDs/
+  );
+  assert.throws(
+    () => stageSourceBackedBrief([], { case_ids: ["A"], audience: "Everyone" }),
+    /Unsupported brief audience/
+  );
 });

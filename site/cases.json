@@ -3,6 +3,7 @@
     "id": "signal-1",
     "item_number": "01",
     "case_ids": ["RZ26-0041"],
+    "filings": [{ "case_id": "RZ26-0041", "status": "Scheduled" }],
     "title": "405 NW 5th Street",
     "city": "Bentonville",
     "address": "405 NW 5th Street",
@@ -25,6 +26,11 @@
     "id": "signal-2",
     "item_number": "02",
     "case_ids": ["FP26-0003", "FP26-0004", "FP26-0005"],
+    "filings": [
+      { "case_id": "FP26-0003", "status": "Scheduled" },
+      { "case_id": "FP26-0004", "status": "Scheduled" },
+      { "case_id": "FP26-0005", "status": "Scheduled" }
+    ],
     "title": "Three final plats",
     "city": "Bentonville",
     "address": "Three published intersections",
@@ -46,6 +52,7 @@
     "id": "signal-3",
     "item_number": "03",
     "case_ids": ["RZ26-00419"],
+    "filings": [{ "case_id": "RZ26-00419", "status": "Tabled" }],
     "title": "209 W. Locust Street",
     "city": "Rogers",
     "address": "209 W. Locust Street",
@@ -68,6 +75,10 @@
     "id": "signal-4",
     "item_number": "04",
     "case_ids": ["VAR26-0397", "RZ26-00511"],
+    "filings": [
+      { "case_id": "VAR26-0397", "status": "Withdrawn" },
+      { "case_id": "RZ26-00511", "status": "Scheduled" }
+    ],
     "title": "408 E. Poplar Street",
     "city": "Rogers",
     "address": "408 E. Poplar Street",
@@ -91,6 +102,7 @@
     "id": "signal-5",
     "item_number": "05",
     "case_ids": ["RZ26-00345"],
+    "filings": [{ "case_id": "RZ26-00345", "status": "Recommended" }],
     "title": "6253 S. Mt Hebron Road",
     "city": "Rogers",
     "address": "6253 S. Mt Hebron Road",

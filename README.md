@@ -1,13 +1,13 @@
 # NWA Growth Signal — WebMCP
 
-An agent-native municipal planning desk for Bentonville and Rogers, Arkansas. The same five source-backed records are available to people through the interface and to browser agents through native WebMCP tools.
+An agent-native municipal planning desk for Bentonville and Rogers, Arkansas. The same five source-backed signals are available to people through the interface and to browser agents through native WebMCP tools, with each filing bound to its own procedural status.
 
 **Live demo:** https://nwa-growth-signal-webmcp.pages.dev/
 
 ## What agents can do
 
-- `search_planning_cases` — filter the verified record by city, procedural status, residential relevance, and pending action
-- `inspect_case_record` — retrieve exact status labels, plain-English context, explicit non-claims, and official municipal URLs
+- `search_planning_cases` — filter grouped signals by city, procedural status, residential relevance, and pending action; status-filtered results identify the matching filings
+- `inspect_case_record` — retrieve exact status labels, the requested filing, plain-English context, explicit non-claims, and official municipal URLs
 - `stage_source_backed_brief` — stage one to five records in the visible page for human review; nothing is published or sent
 
 ## Run locally
@@ -24,7 +24,7 @@ Open `http://localhost:8000`. The human interface works in ordinary browsers. We
 node --test tests/*.test.js
 ```
 
-The suite covers filtering, evidence lookup, status preservation, invalid record rejection, duplicate-record handling, tool registration, real-data workflow integration, official-source boundaries, and injection-safe rendering.
+The suite covers per-filing status attribution, evidence lookup, handler-side input validation, atomic tool registration, browser fallback states, real-data workflow integration, official-source boundaries, and injection-safe rendering.
 
 ## Demo prompt
 

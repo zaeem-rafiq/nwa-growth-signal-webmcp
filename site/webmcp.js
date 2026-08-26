@@ -81,7 +81,13 @@
       },
     ];
 
-    await Promise.all(tools.map((tool) => modelContext.registerTool(tool)));
+    const controller = new AbortController();
+    try {
+      await Promise.all(tools.map((tool) => modelContext.registerTool(tool, { signal: controller.signal })));
+    } catch (error) {
+      controller.abort();
+      throw error;
+    }
     return tools;
   }
 

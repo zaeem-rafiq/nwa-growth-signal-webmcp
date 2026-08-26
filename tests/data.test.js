@@ -10,4 +10,8 @@ test("the product ships five verified records backed only by official municipal 
   assert.ok(cases.flatMap(({ sources }) => sources).every(({ url }) =>
     /^https:\/\/(?:www\.)?(?:bentonvillear\.portal\.civicclerk\.com|bentonville\.ar\.gov|rogersar\.gov|permitting\.rogersar\.gov)\//.test(url)
   ));
+  assert.ok(cases.every((record) => record.filings.length === record.case_ids.length));
+  assert.ok(cases.every((record) => record.filings.every(({ case_id, status }) =>
+    record.case_ids.includes(case_id) && record.status_labels.includes(status)
+  )));
 });

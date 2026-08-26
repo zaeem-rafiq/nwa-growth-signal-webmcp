@@ -8,3 +8,5 @@
 - Added dependency-free Node tests for the planning logic, tool contract, dataset boundary, and UI safety.
 - Kept agent-staged audience state visible to human reviewers and collapsed multiple case IDs that resolve to one planning record.
 - Published the source repository and production Cloudflare Pages deployment.
+- Bound each case ID to its own procedural status in agent search, inspection, and staged briefs.
+- Added handler-side brief validation, all-or-nothing WebMCP registration, and executable fallback-state coverage.
