@@ -1,0 +1,33 @@
+const test = require("node:test");
+const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
+
+const site = path.join(__dirname, "..", "site");
+
+test("the page presents the agent workflow as a visible human-review workspace", () => {
+  const html = fs.readFileSync(path.join(site, "index.html"), "utf8");
+  assert.match(html, /id="desk"/);
+  assert.match(html, /stage_source_backed_brief/);
+  assert.match(html, /Mark human-reviewed/);
+  assert.doesNotMatch(html, /checkout|payment/i);
+});
+
+test("dynamic municipal records are rendered without HTML injection sinks", () => {
+  const app = fs.readFileSync(path.join(site, "app.js"), "utf8");
+  assert.match(app, /textContent/);
+  assert.doesNotMatch(app, /innerHTML|insertAdjacentHTML|document\.write/);
+});
+
+test("the WebMCP readiness copy has a dedicated update target", () => {
+  const html = fs.readFileSync(path.join(site, "index.html"), "utf8");
+  const app = fs.readFileSync(path.join(site, "app.js"), "utf8");
+  assert.match(html, /class="state-detail"/);
+  assert.match(app, /querySelector\("\.state-detail"\)/);
+});
+
+test("an agent-staged brief keeps the visible audience in sync", () => {
+  const app = fs.readFileSync(path.join(site, "app.js"), "utf8");
+
+  assert.match(app, /elements\.audience\.value = brief\.audience/);
+});

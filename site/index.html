@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="A source-linked Northwest Arkansas planning record that people and browser agents can examine together through WebMCP.">
+    <title>NWA Growth Signal — The municipal record, agent-ready</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="styles.css">
+    <script src="core.js" defer></script>
+    <script src="webmcp.js" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <a class="wordmark" href="#top" aria-label="NWA Growth Signal home"><span>NWA</span> Growth Signal</a>
+      <nav aria-label="Primary navigation">
+        <a href="#desk">Signal desk</a>
+        <a href="#method">Method</a>
+        <a href="assets/NWA-Growth-Signal-Public-Sample.pdf">Issue 01</a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero grid-paper" id="top">
+        <div class="hero-copy">
+          <p class="eyebrow">Northwest Arkansas · Agent-native municipal record</p>
+          <h1><span>The city record.</span><span>Ready for people and agents.</span></h1>
+          <p class="lede">Search Bentonville and Rogers planning activity, inspect the evidence, and stage a brief without turning a recommendation into an approval.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#desk">Open the signal desk</a>
+            <a class="button button-secondary" href="assets/NWA-Growth-Signal-Public-Sample.pdf">Read Issue 01 <span aria-hidden="true">↗</span></a>
+          </div>
+          <div class="webmcp-state" id="webmcp-state" data-state="checking" aria-live="polite">
+            <span class="state-mark" aria-hidden="true"></span>
+            <div><strong>Checking WebMCP</strong><span class="state-detail">Human browsing works in every modern browser.</span></div>
+          </div>
+        </div>
+
+        <aside class="agent-brief" aria-labelledby="agent-brief-title">
+          <p class="folio">Agent field note · 01</p>
+          <h2 id="agent-brief-title">One prompt. Three accountable actions.</h2>
+          <blockquote id="demo-prompt">Find residential Bentonville and Rogers cases still awaiting procedural action. Inspect their official evidence and stage a three-item brief without representing any recommendation as final approval.</blockquote>
+          <button class="text-button" id="copy-prompt" type="button">Copy demo prompt</button>
+          <ol class="tool-sequence" aria-label="Available WebMCP workflow">
+            <li><span>01</span><code>search_planning_cases</code></li>
+            <li><span>02</span><code>inspect_case_record</code></li>
+            <li><span>03</span><code>stage_source_backed_brief</code></li>
+          </ol>
+        </aside>
+      </section>
+
+      <section class="desk-section" id="desk" aria-labelledby="desk-title">
+        <header class="desk-header">
+          <div>
+            <p class="eyebrow">Live working surface</p>
+            <h2 id="desk-title">Signal desk</h2>
+          </div>
+          <p>Five records · two municipalities · verified August 25, 2026</p>
+        </header>
+
+        <div class="desk-controls" aria-label="Planning record filters">
+          <label>
+            <span>Municipality</span>
+            <select id="city-filter">
+              <option value="">Bentonville + Rogers</option>
+              <option value="Bentonville">Bentonville</option>
+              <option value="Rogers">Rogers</option>
+            </select>
+          </label>
+          <label>
+            <span>Procedural status</span>
+            <select id="status-filter">
+              <option value="">Every recorded status</option>
+              <option value="Scheduled">Scheduled</option>
+              <option value="Tabled">Tabled</option>
+              <option value="Withdrawn">Withdrawn</option>
+              <option value="Recommended">Recommended</option>
+            </select>
+          </label>
+          <button class="text-button reset-button" id="reset-filters" type="button">Reset filters</button>
+        </div>
+
+        <div class="signal-desk" data-loading="true">
+          <section class="record-index" aria-labelledby="record-index-title">
+            <div class="column-heading">
+              <h3 id="record-index-title">Record index</h3>
+              <span id="result-count">Loading</span>
+            </div>
+            <div id="record-list" class="record-list" aria-live="polite"></div>
+          </section>
+
+          <article class="record-detail" id="record-detail" aria-labelledby="record-title">
+            <p class="empty-state">Loading the verified record…</p>
+          </article>
+
+          <aside class="brief-workspace" aria-labelledby="brief-title">
+            <div class="column-heading">
+              <h3 id="brief-title">Brief workspace</h3>
+              <span>Local preview</span>
+            </div>
+            <p class="workspace-intro">Select records yourself or ask an agent to stage them here. Nothing is sent or published.</p>
+            <div id="selected-records" class="selected-records">
+              <p class="empty-state">No records selected.</p>
+            </div>
+            <label class="audience-field">
+              <span>Audience</span>
+              <select id="brief-audience">
+                <option>Land and development</option>
+                <option>Lending and title</option>
+                <option>Public-interest planning</option>
+              </select>
+            </label>
+            <button class="button button-primary workspace-button" id="stage-brief" type="button">Stage source-backed brief</button>
+            <div id="brief-preview" class="brief-preview" aria-live="polite">
+              <p class="empty-state">The staged brief will appear here for human review.</p>
+            </div>
+            <button class="button button-secondary workspace-button" id="mark-reviewed" type="button" disabled>Mark human-reviewed</button>
+            <p class="workspace-status" id="workspace-status" role="status">Awaiting a selection.</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="method" id="method">
+        <div class="section-label">Standard of evidence</div>
+        <div>
+          <h2>The procedural stage is the story.</h2>
+          <p>Every line starts with a city-published agenda, notice, outcome table, or case record. The tools retrieve the same bounded facts visible to the person using the page.</p>
+        </div>
+        <dl class="method-ledger">
+          <div><dt>Scheduled</dt><dd>On a published agenda or notice. No decision has been made.</dd></div>
+          <div><dt>Tabled</dt><dd>Postponed. Not approved, denied, or withdrawn.</dd></div>
+          <div><dt>Withdrawn</dt><dd>Pulled by the applicant. The body did not deny it.</dd></div>
+          <div><dt>Recommended</dt><dd>Advanced by a commission; separate council action remains.</dd></div>
+        </dl>
+      </section>
+
+      <section class="non-claims" aria-label="Explicit non-claims">
+        <p class="eyebrow">Deliberately not inferred</p>
+        <p>Construction status · price movement · appreciation · demographic targeting · a relationship between separate filings · approval where only recommendation is recorded</p>
+      </section>
+    </main>
+
+    <footer>
+      <div><strong>NWA Growth Signal</strong><span>Municipal planning, read from the record.</span></div>
+      <p>AI-assisted research and drafting. Human review required before publication or client use. Not legal or investment advice. Confirm current status with the city before relying on an item.</p>
+    </footer>
+  </body>
+</html>
