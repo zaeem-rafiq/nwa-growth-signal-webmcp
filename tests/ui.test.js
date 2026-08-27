@@ -88,3 +88,13 @@ test("loading, navigation, copy, and filtered-selection states recover clearly",
   assert.match(app, /outside current filters/);
   assert.match(app, /range\.selectNodeContents\(elements\.prompt\)/);
 });
+
+test("the hero shows the real issue sample without overstating the data surface", () => {
+  const html = fs.readFileSync(path.join(site, "index.html"), "utf8");
+  const css = fs.readFileSync(path.join(site, "styles.css"), "utf8");
+
+  assert.match(html, /src="assets\/issue-preview\.png"[^>]*alt="Cover of NWA Growth Signal Issue 01/);
+  assert.match(html, /Verified working surface/);
+  assert.doesNotMatch(html, /Live working surface/);
+  assert.match(css, /\.issue-preview/);
+});

@@ -111,6 +111,28 @@ h3 { margin: 0; font-size: 15px; letter-spacing: 0.08em; text-transform: upperca
 .lede { max-width: 58ch; margin: 32px 0 0; font-size: clamp(20px, 2vw, 27px); line-height: 1.35; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 36px; }
 
+.issue-preview {
+  display: grid;
+  grid-template-columns: 70px minmax(0, 1fr) auto;
+  width: min(100%, 490px);
+  min-height: 123px;
+  align-items: center;
+  gap: 16px;
+  margin-top: 14px;
+  padding: 12px;
+  border: 1px solid var(--ink);
+  background: var(--paper-light);
+  text-decoration: none;
+  transition: transform 150ms ease-out, box-shadow 150ms ease-out;
+}
+
+.issue-preview:hover { box-shadow: 6px 6px 0 var(--ink); transform: translate(-2px, -2px); }
+.issue-preview img { display: block; width: 70px; height: 99px; border: 1px solid var(--rule); object-fit: cover; }
+.issue-preview-copy { display: grid; gap: 4px; }
+.issue-preview-copy > span { color: var(--red); font-family: ui-monospace, monospace; font-size: 12px; letter-spacing: 0.07em; line-height: 1.35; text-transform: uppercase; }
+.issue-preview-copy strong { font-size: 18px; line-height: 1.15; }
+.issue-preview-arrow { font-size: 22px; }
+
 .button {
   display: inline-flex;
   min-height: 46px;
@@ -320,6 +342,8 @@ footer p { max-width: 72ch; margin: 0; }
   .hero { padding-top: 62px; padding-bottom: 62px; }
   h1 { font-size: 46px; }
   .hero-actions, .hero-actions .button { width: 100%; }
+  .issue-preview { grid-template-columns: 60px minmax(0, 1fr) auto; min-height: 109px; }
+  .issue-preview img { width: 60px; height: 85px; }
   .agent-brief { padding: 26px; }
   .desk-section { padding-top: 70px; padding-bottom: 72px; }
   .desk-controls { display: grid; grid-template-columns: 1fr; gap: 15px; }

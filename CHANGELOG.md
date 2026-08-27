@@ -16,3 +16,4 @@
 - Improved keyboard focus continuity, touch target sizing, detail labeling, and functional text legibility across the Signal Desk.
 - Kept selection, audience, provenance, source links, and review readiness visibly synchronized in staged briefs.
 - Added explicit loading, retry, copy fallback, filtered-selection disclosure, and new-tab navigation cues.
+- Added the real Issue 01 cover to the hero and renamed the dated dataset surface to avoid implying live municipal data.
