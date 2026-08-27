@@ -6,6 +6,37 @@
   if (typeof module === "object" && module.exports) module.exports = api;
   if (root) root.NWAWebMCP = api;
 })(typeof window === "undefined" ? globalThis : window, (core) => {
+  const CITIES = ["Bentonville", "Rogers"];
+  const STATUSES = ["Scheduled", "Tabled", "Withdrawn", "Recommended"];
+
+  function hasOnlyKeys(input, allowed) {
+    return input && typeof input === "object" && !Array.isArray(input) &&
+      Object.keys(input).every((key) => allowed.includes(key));
+  }
+
+  function validateSearchInput(input) {
+    if (!hasOnlyKeys(input, ["city", "status", "residential_only", "requires_action"]) ||
+        (input.city !== undefined && !CITIES.includes(input.city)) ||
+        (input.status !== undefined && !STATUSES.includes(input.status)) ||
+        (input.residential_only !== undefined && typeof input.residential_only !== "boolean") ||
+        (input.requires_action !== undefined && typeof input.requires_action !== "boolean")) {
+      throw new Error("Invalid search filters.");
+    }
+  }
+
+  function validateInspectInput(input) {
+    if (!hasOnlyKeys(input, ["case_id"]) || typeof input.case_id !== "string" ||
+        input.case_id.length < 1 || input.case_id.length > 32) {
+      throw new Error("Invalid case inspection input.");
+    }
+  }
+
+  function validateStageInput(input) {
+    if (!hasOnlyKeys(input, ["case_ids", "audience"])) {
+      throw new Error("Invalid brief input.");
+    }
+  }
+
   async function registerPlanningTools({ modelContext, cases, onBrief }) {
     const tools = [
       {
@@ -15,18 +46,21 @@
         inputSchema: {
           type: "object",
           properties: {
-            city: { type: "string", enum: ["Bentonville", "Rogers"] },
-            status: { type: "string", enum: ["Scheduled", "Tabled", "Withdrawn", "Recommended"] },
+            city: { type: "string", enum: CITIES },
+            status: { type: "string", enum: STATUSES },
             residential_only: { type: "boolean" },
             requires_action: { type: "boolean" },
           },
           additionalProperties: false,
         },
         annotations: { readOnlyHint: true, untrustedContentHint: false },
-        execute: async (input) => ({
-          verified_at: "2026-08-25",
-          results: core.searchPlanningCases(cases, input),
-        }),
+        execute: async (input) => {
+          validateSearchInput(input);
+          return {
+            verified_at: "2026-08-25",
+            results: core.searchPlanningCases(cases, input),
+          };
+        },
       },
       {
         name: "inspect_case_record",
@@ -39,7 +73,9 @@
           additionalProperties: false,
         },
         annotations: { readOnlyHint: true, untrustedContentHint: false },
-        execute: async ({ case_id }) => {
+        execute: async (input) => {
+          validateInspectInput(input);
+          const { case_id } = input;
           const record = core.inspectCaseRecord(cases, case_id);
           if (!record) throw new Error(`Unknown planning record: ${case_id}`);
           return record;
@@ -69,6 +105,7 @@
         },
         annotations: { readOnlyHint: false, untrustedContentHint: false },
         execute: async (input) => {
+          validateStageInput(input);
           const brief = core.stageSourceBackedBrief(cases, input);
           onBrief(brief);
           return {

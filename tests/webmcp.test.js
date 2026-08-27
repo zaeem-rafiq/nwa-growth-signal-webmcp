@@ -81,3 +81,68 @@ test("a failed tool registration aborts the successfully registered siblings", a
   );
   assert.deepEqual([...exposed], []);
 });
+
+test("registered tools reject inputs outside their advertised schemas", async () => {
+  const registered = [];
+  let stagedBrief = null;
+  await registerPlanningTools({
+    modelContext: { registerTool: async (tool) => registered.push(tool) },
+    cases,
+    onBrief: (brief) => { stagedBrief = brief; },
+  });
+  const tools = Object.fromEntries(registered.map((tool) => [tool.name, tool]));
+
+  await tools.search_planning_cases.execute({ city: "Bentonville", requires_action: true });
+  await tools.inspect_case_record.execute({ case_id: "RZ26-00511" });
+  await tools.stage_source_backed_brief.execute({
+    case_ids: ["RZ26-0041"],
+    audience: "Land and development",
+  });
+  const stagedSentinel = stagedBrief;
+
+  const invalidSearches = await Promise.allSettled([
+    null,
+    [],
+    { extra: true },
+    { city: "Fayetteville" },
+    { status: "Approved" },
+    { residential_only: "yes" },
+    { requires_action: "yes" },
+  ].map((input) => tools.search_planning_cases.execute(input)));
+  const invalidInspections = await Promise.allSettled([
+    null,
+    [],
+    {},
+    { case_id: 123 },
+    { case_id: "" },
+    { case_id: "X".repeat(33) },
+    { case_id: "RZ26-00511", extra: true },
+  ].map((input) => tools.inspect_case_record.execute(input)));
+  const invalidStages = await Promise.allSettled([
+    null,
+    [],
+    {},
+    { case_ids: "RZ26-0041", audience: "Land and development" },
+    { case_ids: [], audience: "Land and development" },
+    { case_ids: ["A", "B", "C", "D", "E", "F"], audience: "Land and development" },
+    { case_ids: ["RZ26-0041", "RZ26-0041"], audience: "Land and development" },
+    { case_ids: [123], audience: "Land and development" },
+    { case_ids: [""], audience: "Land and development" },
+    { case_ids: ["X".repeat(33)], audience: "Land and development" },
+    { case_ids: ["RZ26-0041"] },
+    { case_ids: ["RZ26-0041"], audience: "Everyone" },
+    { case_ids: ["RZ26-0041"], audience: "Land and development", extra: true },
+  ].map((input) => tools.stage_source_backed_brief.execute(input)));
+
+  for (const [results, message] of [
+    [invalidSearches, /Invalid search filters/],
+    [invalidInspections, /Invalid case inspection input/],
+    [invalidStages, /Invalid brief input|A brief requires|Unsupported brief audience/],
+  ]) {
+    for (const result of results) {
+      assert.equal(result.status, "rejected");
+      assert.match(result.reason.message, message);
+    }
+  }
+  assert.strictEqual(stagedBrief, stagedSentinel);
+});

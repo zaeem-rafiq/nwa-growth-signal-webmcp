@@ -151,7 +151,7 @@ a:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
 }
 
 .folio { margin: 0 0 30px; color: #b9bdbe; }
-.agent-brief h2 { max-width: 10ch; font-size: clamp(32px, 4vw, 52px); }
+.agent-brief h2 { max-width: 10ch; font-size: clamp(32px, 3.2vw, 52px); }
 .agent-brief blockquote { margin: 34px 0 18px; padding-left: 20px; border-left: 1px solid #74797b; color: #e1dfd7; font-size: 18px; line-height: 1.45; }
 
 .text-button {

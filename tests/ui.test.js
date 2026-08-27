@@ -31,3 +31,9 @@ test("an agent-staged brief keeps the visible audience in sync", () => {
 
   assert.match(app, /elements\.audience\.value = brief\.audience/);
 });
+
+test("the desktop hero breakpoint caps the field-note heading size", () => {
+  const css = fs.readFileSync(path.join(site, "styles.css"), "utf8");
+
+  assert.match(css, /\.agent-brief h2 \{[^}]*font-size: clamp\(32px, 3\.2vw, 52px\)/);
+});

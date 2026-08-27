@@ -10,3 +10,5 @@
 - Published the source repository and production Cloudflare Pages deployment.
 - Bound each case ID to its own procedural status in agent search, inspection, and staged briefs.
 - Added handler-side brief validation, all-or-nothing WebMCP registration, and executable fallback-state coverage.
+- Fixed the desktop hero headline overflow at 1280px without changing the mobile composition.
+- Enforced each WebMCP tool's advertised input schema inside its handler so malformed or extra fields fail visibly.
