@@ -15,9 +15,12 @@ test("the page presents the agent workflow as a visible human-review workspace",
 
 test("the hackathon surface links to the three-page issue sample", () => {
   const html = fs.readFileSync(path.join(site, "index.html"), "utf8");
+  const pdf = fs.readFileSync(path.join(site, "assets", "NWA-Growth-Signal-Hackathon-Sample.pdf")).toString("latin1");
   const links = html.match(/assets\/NWA-Growth-Signal-Hackathon-Sample\.pdf/g) || [];
+  const pages = pdf.match(/\/Type\s*\/Page\b/g) || [];
 
   assert.equal(links.length, 2);
+  assert.equal(pages.length, 3);
 });
 
 test("dynamic municipal records are rendered without HTML injection sinks", () => {
@@ -53,7 +56,14 @@ test("the accessibility foundation keeps controls reachable and focus stable", (
   assert.match(html, /id="record-list-status"[^>]*aria-live="polite"/);
   assert.match(html, /id="record-detail"[^>]*aria-label="Planning record detail"/);
   assert.doesNotMatch(html, /id="record-list"[^>]*aria-live/);
-  assert.match(css, /min-height:\s*44px/);
+  [
+    /nav a \{[^}]*min-height:\s*44px/,
+    /\.text-button \{[^}]*min-height:\s*44px/,
+    /select \{[^}]*min-height:\s*44px/,
+    /\.source-list a \{[^}]*min-height:\s*44px/,
+    /\.brief-sources a \{[^}]*min-height:\s*44px/,
+    /\.remove-selection \{[^}]*min-height:\s*44px/,
+  ].forEach((target) => assert.match(css, target));
   assert.match(css, /\.agent-brief button:focus-visible[^}]*outline-color:\s*var\(--paper-light\)/);
   assert.match(app, /data-record-id/);
   assert.match(app, /focusRecordRow/);

@@ -333,7 +333,7 @@
     elements.deskMessage.hidden = true;
     elements.count.textContent = "Loading";
     try {
-      const response = await fetch("cases.json");
+      const response = await fetch("cases.json", { signal: AbortSignal.timeout(10000) });
       if (!response.ok) throw new Error(`Planning records failed to load (${response.status}).`);
       state.cases = await response.json();
       state.filtered = state.cases;
@@ -368,6 +368,7 @@
     elements.reviewed.disabled = true;
   });
   elements.copyPrompt.addEventListener("click", async () => {
+    elements.copyPrompt.disabled = true;
     try {
       await navigator.clipboard.writeText(elements.prompt.textContent.trim());
       elements.copyStatus.textContent = "Demo prompt copied to the clipboard.";
@@ -380,6 +381,8 @@
       const selection = window.getSelection();
       selection.removeAllRanges();
       selection.addRange(range);
+    } finally {
+      elements.copyPrompt.disabled = false;
     }
   });
 

@@ -17,3 +17,5 @@
 - Kept selection, audience, provenance, source links, and review readiness visibly synchronized in staged briefs.
 - Added explicit loading, retry, copy fallback, filtered-selection disclosure, and new-tab navigation cues.
 - Added the real Issue 01 cover to the hero and renamed the dated dataset surface to avoid implying live municipal data.
+- Extended the staged-brief source links to the 44px touch-target baseline.
+- Added executable interaction, retry, clipboard-recovery, selector-specific touch-target, and three-page PDF regression checks.

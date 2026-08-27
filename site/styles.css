@@ -289,7 +289,7 @@ select { min-height: 44px; padding: 0 34px 0 11px; border: 1px solid var(--rule)
 .brief-item strong { font-size: 15px; }
 .brief-item .brief-provenance { color: var(--ink); font-family: ui-monospace, monospace; font-size: 12px; }
 .brief-sources { margin: 12px 0 0; padding-left: 18px; font-size: 13px; }
-.brief-sources a { color: var(--blue); text-underline-offset: 3px; }
+.brief-sources a { display: inline-flex; min-height: 44px; align-items: center; color: var(--blue); text-underline-offset: 3px; }
 .brief-note { margin: 18px 0 0; padding: 14px 0; border-top: 1px solid var(--red); border-bottom: 1px solid var(--red); color: #4a4e50; font-size: 13px; }
 .workspace-status { margin: 15px 0 0; color: var(--ink); letter-spacing: 0.05em; }
 .empty-state { margin: 18px 0; color: var(--muted); font-size: 14px; }

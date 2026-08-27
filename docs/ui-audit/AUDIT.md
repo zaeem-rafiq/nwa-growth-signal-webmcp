@@ -53,6 +53,8 @@ The audit-time release gate was **rejected pending P1 remediation**. Phase 3 fix
 
 ### Findings
 
+Locations A-01 through A-18 are audit-time references against pre-fix baseline commit `e8f0ad7`; final-status hashes identify the implementation batch. A-19 was found during the post-implementation agent-parity review. This keeps the evidence stable as later batches move current line numbers.
+
 | ID | Surface | Location (file:line) | Severity | Evidence | Recommended fix | Effort | Final status |
 |---|---|---|---|---|---|---|---|
 | A-01 | Desk — mobile selection flow | `site/styles.css:268-296`; `site/app.js:57-85,156-185` | **P1** | At 375px, index, detail, and workspace become a long sequential stack; selecting multiple records requires repeated traversal. Record rows expose active state but not selected state. See `before/home-375.png`. | Reuse the current selection state to add a selected marker to index rows, a persistent selected-count tray, and a mobile-sticky Add/Remove action. | M | **Fixed** (`29697e3`) |
@@ -73,6 +75,7 @@ The audit-time release gate was **rejected pending P1 remediation**. Phase 3 fix
 | A-16 | Hero — product comprehension | `site/index.html:27-52`; `site/assets/issue-preview.png` | **P2** | The polished existing issue preview is unused, so the hero communicates agent workflow more strongly than the editorial product it produces. | Place the existing preview beside the Issue 01 CTA with meaningful alt text; do not create a new asset or dependency. | S | **Fixed** (`c548f62`) |
 | A-17 | Workspace — action clarity | `site/index.html:104-121`; `site/app.js:156-214` | **P2** | “Stage source-backed brief” remains actionable with no selection; “Mark human-reviewed” is system-centric and the staged snapshot lacks a clear current-audience header. | Disable staging until records are selected; tighten labels to “Stage selected records” and “Mark as reviewed”; display the snapshot audience. | S | **Fixed** (`29697e3`) |
 | A-18 | Desk intro — freshness claim | `site/index.html:58-61`; `README.md:33-35` | **P3** | “Live working surface” can imply live municipal data, while the adjacent evidence boundary describes a dated verified snapshot. | Rename it “Verified working surface” or “Interactive record workspace.” | S | **Fixed** (`c548f62`) |
+| A-19 | Agent recovery — record-load failure | `site/app.js:331-353`; `site/webmcp.js:1-138` | **P2** | When `cases.json` fails, the UI exposes Retry but the three WebMCP tools never register, leaving an agent without an equivalent recovery action. | Add a bootstrap retry primitive only after explicitly approving a public WebMCP tool-contract change. | M | **Needs-human** — the required fix changes a protected API/tool contract. |
 
 ### Findings not converted into implementation work
 
@@ -146,8 +149,8 @@ No dependency, framework, API contract, dataset, WebMCP schema, persistence, pay
 
 ### Gates
 
-- ✅ **Tests:** `node --test tests/*.test.js` → 26 passed, 0 failed.
-- ✅ **Browser behavior:** exercised at 375, 768, and 1440 pixels; no horizontal overflow at the tablet breakpoint and no browser-console errors.
+- ✅ **Tests:** `node --test tests/*.test.js` → 31 passed, 0 failed.
+- ✅ **Browser behavior:** exercised at 375, 768, and 1440 pixels; final 375px DevTools measurement reported `innerWidth = clientWidth = scrollWidth = 375`, no browser-console errors, and staged source links measured 44px high.
 - ✅ **Workflow:** row focus restored to `signal-4`; mobile selection tray visible with `1 selected`; stage action enabled only with a selection; staged audience, case ID, city, verified date, and three official sources visible; changing audience disabled review and replaced the stale preview; a Rogers selection filtered out by Bentonville remained disclosed.
 - ➖ **Build:** N/A — the static site has no build step.
 - ➖ **Lint:** N/A — no lint command exists.
@@ -161,7 +164,7 @@ No dependency, framework, API contract, dataset, WebMCP schema, persistence, pay
 4. Selection/filter disclosure: [`before/desktop-coverage.png`](before/desktop-coverage.png) → [`after/desktop-coverage.png`](after/desktop-coverage.png)
 5. Hackathon offer path: [`before/issue-01-page-4.png`](before/issue-01-page-4.png) → the separate edition ends at [`after/hackathon-issue-01-page-3.png`](after/hackathon-issue-01-page-3.png)
 
-Additional after captures: [`home-768.png`](after/home-768.png), [`home-1440-viewport.png`](after/home-1440-viewport.png), [`state-selected-375.png`](after/state-selected-375.png), and [`state-scheduled-poplar-1440.png`](after/state-scheduled-poplar-1440.png).
+Additional after captures: [`home-768.png`](after/home-768.png), [`home-1440-viewport.png`](after/home-1440-viewport.png), [`state-selected-375.png`](after/state-selected-375.png), [`state-staged-375-final.png`](after/state-staged-375-final.png), and [`state-scheduled-poplar-1440.png`](after/state-scheduled-poplar-1440.png).
 
 ### Three-line summary
 
@@ -169,4 +172,4 @@ Improved: mobile selection, keyboard focus, touch targets, review integrity, pro
 
 Deferred: none within the approved presentation/copy scope.
 
-Needs eyes: A-07 PDF tagging and A-09 filing-level presentation remain protected product/source-workflow decisions.
+Needs eyes: A-07 PDF tagging, A-09 filing-level presentation, and A-19 agent-side retry remain protected source-workflow, product/business-logic, or public tool-contract decisions.
