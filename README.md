@@ -26,6 +26,14 @@ node --test tests/*.test.js
 
 The suite covers per-filing status attribution, evidence lookup, handler-side input validation, atomic tool registration, browser fallback states, real-data workflow integration, official-source boundaries, and injection-safe rendering.
 
+## Reproduce the hackathon evidence
+
+```sh
+node scripts/benchmark.js
+```
+
+The benchmark exercises all three registered tool handlers against the five-record dataset and reports fidelity to pinned filing-status and affirmative-copy baselines, municipal-domain allowlist coverage, approval-overclaim checks, staged-record count, and the human-review boundary. See [`docs/hackathon/EVIDENCE.md`](docs/hackathon/EVIDENCE.md) for the proof contract and [`docs/hackathon/DEMO.md`](docs/hackathon/DEMO.md) for the recording script.
+
 ## Demo prompt
 
 > Find residential Bentonville and Rogers cases still awaiting procedural action. Inspect their official evidence and stage a three-item brief without representing any recommendation as final approval.

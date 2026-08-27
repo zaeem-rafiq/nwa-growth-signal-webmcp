@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-08-27
+
+- Added a reproducible five-record handler benchmark with pinned filing-status and affirmative-copy baselines, a municipal-domain allowlist, overclaim prevention, and an executable release gate.
+- Added judge-facing evidence and a production-ready demo recording package with explicit release gates and honest limitations.
+
 ## 2026-08-26
 
 - Added the five-record Bentonville and Rogers planning dataset with official municipal sources.
