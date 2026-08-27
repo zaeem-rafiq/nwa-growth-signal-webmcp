@@ -49,7 +49,7 @@ Before captures:
 
 The identity passes the distinctiveness check: it reads as a forensic municipal desk, uses sharp geometry and an earned dossier/grid treatment, and avoids generic rounded-card UI, decorative gradients, excessive shadows, and AI-product filler. Hierarchy is strong, layouts do not overflow at 375, 768, or 1440 pixels, status is not communicated by color alone, and the page already includes a skip link, labels, live regions, reduced-motion support, and visible focus treatment.
 
-The audit-time release gate was **rejected pending P1 remediation**. Phase 3 fixed every presentation-layer finding that could be completed within the approved bounds. The UI release now passes its scoped gate; the complete audit remains conditional on the two protected findings A-07 and A-09, which require a tagged-PDF source workflow and a filing-level product/business-logic decision respectively. Brand-level observations were deliberately not converted into fixes.
+The audit-time release gate was **rejected pending P1 remediation**. Phase 3 fixed every presentation-layer finding that could be completed within the approved bounds. The UI release now passes its scoped gate; the complete audit remains conditional on three protected findings: A-07 needs a tagged-PDF source workflow, A-09 needs a filing-level product/business-logic decision, and A-19 needs approval for a public WebMCP tool-contract change. Brand-level observations were deliberately not converted into fixes.
 
 ### Findings
 
@@ -125,6 +125,7 @@ The four planned UI batches were approved and implemented in the order below. Th
 
 - **A-07:** Needs a tagged source PDF or an approved authoring/export workflow; the repository contains only the finished PDF.
 - **A-09:** Needs a filing-level product decision and business-logic change, both outside this audit's permitted implementation scope.
+- **A-19:** Needs explicit approval to add an agent-side retry primitive because that changes the protected public WebMCP tool contract.
 
 ### Verification after every approved batch
 

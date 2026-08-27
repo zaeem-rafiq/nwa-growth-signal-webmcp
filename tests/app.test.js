@@ -73,26 +73,34 @@ function createDocument(modelContext) {
   const document = {
     modelContext,
     createElement: (tagName) => new FakeElement(tagName),
-    createRange: () => ({ selectNodeContents() {} }),
     querySelector: (selector) => elements.get(selector),
     elements,
   };
+  document.range = {
+    selectNodeContents(node) { this.selectedNode = node; },
+  };
+  document.selection = {
+    ranges: [],
+    removeAllRanges() { this.ranges = []; },
+    addRange(range) { this.ranges.push(range); },
+  };
+  document.createRange = () => document.range;
   return document;
 }
 
-async function runApp({ modelContext, fetchResponse, registerPlanningTools, clipboardWrite = async () => {} }) {
+async function runApp({ modelContext, fetchResponse, registerPlanningTools, clipboardWrite = async () => {}, abortSignal = AbortSignal }) {
   const document = createDocument(modelContext);
   const window = {
     NWASignal: core,
     NWAWebMCP: { registerPlanningTools },
-    getSelection: () => ({ removeAllRanges() {}, addRange() {} }),
+    getSelection: () => document.selection,
   };
   vm.runInNewContext(appSource, {
     console: { error() {} },
     document,
     fetch: typeof fetchResponse === "function" ? fetchResponse : async () => fetchResponse,
     navigator: { clipboard: { writeText: clipboardWrite } },
-    AbortSignal,
+    AbortSignal: abortSignal,
     Set,
     window,
   });
@@ -159,6 +167,19 @@ test("selection, staging, invalidation, focus, and clipboard recovery execute in
   await elements.get("#copy-prompt").dispatch("click");
   assert.equal(elements.get("#demo-prompt").focused, true);
   assert.match(elements.get("#copy-status").textContent, /selected for manual copying/);
+  assert.equal(document.range.selectedNode, elements.get("#demo-prompt"));
+  assert.deepEqual(document.selection.ranges, [document.range]);
+
+  elements.get("#city-filter").value = "Rogers";
+  await elements.get("#city-filter").dispatch("change");
+  assert.match(elements.get("#selected-records").querySelector(".selection-disclosure").textContent, /1 selected record is outside current filters/);
+
+  await elements.get("#stage-brief").dispatch("click");
+  await elements.get("#selected-records").querySelector(".remove-selection").dispatch("click");
+  assert.equal(elements.get("#selection-count").textContent, "0 selected");
+  assert.equal(elements.get("#stage-brief").disabled, true);
+  assert.equal(elements.get("#mark-reviewed").disabled, true);
+  assert.equal(elements.get("#brief-audience").focused, true);
 });
 
 test("the retry control recovers after a record-load failure", async () => {
@@ -179,15 +200,19 @@ test("the retry control recovers after a record-load failure", async () => {
 
 test("record loading carries a timeout signal into fetch", async () => {
   let signal;
+  let timeout;
+  const sentinel = {};
   await runApp({
     fetchResponse: async (_url, options) => {
       signal = options?.signal;
       return { ok: true, json: async () => cases };
     },
     registerPlanningTools: async () => {},
+    abortSignal: { timeout: (milliseconds) => { timeout = milliseconds; return sentinel; } },
   });
 
-  assert.ok(signal);
+  assert.equal(timeout, 10000);
+  assert.equal(signal, sentinel);
 });
 
 test("clipboard copying suppresses overlapping attempts", async () => {
