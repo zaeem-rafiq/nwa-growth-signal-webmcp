@@ -200,6 +200,8 @@ a:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
 select { min-height: 44px; padding: 0 34px 0 11px; border: 1px solid var(--rule); border-radius: 2px; color: var(--ink); background: var(--paper-light); }
 .reset-button { margin: 0 0 9px auto; }
 
+.selection-tray { display: none; }
+
 .signal-desk {
   display: grid;
   grid-template-columns: minmax(250px, 0.72fr) minmax(390px, 1.12fr) minmax(300px, 0.9fr);
@@ -222,6 +224,7 @@ select { min-height: 44px; padding: 0 34px 0 11px; border: 1px solid var(--rule)
 .record-row strong { display: block; font-size: 18px; line-height: 1.15; }
 .record-row .row-case { color: var(--ink); font-family: ui-monospace, monospace; font-size: 12px; letter-spacing: 0.05em; }
 .record-row .row-meta { display: flex; flex-wrap: wrap; gap: 6px 12px; margin-top: 10px; color: var(--muted); font-size: 13px; }
+.selection-marker { color: var(--red); font-family: ui-monospace, monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
 
 .status-badge { display: inline-flex; min-height: 23px; align-items: center; padding: 0 7px; border: 1px solid currentColor; border-radius: 2px; font-family: ui-monospace, monospace; font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; }
 .status-badge[data-status="Scheduled"] { color: var(--blue); }
@@ -251,9 +254,13 @@ select { min-height: 44px; padding: 0 34px 0 11px; border: 1px solid var(--rule)
 .audience-field { margin-top: 22px; }
 .workspace-button { width: 100%; margin-top: 14px; }
 .brief-preview { margin-top: 24px; border-top: 2px solid var(--ink); }
+.brief-snapshot { margin: 0; padding: 12px 0; border-bottom: 1px solid var(--ink); font-family: ui-monospace, monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
 .brief-item { padding: 16px 0; border-bottom: 1px solid var(--rule); }
 .brief-item p { margin: 7px 0 0; color: #464b4d; font-size: 14px; }
 .brief-item strong { font-size: 15px; }
+.brief-item .brief-provenance { color: var(--ink); font-family: ui-monospace, monospace; font-size: 12px; }
+.brief-sources { margin: 12px 0 0; padding-left: 18px; font-size: 13px; }
+.brief-sources a { color: var(--blue); text-underline-offset: 3px; }
 .brief-note { margin: 18px 0 0; padding: 14px 0; border-top: 1px solid var(--red); border-bottom: 1px solid var(--red); color: #4a4e50; font-size: 13px; }
 .workspace-status { margin: 15px 0 0; color: var(--ink); letter-spacing: 0.05em; }
 .empty-state { margin: 18px 0; color: var(--muted); font-size: 14px; }
@@ -292,6 +299,10 @@ footer p { max-width: 72ch; margin: 0; }
   .signal-desk { grid-template-columns: 1fr; }
   .record-index { padding: 24px 0; border-right: 0; border-bottom: 1px solid var(--ink); }
   .record-detail { padding: 30px 0; }
+  .selection-tray { position: fixed; z-index: 18; right: 20px; bottom: 20px; left: 20px; display: flex; min-height: 56px; align-items: center; justify-content: space-between; gap: 18px; padding: 0 18px; border: 1px solid var(--ink); color: var(--paper-light); background: var(--ink); box-shadow: 0 12px 30px rgba(23, 25, 27, 0.24); font-size: 14px; text-decoration: none; }
+  .selection-tray[data-empty="true"] { display: none; }
+  .selection-tray span { font-family: ui-monospace, monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; }
+  .select-record { position: sticky; z-index: 5; bottom: 88px; box-shadow: 0 8px 24px rgba(23, 25, 27, 0.16); }
   .brief-workspace { grid-column: auto; }
   .method h2 { max-width: none; }
 }

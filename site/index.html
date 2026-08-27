@@ -83,6 +83,11 @@
           <button class="text-button reset-button" id="reset-filters" type="button">Reset filters</button>
         </div>
 
+        <a class="selection-tray" id="selection-tray" href="#brief-title" data-empty="true">
+          <span id="selection-count">0 selected</span>
+          <strong>Review selection <span aria-hidden="true">↓</span></strong>
+        </a>
+
         <div class="signal-desk" data-loading="true">
           <section class="record-index" aria-labelledby="record-index-title">
             <div class="column-heading">
@@ -114,11 +119,11 @@
                 <option>Public-interest planning</option>
               </select>
             </label>
-            <button class="button button-primary workspace-button" id="stage-brief" type="button">Stage source-backed brief</button>
+            <button class="button button-primary workspace-button" id="stage-brief" type="button" disabled>Stage selected records</button>
             <div id="brief-preview" class="brief-preview" aria-live="polite">
               <p class="empty-state">The staged brief will appear here for human review.</p>
             </div>
-            <button class="button button-secondary workspace-button" id="mark-reviewed" type="button" disabled>Mark human-reviewed</button>
+            <button class="button button-secondary workspace-button" id="mark-reviewed" type="button" disabled>Mark as reviewed</button>
             <p class="workspace-status" id="workspace-status" role="status">Awaiting a selection.</p>
           </aside>
         </div>

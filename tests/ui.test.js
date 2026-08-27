@@ -9,7 +9,7 @@ test("the page presents the agent workflow as a visible human-review workspace",
   const html = fs.readFileSync(path.join(site, "index.html"), "utf8");
   assert.match(html, /id="desk"/);
   assert.match(html, /stage_source_backed_brief/);
-  assert.match(html, /Mark human-reviewed/);
+  assert.match(html, /Mark as reviewed/);
   assert.doesNotMatch(html, /checkout|payment/i);
 });
 
@@ -57,4 +57,19 @@ test("the accessibility foundation keeps controls reachable and focus stable", (
   assert.match(css, /\.agent-brief button:focus-visible[^}]*outline-color:\s*var\(--paper-light\)/);
   assert.match(app, /data-record-id/);
   assert.match(app, /focusRecordRow/);
+});
+
+test("selection and review state stay visible, current, and attributable", () => {
+  const html = fs.readFileSync(path.join(site, "index.html"), "utf8");
+  const css = fs.readFileSync(path.join(site, "styles.css"), "utf8");
+  const app = fs.readFileSync(path.join(site, "app.js"), "utf8");
+
+  assert.match(html, /id="selection-count"/);
+  assert.match(html, /id="stage-brief"[^>]*disabled[^>]*>Stage selected records</);
+  assert.match(html, /id="mark-reviewed"[^>]*>Mark as reviewed</);
+  assert.match(css, /\.selection-tray/);
+  assert.match(app, /function invalidateBrief/);
+  assert.match(app, /className: "brief-snapshot"/);
+  assert.match(app, /record\.sources\.forEach/);
+  assert.match(app, /elements\.audience\.addEventListener\("change", invalidateBrief\)/);
 });
