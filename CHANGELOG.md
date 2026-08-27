@@ -12,3 +12,4 @@
 - Added handler-side brief validation, all-or-nothing WebMCP registration, and executable fallback-state coverage.
 - Fixed the desktop hero headline overflow at 1280px without changing the mobile composition.
 - Enforced each WebMCP tool's advertised input schema inside its handler so malformed or extra fields fail visibly.
+- Added a three-page hackathon edition of Issue 01 while preserving the four-page commercial sample.

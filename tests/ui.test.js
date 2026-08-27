@@ -13,6 +13,13 @@ test("the page presents the agent workflow as a visible human-review workspace",
   assert.doesNotMatch(html, /checkout|payment/i);
 });
 
+test("the hackathon surface links to the three-page issue sample", () => {
+  const html = fs.readFileSync(path.join(site, "index.html"), "utf8");
+  const links = html.match(/assets\/NWA-Growth-Signal-Hackathon-Sample\.pdf/g) || [];
+
+  assert.equal(links.length, 2);
+});
+
 test("dynamic municipal records are rendered without HTML injection sinks", () => {
   const app = fs.readFileSync(path.join(site, "app.js"), "utf8");
   assert.match(app, /textContent/);
