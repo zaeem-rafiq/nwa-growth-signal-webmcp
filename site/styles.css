@@ -137,6 +137,7 @@ select:focus-visible,
 a:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
 
 .agent-brief button:focus-visible { outline-color: var(--paper-light); }
+.agent-brief blockquote:focus-visible { outline: 3px solid var(--paper-light); outline-offset: 3px; }
 
 .webmcp-state {
   display: flex;
@@ -201,6 +202,9 @@ select { min-height: 44px; padding: 0 34px 0 11px; border: 1px solid var(--rule)
 .reset-button { margin: 0 0 9px auto; }
 
 .selection-tray { display: none; }
+.desk-message { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 14px 0; border-bottom: 1px solid var(--red); color: var(--red); }
+.desk-message[hidden] { display: none; }
+.desk-message .button { flex: 0 0 auto; }
 
 .signal-desk {
   display: grid;
@@ -242,6 +246,8 @@ select { min-height: 44px; padding: 0 34px 0 11px; border: 1px solid var(--rule)
 .source-list { margin: 0; padding: 0; list-style: none; }
 .source-list li { border-bottom: 1px solid var(--rule); }
 .source-list a { display: flex; min-height: 44px; align-items: center; padding: 9px 0; color: var(--blue); font-size: 14px; text-underline-offset: 4px; }
+.source-list a::after,
+.brief-sources a::after { content: " ↗"; }
 .non-claim-list { margin: 0; padding-left: 18px; color: var(--muted); }
 .select-record { margin-top: 24px; }
 
@@ -250,6 +256,7 @@ select { min-height: 44px; padding: 0 34px 0 11px; border: 1px solid var(--rule)
 .selected-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--rule); }
 .selected-row strong { font-size: 14px; }
 .selected-row span { display: block; color: var(--muted); font-size: 12px; }
+.selection-disclosure { margin: 0; padding: 12px 0; border-bottom: 1px solid var(--rule); color: var(--ink); font-size: 13px; font-weight: 700; }
 .remove-selection { display: inline-grid; min-width: 44px; min-height: 44px; place-items: center; border: 0; color: var(--red); background: transparent; cursor: pointer; font-size: 17px; line-height: 1; }
 .audience-field { margin-top: 22px; }
 .workspace-button { width: 100%; margin-top: 14px; }

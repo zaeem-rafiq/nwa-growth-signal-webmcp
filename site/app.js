@@ -7,6 +7,10 @@
     list: document.querySelector("#record-list"),
     listStatus: document.querySelector("#record-list-status"),
     detail: document.querySelector("#record-detail"),
+    signalDesk: document.querySelector(".signal-desk"),
+    deskMessage: document.querySelector("#desk-message"),
+    deskMessageCopy: document.querySelector("#desk-message-copy"),
+    retry: document.querySelector("#retry-load"),
     selectionTray: document.querySelector("#selection-tray"),
     selectionCount: document.querySelector("#selection-count"),
     selected: document.querySelector("#selected-records"),
@@ -18,6 +22,7 @@
     webmcpState: document.querySelector("#webmcp-state"),
     prompt: document.querySelector("#demo-prompt"),
     copyPrompt: document.querySelector("#copy-prompt"),
+    copyStatus: document.querySelector("#copy-status"),
   };
 
   const state = {
@@ -26,6 +31,7 @@
     activeId: null,
     selectedIds: new Set(),
     stagedBrief: null,
+    ready: false,
   };
 
   function node(tag, options = {}) {
@@ -56,6 +62,7 @@
     }
     renderRecordList();
     renderRecordDetail();
+    renderSelectedRecords();
   }
 
   function renderRecordList() {
@@ -132,6 +139,7 @@
       link.href = source.url;
       link.target = "_blank";
       link.rel = "noopener";
+      link.append(node("span", { className: "visually-hidden", text: ", opens in a new tab" }));
       const item = node("li");
       item.append(link);
       sourceList.append(item);
@@ -184,10 +192,19 @@
     elements.selected.replaceChildren();
     elements.selectionCount.textContent = `${state.selectedIds.size} selected`;
     elements.selectionTray.dataset.empty = String(!state.selectedIds.size);
-    elements.stage.disabled = !state.selectedIds.size;
+    elements.stage.disabled = !state.ready || !state.selectedIds.size;
     if (!state.selectedIds.size) {
       elements.selected.append(node("p", { className: "empty-state", text: "No records selected." }));
       return;
+    }
+
+    const visibleIds = new Set(state.filtered.map(({ id }) => id));
+    const hiddenCount = [...state.selectedIds].filter((id) => !visibleIds.has(id)).length;
+    if (hiddenCount) {
+      elements.selected.append(node("p", {
+        className: "selection-disclosure",
+        text: `${hiddenCount} selected ${hiddenCount === 1 ? "record is" : "records are"} outside current filters.`,
+      }));
     }
 
     state.selectedIds.forEach((id) => {
@@ -230,6 +247,7 @@
         link.href = source.url;
         link.target = "_blank";
         link.rel = "noopener";
+        link.append(node("span", { className: "visually-hidden", text: ", opens in a new tab" }));
         const sourceItem = node("li");
         sourceItem.append(link);
         sources.append(sourceItem);
@@ -268,6 +286,25 @@
     elements.webmcpState.querySelector(".state-detail").textContent = detail;
   }
 
+  function setDeskLoading() {
+    state.ready = false;
+    elements.signalDesk.dataset.loading = "true";
+    elements.signalDesk.setAttribute("aria-busy", "true");
+    [elements.city, elements.status, elements.reset, elements.audience, elements.stage].forEach((control) => {
+      control.disabled = true;
+    });
+  }
+
+  function setDeskReady(ready) {
+    state.ready = ready;
+    elements.signalDesk.dataset.loading = "false";
+    elements.signalDesk.setAttribute("aria-busy", "false");
+    [elements.city, elements.status, elements.reset, elements.audience].forEach((control) => {
+      control.disabled = !ready;
+    });
+    elements.stage.disabled = !ready || !state.selectedIds.size;
+  }
+
   async function registerWebMCP() {
     if (!document.modelContext?.registerTool) {
       setWebMCPState("unsupported", "WebMCP not exposed in this browser", "The human interface remains fully usable; open in ChatGPT’s browser or supported Chrome to expose three agent tools.");
@@ -294,20 +331,26 @@
   }
 
   async function initialize() {
+    setDeskLoading();
+    elements.deskMessage.hidden = true;
+    elements.count.textContent = "Loading";
     try {
       const response = await fetch("cases.json");
       if (!response.ok) throw new Error(`Planning records failed to load (${response.status}).`);
       state.cases = await response.json();
       state.filtered = state.cases;
       state.activeId = state.cases[0]?.id || null;
-      document.querySelector(".signal-desk").dataset.loading = "false";
+      setDeskReady(true);
       applyFilters();
-      renderSelectedRecords();
       await registerWebMCP();
     } catch (error) {
       console.error(error);
-      elements.list.replaceChildren(node("p", { className: "empty-state", text: "The verified record could not be loaded. Refresh the page to retry." }));
+      setDeskReady(false);
+      elements.count.textContent = "Unavailable";
+      elements.list.replaceChildren(node("p", { className: "empty-state", text: "The verified record could not be loaded." }));
       elements.detail.replaceChildren(node("p", { className: "empty-state", text: "Record unavailable." }));
+      elements.deskMessageCopy.textContent = "The verified record could not be loaded. Check the connection and try again.";
+      elements.deskMessage.hidden = false;
       setWebMCPState("error", "Planning record unavailable", "WebMCP tools were not registered because their verified source data did not load.");
     }
   }
@@ -321,6 +364,7 @@
   });
   elements.stage.addEventListener("click", stageManualBrief);
   elements.audience.addEventListener("change", invalidateBrief);
+  elements.retry.addEventListener("click", initialize);
   elements.reviewed.addEventListener("click", () => {
     elements.workspaceStatus.textContent = "Human review recorded for this session. Nothing was published or sent.";
     elements.reviewed.disabled = true;
@@ -328,9 +372,16 @@
   elements.copyPrompt.addEventListener("click", async () => {
     try {
       await navigator.clipboard.writeText(elements.prompt.textContent.trim());
-      elements.copyPrompt.textContent = "Prompt copied";
+      elements.copyStatus.textContent = "Demo prompt copied to the clipboard.";
     } catch {
-      elements.copyPrompt.textContent = "Select and copy the prompt manually";
+      elements.copyStatus.textContent = "Clipboard access was denied. The prompt is selected for manual copying.";
+      elements.prompt.setAttribute("tabindex", "-1");
+      elements.prompt.focus();
+      const range = document.createRange();
+      range.selectNodeContents(elements.prompt);
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
     }
   });
 

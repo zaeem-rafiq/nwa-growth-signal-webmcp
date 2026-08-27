@@ -19,7 +19,7 @@
       <nav aria-label="Primary navigation">
         <a href="#desk">Signal desk</a>
         <a href="#method">Method</a>
-        <a href="assets/NWA-Growth-Signal-Hackathon-Sample.pdf">Issue 01</a>
+        <a href="assets/NWA-Growth-Signal-Hackathon-Sample.pdf" target="_blank" rel="noopener">Issue 01 <span aria-hidden="true">↗</span><span class="visually-hidden"> PDF, opens in a new tab</span></a>
       </nav>
     </header>
 
@@ -31,7 +31,7 @@
           <p class="lede">Search Bentonville and Rogers planning activity, inspect the evidence, and stage a brief without turning a recommendation into an approval.</p>
           <div class="hero-actions">
             <a class="button button-primary" href="#desk">Open the signal desk</a>
-            <a class="button button-secondary" href="assets/NWA-Growth-Signal-Hackathon-Sample.pdf">Read Issue 01 <span aria-hidden="true">↗</span></a>
+            <a class="button button-secondary" href="assets/NWA-Growth-Signal-Hackathon-Sample.pdf" target="_blank" rel="noopener">Read Issue 01 <span aria-hidden="true">↗</span><span class="visually-hidden">, opens in a new tab</span></a>
           </div>
           <div class="webmcp-state" id="webmcp-state" data-state="checking" aria-live="polite">
             <span class="state-mark" aria-hidden="true"></span>
@@ -44,6 +44,7 @@
           <h2 id="agent-brief-title">One prompt. Three accountable actions.</h2>
           <blockquote id="demo-prompt">Find residential Bentonville and Rogers cases still awaiting procedural action. Inspect their official evidence and stage a three-item brief without representing any recommendation as final approval.</blockquote>
           <button class="text-button" id="copy-prompt" type="button">Copy demo prompt</button>
+          <span class="visually-hidden" id="copy-status" role="status" aria-live="polite"></span>
           <ol class="tool-sequence" aria-label="Available WebMCP workflow">
             <li><span>01</span><code>search_planning_cases</code></li>
             <li><span>02</span><code>inspect_case_record</code></li>
@@ -64,7 +65,7 @@
         <div class="desk-controls" aria-label="Planning record filters">
           <label>
             <span>Municipality</span>
-            <select id="city-filter">
+            <select id="city-filter" disabled>
               <option value="">Bentonville + Rogers</option>
               <option value="Bentonville">Bentonville</option>
               <option value="Rogers">Rogers</option>
@@ -72,7 +73,7 @@
           </label>
           <label>
             <span>Procedural status</span>
-            <select id="status-filter">
+            <select id="status-filter" disabled>
               <option value="">Every recorded status</option>
               <option value="Scheduled">Scheduled</option>
               <option value="Tabled">Tabled</option>
@@ -80,7 +81,12 @@
               <option value="Recommended">Recommended</option>
             </select>
           </label>
-          <button class="text-button reset-button" id="reset-filters" type="button">Reset filters</button>
+          <button class="text-button reset-button" id="reset-filters" type="button" disabled>Reset filters</button>
+        </div>
+
+        <div class="desk-message" id="desk-message" role="alert" hidden>
+          <span id="desk-message-copy">The verified record could not be loaded.</span>
+          <button class="button button-secondary" id="retry-load" type="button">Retry</button>
         </div>
 
         <a class="selection-tray" id="selection-tray" href="#brief-title" data-empty="true">
@@ -88,7 +94,7 @@
           <strong>Review selection <span aria-hidden="true">↓</span></strong>
         </a>
 
-        <div class="signal-desk" data-loading="true">
+        <div class="signal-desk" data-loading="true" aria-busy="true">
           <section class="record-index" aria-labelledby="record-index-title">
             <div class="column-heading">
               <h3 id="record-index-title">Record index</h3>
@@ -113,7 +119,7 @@
             </div>
             <label class="audience-field">
               <span>Audience</span>
-              <select id="brief-audience">
+              <select id="brief-audience" disabled>
                 <option>Land and development</option>
                 <option>Lending and title</option>
                 <option>Public-interest planning</option>

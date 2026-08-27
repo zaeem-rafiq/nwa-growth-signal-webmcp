@@ -30,9 +30,9 @@ function createDocument(modelContext) {
   const elements = new Map();
   const selectors = [
     "#city-filter", "#status-filter", "#reset-filters", "#result-count", "#record-list", "#record-list-status",
-    "#record-detail", "#selection-tray", "#selection-count", "#selected-records", "#brief-audience", "#stage-brief", "#brief-preview",
-    "#mark-reviewed", "#workspace-status", "#webmcp-state", "#demo-prompt", "#copy-prompt",
-    ".signal-desk",
+    "#record-detail", ".signal-desk", "#desk-message", "#desk-message-copy", "#retry-load",
+    "#selection-tray", "#selection-count", "#selected-records", "#brief-audience", "#stage-brief", "#brief-preview",
+    "#mark-reviewed", "#workspace-status", "#webmcp-state", "#demo-prompt", "#copy-prompt", "#copy-status",
   ];
   selectors.forEach((selector) => elements.set(selector, new FakeElement()));
   elements.get("#brief-audience").value = "Land and development";

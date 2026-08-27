@@ -15,3 +15,4 @@
 - Added a three-page hackathon edition of Issue 01 while preserving the four-page commercial sample.
 - Improved keyboard focus continuity, touch target sizing, detail labeling, and functional text legibility across the Signal Desk.
 - Kept selection, audience, provenance, source links, and review readiness visibly synchronized in staged briefs.
+- Added explicit loading, retry, copy fallback, filtered-selection disclosure, and new-tab navigation cues.
