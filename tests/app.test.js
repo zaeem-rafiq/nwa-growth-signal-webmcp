@@ -29,7 +29,7 @@ class FakeElement {
 function createDocument(modelContext) {
   const elements = new Map();
   const selectors = [
-    "#city-filter", "#status-filter", "#reset-filters", "#result-count", "#record-list",
+    "#city-filter", "#status-filter", "#reset-filters", "#result-count", "#record-list", "#record-list-status",
     "#record-detail", "#selected-records", "#brief-audience", "#stage-brief", "#brief-preview",
     "#mark-reviewed", "#workspace-status", "#webmcp-state", "#demo-prompt", "#copy-prompt",
     ".signal-desk",

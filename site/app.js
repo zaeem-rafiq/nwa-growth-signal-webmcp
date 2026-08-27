@@ -5,6 +5,7 @@
     reset: document.querySelector("#reset-filters"),
     count: document.querySelector("#result-count"),
     list: document.querySelector("#record-list"),
+    listStatus: document.querySelector("#record-list-status"),
     detail: document.querySelector("#record-detail"),
     selected: document.querySelector("#selected-records"),
     audience: document.querySelector("#brief-audience"),
@@ -57,6 +58,7 @@
   function renderRecordList() {
     elements.list.replaceChildren();
     elements.count.textContent = `${state.filtered.length} ${state.filtered.length === 1 ? "record" : "records"}`;
+    elements.listStatus.textContent = `${state.filtered.length} ${state.filtered.length === 1 ? "record" : "records"} shown.`;
 
     if (!state.filtered.length) {
       elements.list.append(node("p", { className: "empty-state", text: "No verified records match these filters." }));
@@ -66,11 +68,13 @@
     state.filtered.forEach((record) => {
       const button = node("button", { className: "record-row" });
       button.type = "button";
+      button.setAttribute("data-record-id", record.id);
       button.setAttribute("aria-current", String(record.id === state.activeId));
       button.addEventListener("click", () => {
         state.activeId = record.id;
         renderRecordList();
         renderRecordDetail();
+        focusRecordRow(record.id);
       });
 
       const top = node("span", { className: "record-row-top" });
@@ -84,6 +88,10 @@
       button.append(top, meta);
       elements.list.append(button);
     });
+  }
+
+  function focusRecordRow(id) {
+    elements.list.querySelector(`[data-record-id="${id}"]`)?.focus();
   }
 
   function labeledSection(label, text) {

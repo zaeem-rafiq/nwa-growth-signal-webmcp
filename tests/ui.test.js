@@ -44,3 +44,17 @@ test("the desktop hero breakpoint caps the field-note heading size", () => {
 
   assert.match(css, /\.agent-brief h2 \{[^}]*font-size: clamp\(32px, 3\.2vw, 52px\)/);
 });
+
+test("the accessibility foundation keeps controls reachable and focus stable", () => {
+  const html = fs.readFileSync(path.join(site, "index.html"), "utf8");
+  const css = fs.readFileSync(path.join(site, "styles.css"), "utf8");
+  const app = fs.readFileSync(path.join(site, "app.js"), "utf8");
+
+  assert.match(html, /id="record-list-status"[^>]*aria-live="polite"/);
+  assert.match(html, /id="record-detail"[^>]*aria-label="Planning record detail"/);
+  assert.doesNotMatch(html, /id="record-list"[^>]*aria-live/);
+  assert.match(css, /min-height:\s*44px/);
+  assert.match(css, /\.agent-brief button:focus-visible[^}]*outline-color:\s*var\(--paper-light\)/);
+  assert.match(app, /data-record-id/);
+  assert.match(app, /focusRecordRow/);
+});
