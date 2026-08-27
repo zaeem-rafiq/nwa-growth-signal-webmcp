@@ -57,6 +57,7 @@ test("the accessibility foundation keeps controls reachable and focus stable", (
   assert.match(css, /\.agent-brief button:focus-visible[^}]*outline-color:\s*var\(--paper-light\)/);
   assert.match(app, /data-record-id/);
   assert.match(app, /focusRecordRow/);
+  assert.match(app, /elements\.selected\.querySelector\("\.remove-selection"\) \|\| elements\.audience/);
 });
 
 test("selection and review state stay visible, current, and attributable", () => {

@@ -79,7 +79,6 @@
       const button = node("button", { className: "record-row" });
       button.type = "button";
       button.setAttribute("data-record-id", record.id);
-      button.dataset.selected = String(state.selectedIds.has(record.id));
       button.setAttribute("aria-current", String(record.id === state.activeId));
       button.addEventListener("click", () => {
         state.activeId = record.id;
@@ -185,7 +184,7 @@
       ? `${state.selectedIds.size} ${state.selectedIds.size === 1 ? "record" : "records"} ready to stage.`
       : "Awaiting a selection.";
     if (focusTarget === "detail") elements.detail.querySelector(".select-record")?.focus();
-    if (focusTarget === "workspace") (elements.selected.querySelector(".remove-selection") || elements.stage).focus();
+    if (focusTarget === "workspace") (elements.selected.querySelector(".remove-selection") || elements.audience).focus();
   }
 
   function renderSelectedRecords() {
@@ -214,7 +213,6 @@
       copy.append(node("strong", { text: record.title }), node("span", { text: record.case_ids.join(" / ") }));
       const remove = node("button", { className: "remove-selection", text: "×" });
       remove.type = "button";
-      remove.setAttribute("data-selection-id", id);
       remove.setAttribute("aria-label", `Remove ${record.title} from the brief`);
       remove.addEventListener("click", () => toggleSelection(id, "workspace"));
       row.append(copy, remove);
