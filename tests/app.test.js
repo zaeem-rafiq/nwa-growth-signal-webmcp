@@ -63,6 +63,7 @@ function createDocument(modelContext) {
     "#record-detail", ".signal-desk", "#desk-message", "#desk-message-copy", "#retry-load",
     "#selection-tray", "#selection-count", "#selected-records", "#brief-audience", "#stage-brief", "#brief-preview",
     "#mark-reviewed", "#workspace-status", "#webmcp-state", "#demo-prompt", "#copy-prompt", "#copy-status",
+    "#receipt-empty", "#receipt-rows", "#receipt-disclosure",
   ];
   selectors.forEach((selector) => elements.set(selector, new FakeElement()));
   elements.get("#brief-audience").value = "Land and development";
@@ -118,6 +119,66 @@ test("the app exposes an unsupported-browser fallback without losing the human i
 
   assert.equal(state.dataset.state, "unsupported");
   assert.equal(state.querySelector("strong").textContent, "WebMCP not exposed in this browser");
+});
+
+test("the live receipt replaces calls by ID, keeps the latest eight, and discloses truncation", async () => {
+  let onActivity;
+  const document = await runApp({
+    modelContext: { registerTool() {} },
+    fetchResponse: { ok: true, json: async () => cases },
+    registerPlanningTools: async (options) => { onActivity = options.onActivity; },
+  });
+  const elements = document.elements;
+
+  assert.equal(elements.get("#receipt-empty").textContent, "No agent calls have run in this session.");
+  onActivity({ id: 1, tool: "search_planning_cases", status: "started", code: "CALL_STARTED", summary: "Call started." });
+  onActivity({ id: 1, tool: "search_planning_cases", status: "succeeded", code: "SEARCH_COMPLETE", summary: "5 verified records matched." });
+  for (let id = 2; id <= 9; id += 1) {
+    onActivity({ id, tool: "inspect_case_record", status: "succeeded", code: "RECORD_FOUND", summary: `Record ${id} found.` });
+  }
+
+  const rows = elements.get("#receipt-rows");
+  assert.equal(rows.children.length, 8);
+  assert.equal(rows.children[0].attributes.get("data-call-id"), "2");
+  assert.equal(rows.children[7].attributes.get("data-call-id"), "9");
+  assert.equal(rows.children.some((row) => row.querySelector(".receipt-state").textContent === "started"), false);
+  assert.equal(elements.get("#receipt-empty").hidden, true);
+  assert.equal(elements.get("#receipt-disclosure").hidden, false);
+});
+
+test("agent receipts stay separate from the human-owned workspace review lifecycle", async () => {
+  let onActivity;
+  let onBrief;
+  const document = await runApp({
+    modelContext: { registerTool() {} },
+    fetchResponse: { ok: true, json: async () => cases },
+    registerPlanningTools: async (options) => {
+      onActivity = options.onActivity;
+      onBrief = options.onBrief;
+    },
+  });
+  const elements = document.elements;
+  const brief = core.stageSourceBackedBrief(cases, {
+    case_ids: ["RZ26-00511"],
+    audience: "Public-interest planning",
+  });
+
+  onActivity({ id: 1, tool: "stage_source_backed_brief", status: "started", code: "CALL_STARTED", summary: "Call started." });
+  onBrief(brief);
+  onActivity({ id: 1, tool: "stage_source_backed_brief", status: "succeeded", code: "BRIEF_STAGED", summary: "1 filing staged · human review required." });
+
+  assert.match(elements.get("#workspace-status").textContent, /Agent staged 1 record\. Review required/);
+  assert.equal(elements.get("#mark-reviewed").disabled, false);
+  assert.equal(elements.get("#receipt-rows").children[0].querySelector(".receipt-state").textContent, "succeeded");
+
+  await elements.get("#mark-reviewed").dispatch("click");
+  assert.match(elements.get("#workspace-status").textContent, /Human review recorded/);
+  assert.equal(elements.get("#receipt-rows").children[0].querySelector(".receipt-state").textContent, "succeeded");
+
+  elements.get("#brief-audience").value = "Lending and title";
+  await elements.get("#brief-audience").dispatch("change");
+  assert.match(elements.get("#workspace-status").textContent, /Stage the brief again/);
+  assert.equal(elements.get("#receipt-rows").children[0].querySelector(".receipt-state").textContent, "succeeded");
 });
 
 test("the app reports registration and verified-record load failures", async () => {

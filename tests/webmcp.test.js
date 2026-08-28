@@ -22,6 +22,142 @@ test("the page exposes the three planning workflow tools to an agent", async () 
   ]);
 });
 
+test("real handler calls emit monotonic started and succeeded receipt events", async () => {
+  const registered = [];
+  const events = [];
+  await registerPlanningTools({
+    modelContext: { registerTool: async (tool) => registered.push(tool) },
+    cases,
+    onBrief: () => {},
+    onActivity: (event) => events.push(event),
+    asOf: "2026-09-01",
+  });
+  const tools = Object.fromEntries(registered.map((tool) => [tool.name, tool]));
+
+  await tools.search_planning_cases.execute({ residential_only: true });
+  await tools.inspect_case_record.execute({ case_id: "RZ26-00511" });
+  await tools.stage_source_backed_brief.execute({
+    case_ids: ["RZ26-00511"],
+    audience: "Land and development",
+  });
+
+  assert.deepEqual(events, [
+    { id: 1, tool: "search_planning_cases", status: "started", code: "CALL_STARTED", summary: "Call started." },
+    { id: 1, tool: "search_planning_cases", status: "succeeded", code: "SEARCH_COMPLETE", summary: "5 verified records matched." },
+    { id: 2, tool: "inspect_case_record", status: "started", code: "CALL_STARTED", summary: "Call started." },
+    { id: 2, tool: "inspect_case_record", status: "succeeded", code: "RECORD_FOUND", summary: "RZ26-00511 · Scheduled." },
+    { id: 3, tool: "stage_source_backed_brief", status: "started", code: "CALL_STARTED", summary: "Call started." },
+    { id: 3, tool: "stage_source_backed_brief", status: "succeeded", code: "BRIEF_STAGED", summary: "1 filing staged · human review required." },
+  ]);
+});
+
+test("invalid hostile input emits a bounded typed failure and the next call recovers", async () => {
+  const registered = [];
+  const events = [];
+  const hostile = `<script>${"x".repeat(5000)}</script>`;
+  await registerPlanningTools({
+    modelContext: { registerTool: async (tool) => registered.push(tool) },
+    cases,
+    onBrief: () => {},
+    onActivity: (event) => events.push(event),
+  });
+  const tools = Object.fromEntries(registered.map((tool) => [tool.name, tool]));
+
+  await assert.rejects(() => tools.inspect_case_record.execute({ case_id: hostile }), /Invalid case inspection input/);
+  await tools.search_planning_cases.execute({ city: "Rogers" });
+
+  assert.deepEqual(events.slice(0, 2), [
+    { id: 1, tool: "inspect_case_record", status: "started", code: "CALL_STARTED", summary: "Call started." },
+    { id: 1, tool: "inspect_case_record", status: "failed", code: "VALIDATION_FAILED", summary: "Call rejected: invalid input." },
+  ]);
+  assert.deepEqual(events.slice(2).map(({ id, status }) => ({ id, status })), [
+    { id: 2, status: "started" },
+    { id: 2, status: "succeeded" },
+  ]);
+  assert.equal(JSON.stringify(events).includes(hostile), false);
+  assert.ok(JSON.stringify(events).length < 1000);
+});
+
+test("a receipt callback failure cannot change search or staging outcomes", async () => {
+  const registered = [];
+  let stagedBrief;
+  await registerPlanningTools({
+    modelContext: { registerTool: async (tool) => registered.push(tool) },
+    cases,
+    onBrief: (brief) => { stagedBrief = brief; },
+    onActivity: () => { throw new Error("receipt sink unavailable"); },
+    asOf: "2026-09-01",
+  });
+  const tools = Object.fromEntries(registered.map((tool) => [tool.name, tool]));
+
+  const search = await tools.search_planning_cases.execute({ city: "Bentonville" });
+  const stage = await tools.stage_source_backed_brief.execute({
+    case_ids: ["RZ26-0041"],
+    audience: "Land and development",
+  });
+
+  assert.equal(search.results.length, 2);
+  assert.equal(stage.staged, true);
+  assert.deepEqual(stagedBrief.items[0].selected_filings.map(({ case_id: caseId }) => caseId), ["RZ26-0041"]);
+});
+
+test("receipt projection failure cannot change a valid inspection result", async () => {
+  const registered = [];
+  await registerPlanningTools({
+    modelContext: { registerTool: async (tool) => registered.push(tool) },
+    cases: [{ id: "minimal", case_ids: ["MIN-1"] }],
+    onBrief: () => {},
+    onActivity: () => {},
+  });
+  const inspect = registered.find(({ name }) => name === "inspect_case_record");
+
+  const result = await inspect.execute({ case_id: "minimal" });
+
+  assert.equal(result.id, "minimal");
+});
+
+test("a visible brief callback failure makes staging fail with a generic receipt code", async () => {
+  const registered = [];
+  const events = [];
+  await registerPlanningTools({
+    modelContext: { registerTool: async (tool) => registered.push(tool) },
+    cases,
+    onBrief: () => { throw new Error("host DOM leaked details"); },
+    onActivity: (event) => events.push(event),
+  });
+  const stage = registered.find(({ name }) => name === "stage_source_backed_brief");
+
+  await assert.rejects(
+    () => stage.execute({ case_ids: ["RZ26-0041"], audience: "Land and development" }),
+    (error) => error.code === "CALLBACK_FAILED" && error.message === "Brief could not be staged."
+  );
+
+  assert.deepEqual(events, [
+    { id: 1, tool: "stage_source_backed_brief", status: "started", code: "CALL_STARTED", summary: "Call started." },
+    { id: 1, tool: "stage_source_backed_brief", status: "failed", code: "CALLBACK_FAILED", summary: "Visible brief update failed." },
+  ]);
+  assert.equal(JSON.stringify(events).includes("host DOM leaked details"), false);
+});
+
+test("schema-invalid staging input uses the bounded validation failure receipt", async () => {
+  const registered = [];
+  const events = [];
+  await registerPlanningTools({
+    modelContext: { registerTool: async (tool) => registered.push(tool) },
+    cases,
+    onBrief: () => {},
+    onActivity: (event) => events.push(event),
+  });
+  const stage = registered.find(({ name }) => name === "stage_source_backed_brief");
+
+  await assert.rejects(
+    () => stage.execute({ case_ids: [], audience: "Land and development" }),
+    /one to five unique case IDs/
+  );
+  assert.equal(events.at(-1).code, "VALIDATION_FAILED");
+  assert.equal(events.at(-1).summary, "Call rejected: invalid input.");
+});
+
 test("the agent workflow finds every residential record still awaiting procedural action", async () => {
   const registered = [];
   await registerPlanningTools({

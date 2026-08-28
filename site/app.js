@@ -24,6 +24,9 @@
     prompt: document.querySelector("#demo-prompt"),
     copyPrompt: document.querySelector("#copy-prompt"),
     copyStatus: document.querySelector("#copy-status"),
+    receiptEmpty: document.querySelector("#receipt-empty"),
+    receiptRows: document.querySelector("#receipt-rows"),
+    receiptDisclosure: document.querySelector("#receipt-disclosure"),
   };
 
   const state = {
@@ -33,6 +36,8 @@
     selectedFilingIds: new Set(),
     stagedBrief: null,
     ready: false,
+    receiptCalls: [],
+    receiptTruncated: false,
   };
 
   function node(tag, options = {}) {
@@ -46,6 +51,49 @@
     const badge = node("span", { className: "status-badge", text: status });
     badge.dataset.status = status;
     return badge;
+  }
+
+  function renderActivityReceipt() {
+    elements.receiptRows.replaceChildren();
+    elements.receiptEmpty.textContent = "No agent calls have run in this session.";
+    elements.receiptEmpty.hidden = Boolean(state.receiptCalls.length);
+    elements.receiptDisclosure.hidden = !state.receiptTruncated;
+    state.receiptCalls.forEach((call) => {
+      const row = node("article", { className: "receipt-row" });
+      row.setAttribute("data-call-id", call.id);
+      row.dataset.status = call.status;
+      const heading = node("div", { className: "receipt-row-heading" });
+      heading.append(
+        node("span", { className: "receipt-number", text: `#${String(call.id).padStart(2, "0")}` }),
+        node("code", { text: call.tool }),
+        node("span", { className: "receipt-state", text: call.status })
+      );
+      row.append(heading, node("p", { className: "receipt-summary", text: call.summary }));
+      elements.receiptRows.append(row);
+    });
+  }
+
+  function recordActivity(event) {
+    const tools = ["search_planning_cases", "inspect_case_record", "stage_source_backed_brief"];
+    const statuses = ["started", "succeeded", "failed"];
+    const codes = ["CALL_STARTED", "SEARCH_COMPLETE", "RECORD_FOUND", "BRIEF_STAGED", "VALIDATION_FAILED", "CALLBACK_FAILED", "TOOL_FAILED"];
+    if (!Number.isSafeInteger(event?.id) || event.id < 1 || !tools.includes(event.tool) ||
+        !statuses.includes(event.status) || !codes.includes(event.code) || typeof event.summary !== "string") return;
+    const call = {
+      id: event.id,
+      tool: event.tool,
+      status: event.status,
+      code: event.code,
+      summary: event.summary.slice(0, 120),
+    };
+    const existingIndex = state.receiptCalls.findIndex(({ id }) => id === call.id);
+    if (existingIndex >= 0) state.receiptCalls[existingIndex] = call;
+    else state.receiptCalls.push(call);
+    if (state.receiptCalls.length > 8) {
+      state.receiptCalls = state.receiptCalls.slice(-8);
+      state.receiptTruncated = true;
+    }
+    renderActivityReceipt();
   }
 
   function currentFilters() {
@@ -330,6 +378,7 @@
       await window.NWAWebMCP.registerPlanningTools({
         modelContext: document.modelContext,
         cases: state.cases,
+        onActivity: recordActivity,
         onBrief: (brief) => {
           state.selectedFilingIds = new Set(brief.items.flatMap((record) =>
             (record.selected_filings || record.filings || []).map(({ case_id: caseId }) => caseId)
@@ -407,5 +456,6 @@
     }
   });
 
+  renderActivityReceipt();
   initialize();
 })();

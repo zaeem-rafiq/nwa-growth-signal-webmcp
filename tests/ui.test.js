@@ -13,6 +13,25 @@ test("the page presents the agent workflow as a visible human-review workspace",
   assert.doesNotMatch(html, /checkout|payment/i);
 });
 
+test("the page exposes a semantic live execution receipt with a neutral empty state", () => {
+  const html = fs.readFileSync(path.join(site, "index.html"), "utf8");
+
+  assert.match(html, /id="execution-receipt"[^>]*aria-labelledby="execution-receipt-title"/);
+  assert.match(html, /id="receipt-region"[^>]*role="log"[^>]*aria-live="polite"/);
+  assert.match(html, /id="receipt-rows"/);
+  assert.match(html, /id="receipt-empty"[^>]*>No agent calls have run in this session\.<\/p>/);
+  assert.match(html, /id="receipt-disclosure"[^>]*hidden/);
+});
+
+test("the receipt reuses the editorial grid and contains long handler text", () => {
+  const css = fs.readFileSync(path.join(site, "styles.css"), "utf8");
+
+  assert.match(css, /\.execution-receipt \{[^}]*display:\s*grid/);
+  assert.match(css, /\.receipt-summary \{[^}]*overflow-wrap:\s*anywhere/);
+  assert.match(css, /\.receipt-row\[data-status="succeeded"\][^}]*var\(--green\)/);
+  assert.match(css, /\.receipt-row\[data-status="failed"\][^}]*var\(--red\)/);
+});
+
 test("the hackathon surface links to the three-page issue sample", () => {
   const html = fs.readFileSync(path.join(site, "index.html"), "utf8");
   const pdf = fs.readFileSync(path.join(site, "assets", "NWA-Growth-Signal-Hackathon-Sample.pdf")).toString("latin1");
