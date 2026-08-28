@@ -128,3 +128,42 @@ test("the hero shows the real issue sample without overstating the data surface"
   assert.doesNotMatch(html, /Live working surface/);
   assert.match(css, /\.issue-preview/);
 });
+
+test("the sourced comparison stays affirmative and follows the shared workspace", () => {
+  const html = fs.readFileSync(path.join(site, "index.html"), "utf8");
+  const comparison = html.match(/<section class="comparison"[\s\S]*?<\/section>/)?.[0] || "";
+
+  assert.ok(html.indexOf('class="brief-workspace"') < html.indexOf('class="comparison"'));
+  assert.ok(html.indexOf('class="comparison"') < html.indexOf('class="non-claims"'));
+  assert.match(comparison, /https:\/\/www\.civicplus\.com\/agenda-meeting-management\//);
+  assert.match(comparison, /https:\/\/regrid\.com\/property-app/);
+  assert.match(comparison, /https:\/\/www\.permitflow\.com\//);
+  assert.match(comparison, /NWA Growth Signal translates a dated Bentonville\/Rogers municipal-planning snapshot/);
+  assert.match(comparison, /Sources verified August 28, 2026/);
+  assert.doesNotMatch(comparison, /\b(?:better|best|only|unlike|lacks?|missing|superior)\b/i);
+});
+
+test("the comparison is a flat responsive ledger with accessible source links", () => {
+  const css = fs.readFileSync(path.join(site, "styles.css"), "utf8");
+
+  assert.match(css, /\.comparison \{[^}]*display:\s*grid/);
+  assert.match(css, /\.comparison-ledger \{[^}]*list-style:\s*none[^}]*border-top:\s*2px solid var\(--ink\)/);
+  assert.match(css, /\.comparison-ledger li \{[^}]*display:\s*grid[^}]*grid-template-columns:/);
+  assert.match(css, /\.comparison-ledger a \{[^}]*min-height:\s*44px/);
+  assert.match(css, /@media \(max-width: 850px\)[\s\S]*\.comparison \{[^}]*grid-template-columns:\s*1fr/);
+  assert.match(css, /@media \(max-width: 560px\)[\s\S]*\.comparison-ledger li \{[^}]*grid-template-columns:\s*1fr/);
+  assert.doesNotMatch(css, /linear-gradient|radial-gradient/);
+});
+
+test("the execution proof includes one persistent, politely announced freshness summary", () => {
+  const html = fs.readFileSync(path.join(site, "index.html"), "utf8");
+  const css = fs.readFileSync(path.join(site, "styles.css"), "utf8");
+  const freshnessRegions = html.match(/id="freshness-summary"/g) || [];
+
+  assert.equal(freshnessRegions.length, 1);
+  assert.match(html, /id="freshness-summary"[^>]*role="status"[^>]*aria-live="polite"[^>]*aria-atomic="true"/);
+  assert.match(html, /id="freshness-state"/);
+  assert.match(html, /id="freshness-detail"/);
+  assert.match(css, /\.freshness-summary \{[^}]*border-top:\s*1px solid var\(--rule\)/);
+  assert.match(css, /\.freshness-summary\[data-state="reverification_due"\][^}]*var\(--red\)/);
+});

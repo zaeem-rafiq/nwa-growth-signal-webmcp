@@ -63,7 +63,7 @@ function createDocument(modelContext) {
     "#record-detail", ".signal-desk", "#desk-message", "#desk-message-copy", "#retry-load",
     "#selection-tray", "#selection-count", "#selected-records", "#brief-audience", "#stage-brief", "#brief-preview",
     "#mark-reviewed", "#workspace-status", "#webmcp-state", "#demo-prompt", "#copy-prompt", "#copy-status",
-    "#receipt-empty", "#receipt-rows", "#receipt-disclosure",
+    "#receipt-empty", "#receipt-rows", "#receipt-disclosure", "#freshness-summary", "#freshness-state", "#freshness-detail",
   ];
   selectors.forEach((selector) => elements.set(selector, new FakeElement()));
   elements.get("#brief-audience").value = "Land and development";
@@ -90,10 +90,10 @@ function createDocument(modelContext) {
   return document;
 }
 
-async function runApp({ modelContext, fetchResponse, registerPlanningTools, clipboardWrite = async () => {}, abortSignal = AbortSignal }) {
+async function runApp({ modelContext, fetchResponse, registerPlanningTools, clipboardWrite = async () => {}, abortSignal = AbortSignal, signalCore = core }) {
   const document = createDocument(modelContext);
   const window = {
-    NWASignal: core,
+    NWASignal: signalCore,
     NWAWebMCP: { registerPlanningTools },
     getSelection: () => document.selection,
   };
@@ -416,4 +416,24 @@ test("an agent-staged brief synchronizes the human review workspace", async () =
   assert.equal(document.elements.get("#brief-preview").querySelector(".brief-filings").querySelector(".status-badge").textContent, "Scheduled");
   assert.equal(document.elements.get("#brief-preview").querySelector(".brief-sources").querySelector("a").href, cases[3].sources[0].url);
   assert.match(document.elements.get("#workspace-status").textContent, /Human staged 1 record/);
+});
+
+test("a due snapshot requests official re-verification without changing procedural statuses", async () => {
+  const dueCore = { ...core, northwestArkansasCivilDate: () => "2026-09-02" };
+  const document = await runApp({
+    fetchResponse: { ok: true, json: async () => cases },
+    registerPlanningTools: async () => {},
+    signalCore: dueCore,
+  });
+  const elements = document.elements;
+
+  assert.equal(elements.get("#freshness-summary").dataset.state, "reverification_due");
+  assert.equal(elements.get("#freshness-state").textContent, "Official re-verification required");
+  assert.match(elements.get("#freshness-detail").textContent, /Procedural statuses are unchanged; official re-verification is required/);
+  assert.match(elements.get("#record-detail").querySelector(".freshness-line").textContent, /Procedural statuses are unchanged; official re-verification is required/);
+  assert.equal(elements.get("#record-detail").querySelector(".status-badge").textContent, cases[0].filings[0].status);
+
+  await elements.get("#record-detail").querySelector(".select-record").dispatch("click");
+  await elements.get("#stage-brief").dispatch("click");
+  assert.match(elements.get("#brief-preview").querySelector(".brief-freshness").textContent, /Procedural statuses are unchanged; official re-verification is required/);
 });

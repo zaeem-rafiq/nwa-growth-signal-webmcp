@@ -27,6 +27,9 @@
     receiptEmpty: document.querySelector("#receipt-empty"),
     receiptRows: document.querySelector("#receipt-rows"),
     receiptDisclosure: document.querySelector("#receipt-disclosure"),
+    freshnessSummary: document.querySelector("#freshness-summary"),
+    freshnessState: document.querySelector("#freshness-state"),
+    freshnessDetail: document.querySelector("#freshness-detail"),
   };
 
   const state = {
@@ -38,6 +41,7 @@
     ready: false,
     receiptCalls: [],
     receiptTruncated: false,
+    freshness: null,
   };
 
   function node(tag, options = {}) {
@@ -51,6 +55,40 @@
     const badge = node("span", { className: "status-badge", text: status });
     badge.dataset.status = status;
     return badge;
+  }
+
+  function freshnessCopy(freshness) {
+    if (freshness.state === "reverification_due") {
+      return {
+        title: "Official re-verification required",
+        detail: `Snapshot due ${freshness.reverify_on}. Procedural statuses are unchanged; official re-verification is required before release.`,
+      };
+    }
+    if (freshness.state === "verification_date_only") {
+      return {
+        title: "Verification date only",
+        detail: "Snapshot verification metadata is incomplete. Procedural statuses are unchanged; official re-verification is required before release.",
+      };
+    }
+    return {
+      title: "Snapshot current",
+      detail: `Verified ${window.NWASignal.SNAPSHOT.verified_at}; re-verify from ${freshness.reverify_on}. Procedural statuses are unchanged.`,
+    };
+  }
+
+  function renderSnapshotFreshness() {
+    state.freshness = window.NWASignal.evaluateSnapshotFreshness(
+      window.NWASignal.SNAPSHOT,
+      window.NWASignal.northwestArkansasCivilDate()
+    );
+    const copy = freshnessCopy(state.freshness);
+    elements.freshnessSummary.dataset.state = state.freshness.state;
+    elements.freshnessState.textContent = copy.title;
+    elements.freshnessDetail.textContent = copy.detail;
+  }
+
+  function freshnessLine(className = "freshness-line") {
+    return node("p", { className, text: freshnessCopy(state.freshness).detail });
   }
 
   function renderActivityReceipt() {
@@ -225,6 +263,7 @@
       folio,
       title,
       caseLine,
+      freshnessLine(),
       filings,
       labeledSection("Record summary", record.summary),
       labeledSection("What is proposed", record.proposal),
@@ -290,7 +329,7 @@
     elements.preview.append(node("p", {
       className: "brief-snapshot",
       text: `Audience: ${brief.audience} · ${brief.items.length} ${brief.items.length === 1 ? "record" : "records"} staged`,
-    }));
+    }), freshnessLine("freshness-line brief-freshness"));
     brief.items.forEach((record) => {
       const item = node("article", { className: "brief-item" });
       const heading = node("strong", { text: record.title });
@@ -457,5 +496,6 @@
   });
 
   renderActivityReceipt();
+  renderSnapshotFreshness();
   initialize();
 })();
