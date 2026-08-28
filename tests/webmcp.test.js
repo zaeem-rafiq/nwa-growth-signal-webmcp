@@ -78,6 +78,31 @@ test("invalid hostile input emits a bounded typed failure and the next call reco
   assert.ok(JSON.stringify(events).length < 1000);
 });
 
+test("an unknown record emits a generic bounded failure and the next call recovers", async () => {
+  const registered = [];
+  const events = [];
+  await registerPlanningTools({
+    modelContext: { registerTool: async (tool) => registered.push(tool) },
+    cases,
+    onBrief: () => {},
+    onActivity: (event) => events.push(event),
+  });
+  const tools = Object.fromEntries(registered.map((tool) => [tool.name, tool]));
+
+  await assert.rejects(() => tools.inspect_case_record.execute({ case_id: "UNKNOWN" }), /Unknown planning record/);
+  await tools.search_planning_cases.execute({ city: "Rogers" });
+
+  assert.deepEqual(events.slice(0, 2), [
+    { id: 1, tool: "inspect_case_record", status: "started", code: "CALL_STARTED", summary: "Call started." },
+    { id: 1, tool: "inspect_case_record", status: "failed", code: "TOOL_FAILED", summary: "Call failed safely." },
+  ]);
+  assert.equal(JSON.stringify(events).includes("UNKNOWN"), false);
+  assert.deepEqual(events.slice(2).map(({ id, status }) => ({ id, status })), [
+    { id: 2, status: "started" },
+    { id: 2, status: "succeeded" },
+  ]);
+});
+
 test("a receipt callback failure cannot change search or staging outcomes", async () => {
   const registered = [];
   let stagedBrief;
@@ -224,6 +249,8 @@ test("the registered tools inspect evidence and stage a visible review-required 
     staged: true,
     review_required: true,
     item_count: 1,
+    filing_count: 1,
+    filing_ids: ["RZ26-00511"],
     freshness: {
       state: "current",
       as_of: "2026-09-01",
@@ -236,6 +263,29 @@ test("the registered tools inspect evidence and stage a visible review-required 
     () => stage.execute({ case_ids: [], audience: "Lending and title" }),
     /one to five unique case IDs/
   );
+});
+
+test("staging two filings on one record reports both filing IDs", async () => {
+  const registered = [];
+  const events = [];
+  await registerPlanningTools({
+    modelContext: { registerTool: async (tool) => registered.push(tool) },
+    cases,
+    onBrief: () => {},
+    onActivity: (event) => events.push(event),
+    asOf: "2026-09-01",
+  });
+  const stage = registered.find(({ name }) => name === "stage_source_backed_brief");
+
+  const result = await stage.execute({
+    case_ids: ["VAR26-0397", "RZ26-00511"],
+    audience: "Public-interest planning",
+  });
+
+  assert.equal(result.item_count, 1);
+  assert.equal(result.filing_count, 2);
+  assert.deepEqual(result.filing_ids, ["VAR26-0397", "RZ26-00511"]);
+  assert.equal(events.at(-1).summary, "2 filings staged · human review required.");
 });
 
 test("a failed tool registration aborts the successfully registered siblings", async () => {

@@ -74,7 +74,20 @@ function recordOutcome(record, filings = record.matching_filings || record.selec
   };
 }
 
-function canonicalOutcome({ searchResults, inspected, brief, freshness }) {
+function briefStageOutcome(brief) {
+  const filingIds = brief.items.flatMap((record) =>
+    (record.selected_filings || record.filings || []).map(({ case_id: caseId }) => caseId)
+  );
+  return {
+    staged: true,
+    review_required: brief.review_required,
+    item_count: brief.items.length,
+    filing_count: filingIds.length,
+    filing_ids: filingIds,
+  };
+}
+
+function canonicalOutcome({ searchResults, inspected, brief, stage, freshness }) {
   const inspectedFilings = inspected.requested_filing ? [inspected.requested_filing] : inspected.filings;
   return {
     search: searchResults.map((record) => recordOutcome(record)),
@@ -85,6 +98,7 @@ function canonicalOutcome({ searchResults, inspected, brief, freshness }) {
       standing_note: brief.standing_note,
       items: brief.items.map((record) => recordOutcome(record)),
     },
+    stage,
     freshness,
   };
 }
@@ -94,10 +108,12 @@ function outcomeHash(outcome) {
 }
 
 function runCoreScenario(cases, scenario, freshness) {
+  const brief = core.stageSourceBackedBrief(cases, scenario.stage);
   return canonicalOutcome({
     searchResults: core.searchPlanningCases(cases, scenario.search),
     inspected: core.inspectCaseRecord(cases, scenario.inspect),
-    brief: core.stageSourceBackedBrief(cases, scenario.stage),
+    brief,
+    stage: briefStageOutcome(brief),
     freshness: { search: freshness, inspection: freshness, staging: freshness },
   });
 }
@@ -112,6 +128,13 @@ async function runToolScenario(tools, stagedBriefs, scenario) {
     searchResults: search.results,
     inspected,
     brief,
+    stage: {
+      staged: stage.staged,
+      review_required: stage.review_required,
+      item_count: stage.item_count,
+      filing_count: stage.filing_count,
+      filing_ids: stage.filing_ids,
+    },
     freshness: {
       search: search.freshness,
       inspection: inspected.freshness,
@@ -168,7 +191,7 @@ async function runBenchmark({
 
   const primary = scenarioReports.primary.outcome;
   const report = {
-    dataset_verified_at: cases[0]?.verified_at || null,
+    dataset_verified_at: core.SNAPSHOT.verified_at,
     freshness,
     records_checked: cases.length,
     filing_status_checks: statusChecks.length,
@@ -190,6 +213,7 @@ async function runBenchmark({
       "audience",
       "official URLs",
       "standing note",
+      "stage response",
       "freshness",
       "review_required",
     ],
@@ -234,4 +258,4 @@ if (require.main === module) {
     });
 }
 
-module.exports = { PRIMARY_HUMAN_TRACE, SCENARIOS, runBenchmark };
+module.exports = { PRIMARY_HUMAN_TRACE, runBenchmark };

@@ -67,7 +67,7 @@
     if (freshness.state === "verification_date_only") {
       return {
         title: "Verification date only",
-        detail: "Snapshot verification metadata is incomplete. Procedural statuses are unchanged; official re-verification is required before release.",
+        detail: "The snapshot cannot be treated as current. Procedural statuses are unchanged; official re-verification is required before release.",
       };
     }
     return {
@@ -121,7 +121,6 @@
       id: event.id,
       tool: event.tool,
       status: event.status,
-      code: event.code,
       summary: event.summary.slice(0, 120),
     };
     const existingIndex = state.receiptCalls.findIndex(({ id }) => id === call.id);

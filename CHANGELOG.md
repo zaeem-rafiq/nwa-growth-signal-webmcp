@@ -3,9 +3,10 @@
 ## 2026-08-28
 
 - Preserved exact filing selection across human and agent staging, including separate statuses for multi-filing records.
-- Added one shared snapshot-freshness contract with an inclusive fail-closed re-verification boundary.
+- Added one shared snapshot-freshness contract that fails closed before verification and on the inclusive re-verification boundary.
 - Extended the release benchmark to prove exact core-to-adapter parity across two fixed scenarios and publish raw eight-control versus three-tool traces for the primary script.
 - Added a bounded handler-originated execution receipt while keeping final review human-only.
+- Corrected combined filing filters and made receipt and benchmark proof count the exact staged filings.
 - Added a sourced adjacent-workflow comparison and aligned repository, demo, and prepared Devpost evidence with the candidate's executable proof and public-release gates.
 
 ## 2026-08-27

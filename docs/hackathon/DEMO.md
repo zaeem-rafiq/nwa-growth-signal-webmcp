@@ -128,7 +128,7 @@ The revised instructions below are a prepared candidate capture guide. The revis
 >
 > **Host:** What did it verify?
 >
-> **Expert:** Both tasks reach exactly the same filing, status, source, audience, freshness, and review outcomes. The current candidate passes 68 tests. For the primary script, the report records eight human control activations or three agent tool calls—not observed user time savings.
+> **Expert:** Both tasks reach exactly the same filing, status, source, audience, freshness, and review outcomes. The current candidate passes 74 tests. For the primary script, the report records eight human control activations or three agent tool calls—not observed user time savings.
 
 ### 2:15-2:32 - Close
 
@@ -146,7 +146,7 @@ The revised instructions below are a prepared candidate capture guide. The revis
 2. Page receipt showing succeeded search, inspect, and stage calls from one continuous run.
 3. `RZ26-00511` inspection with filing-level status and official sources.
 4. Exact three-filing brief with the review-required status and current freshness summary.
-5. Fresh benchmark output showing two parity scenarios, 68 tests, raw eight-versus-three traces, and `release_ready: true`.
+5. Fresh benchmark output showing two parity scenarios, 74 tests, raw eight-versus-three traces, and `release_ready: true`.
 6. Sourced CivicPlus, Regrid, and PermitFlow comparison, with no negative capability claim.
 
 ## Pre-publish checklist

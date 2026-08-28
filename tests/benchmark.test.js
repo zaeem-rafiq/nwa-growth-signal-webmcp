@@ -44,19 +44,20 @@ test("the release benchmark proves two fixed core-to-adapter scenarios and their
       "audience",
       "official URLs",
       "standing note",
+      "stage response",
       "freshness",
       "review_required",
     ],
     scenarios: {
       primary: {
         parity: true,
-        core_sha256: "ddec37f3e38888df1a77ff8b3fb94fbf80e4b9b9a2b4871d2c1a48145b9829d0",
-        tool_sha256: "ddec37f3e38888df1a77ff8b3fb94fbf80e4b9b9a2b4871d2c1a48145b9829d0",
+        core_sha256: "d5dea42a5af03506867779a920c2f5a75b403c0344560b5808ea8c4bf20078ca",
+        tool_sha256: "d5dea42a5af03506867779a920c2f5a75b403c0344560b5808ea8c4bf20078ca",
       },
       counter: {
         parity: true,
-        core_sha256: "cbe775f0bff8058765684f9fcfb54b01141b8ca8be8f04f0faa4047b6820b787",
-        tool_sha256: "cbe775f0bff8058765684f9fcfb54b01141b8ca8be8f04f0faa4047b6820b787",
+        core_sha256: "221298c02f422f69d0d603095efae6eececefba72cade1eac43c6fa4f3fc4a00",
+        tool_sha256: "221298c02f422f69d0d603095efae6eececefba72cade1eac43c6fa4f3fc4a00",
       },
     },
     interaction_evidence: {
@@ -119,6 +120,38 @@ test("a tool-side outcome mismatch fails parity and the release gate", async () 
   assert.equal(report.release_ready, false);
 });
 
+test("a corrupted staging response fails parity and the release gate", async () => {
+  async function registerFaultyTools(options) {
+    return registerPlanningTools({
+      ...options,
+      modelContext: {
+        registerTool(tool, registrationOptions) {
+          return options.modelContext.registerTool({
+            ...tool,
+            execute: tool.name === "stage_source_backed_brief"
+              ? async (input) => ({
+                ...await tool.execute(input),
+                item_count: 99,
+                review_required: false,
+              })
+              : tool.execute,
+          }, registrationOptions);
+        },
+      },
+    });
+  }
+
+  const report = await runBenchmark({
+    cases,
+    registerPlanningTools: registerFaultyTools,
+    asOf: "2026-09-01",
+  });
+
+  assert.equal(report.scenarios.primary.parity, false);
+  assert.equal(report.scenarios.counter.parity, false);
+  assert.equal(report.release_ready, false);
+});
+
 test("the benchmark is byte-deterministic for the same fixture date", async () => {
   const first = await runBenchmark({ cases, registerPlanningTools, asOf: "2026-09-01" });
   const second = await runBenchmark({ cases, registerPlanningTools, asOf: "2026-09-01" });
@@ -127,6 +160,7 @@ test("the benchmark is byte-deterministic for the same fixture date", async () =
 });
 
 test("the inclusive freshness boundary changes only freshness and readiness", async () => {
+  const notYetVerified = await runBenchmark({ cases, registerPlanningTools, asOf: "2026-08-24" });
   const fresh = await runBenchmark({ cases, registerPlanningTools, asOf: "2026-09-01" });
   const due = await runBenchmark({ cases, registerPlanningTools, asOf: "2026-09-02" });
   const withoutFreshness = (report) => {
@@ -141,6 +175,8 @@ test("the inclusive freshness boundary changes only freshness and readiness", as
     return copy;
   };
 
+  assert.equal(notYetVerified.freshness.state, "verification_date_only");
+  assert.equal(notYetVerified.release_ready, false);
   assert.equal(fresh.freshness.state, "current");
   assert.equal(fresh.release_ready, true);
   assert.equal(due.freshness.state, "reverification_due");

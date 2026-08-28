@@ -261,7 +261,9 @@ test("the human action-needed filter returns the same ordered records as the dom
     requires_action: true,
   }).map(({ id }) => id);
   assert.deepEqual(
-    elements.get("#record-list").children.map((row) => row.attributes.get("data-record-id")),
+    elements.get("#record-list").children
+      .filter((row) => row.attributes.has("data-record-id"))
+      .map((row) => row.attributes.get("data-record-id")),
     expectedIds
   );
 });

@@ -15,7 +15,8 @@
 
   function evaluateSnapshotFreshness(snapshot, asOf) {
     if (!isIsoCivilDate(asOf)) throw new Error("Freshness requires an ISO civil date (YYYY-MM-DD).");
-    if (!isIsoCivilDate(snapshot?.verified_at) || !isIsoCivilDate(snapshot?.reverify_on)) {
+    if (!isIsoCivilDate(snapshot?.verified_at) || !isIsoCivilDate(snapshot?.reverify_on) ||
+        asOf < snapshot.verified_at || snapshot.verified_at >= snapshot.reverify_on) {
       return {
         state: "verification_date_only",
         as_of: asOf,
@@ -49,14 +50,20 @@
       const statuses = filings.length
         ? filings.map(({ status }) => status)
         : (record.status_labels || [record.status]);
+      const matchingFilings = filters.status && filings.length
+        ? filings.filter(({ status }) => status === filters.status)
+        : filings;
+      const actionStatuses = filters.status && filings.length
+        ? matchingFilings.map(({ status }) => status)
+        : statuses;
       if (filters.city && record.city !== filters.city) return [];
       if (filters.status && !statuses.includes(filters.status)) return [];
       if (filters.residential_only && !record.residential) return [];
-      if (filters.requires_action && !statuses.some((status) => ACTION_STATUSES.has(status))) return [];
+      if (filters.requires_action && !actionStatuses.some((status) => ACTION_STATUSES.has(status))) return [];
       if (!filters.status || !filings.length) return [record];
       return [{
         ...record,
-        matching_filings: filings.filter(({ status }) => status === filters.status),
+        matching_filings: matchingFilings,
       }];
     });
   }

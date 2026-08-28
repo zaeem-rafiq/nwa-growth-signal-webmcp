@@ -56,7 +56,7 @@ The second challenge was making the agent useful without giving it an unsafe sid
 - One browser-verified request driving search, inspection, and visible brief staging end to end.
 - Eight of eight filing-status checks preserved across five source-backed records.
 - Five of five records constrained to official municipal-source domains.
-- Sixty-eight passing tests, all three tools exercised, and zero approval overclaims in the deterministic release benchmark.
+- Seventy-four passing tests, all three tools exercised, and zero approval overclaims in the deterministic release benchmark.
 - Exact core-to-adapter equality across a primary and counter-scenario, including filing/status pairs, sources, audience, freshness, standing note, and review requirement.
 - A live, bounded execution receipt that remains distinct from the human-only review action.
 - A fail-closed September 2 re-verification boundary that preserves last-verified statuses while blocking release readiness.
@@ -125,7 +125,7 @@ The existing public video opens with the problem and WebMCP contract, then shows
 2. `demo/assets/tool-contract.png` — WebMCP-ready state and the three visible tool names.
 3. `demo/assets/desk-search.png` — five-record, two-municipality Signal Desk with dated verification.
 4. `demo/assets/inspect-poplar.png` — separate Withdrawn and Scheduled filings on one parcel.
-5. `demo/assets/benchmark.png` — earlier release proof; it does not show the new 68-test, two-scenario report.
+5. `demo/assets/benchmark.png` — earlier release proof; it does not show the new 74-test, two-scenario report.
 
 `demo/assets/staged-brief.png` is an alternate capture for the visible human-review boundary.
 

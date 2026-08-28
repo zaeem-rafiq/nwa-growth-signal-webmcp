@@ -68,10 +68,10 @@ The official [WebMCP Challenge criteria](https://webmcp.devpost.com/) are mapped
 ### Execution
 
 - **Claim:** The candidate is a coherent static product for human and agent use, with exact filing selection, explicit failure and fallback states, freshness disclosure, and a human-only review boundary.
-- **Artifact:** `site/`, the 68 dependency-free tests, the benchmark, and candidate viewport/browser evidence.
+- **Artifact:** `site/`, the 74 dependency-free tests, the benchmark, and candidate viewport/browser evidence.
 - **Reproduce:** Run `node --test tests/*.test.js`, serve `site/`, and exercise the ordinary-browser and supported-WebMCP paths.
 - **Falsifier:** Any test fails; exact filing selection reintroduces a sibling filing; the due state changes procedural status; or a browser path reaches a dead end or obscures review state.
-- **Observed result:** The current automated suite passes 68/68. Candidate browser and viewport verification is required before this branch is described as release-ready.
+- **Observed result:** The current automated suite passes 74/74. Candidate browser and viewport verification is required before this branch is described as release-ready.
 
 ### Potential Impact
 

@@ -75,7 +75,7 @@
       }
       return {
         code: "BRIEF_STAGED",
-        summary: `${result.item_count} ${result.item_count === 1 ? "filing" : "filings"} staged · human review required.`,
+        summary: `${result.filing_count} ${result.filing_count === 1 ? "filing" : "filings"} staged · human review required.`,
       };
     };
     const withActivity = (tool, execute) => async (input) => {
@@ -175,10 +175,15 @@
           } catch {
             throw typedError("CALLBACK_FAILED", "Brief could not be staged.");
           }
+          const filingIds = brief.items.flatMap((record) =>
+            (record.selected_filings || record.filings || []).map(({ case_id: caseId }) => caseId)
+          );
           return {
             staged: true,
             review_required: true,
             item_count: brief.items.length,
+            filing_count: filingIds.length,
+            filing_ids: filingIds,
             freshness,
             message: "The brief is staged in the page for human review. Nothing was published or sent.",
           };
