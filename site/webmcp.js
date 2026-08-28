@@ -37,7 +37,8 @@
     }
   }
 
-  async function registerPlanningTools({ modelContext, cases, onBrief }) {
+  async function registerPlanningTools({ modelContext, cases, onBrief, asOf = core.northwestArkansasCivilDate() }) {
+    const freshness = core.evaluateSnapshotFreshness(core.SNAPSHOT, asOf);
     const tools = [
       {
         name: "search_planning_cases",
@@ -57,7 +58,8 @@
         execute: async (input) => {
           validateSearchInput(input);
           return {
-            verified_at: "2026-08-25",
+            verified_at: core.SNAPSHOT.verified_at,
+            freshness,
             results: core.searchPlanningCases(cases, input),
           };
         },
@@ -78,7 +80,7 @@
           const { case_id } = input;
           const record = core.inspectCaseRecord(cases, case_id);
           if (!record) throw new Error(`Unknown planning record: ${case_id}`);
-          return record;
+          return { ...record, freshness };
         },
       },
       {
@@ -112,6 +114,7 @@
             staged: true,
             review_required: true,
             item_count: brief.items.length,
+            freshness,
             message: "The brief is staged in the page for human review. Nothing was published or sent.",
           };
         },

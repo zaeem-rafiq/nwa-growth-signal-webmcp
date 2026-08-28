@@ -28,12 +28,43 @@ test("the agent workflow finds every residential record still awaiting procedura
     modelContext: { registerTool: async (tool) => registered.push(tool) },
     cases,
     onBrief: () => {},
+    asOf: "2026-09-01",
   });
 
   const search = registered.find(({ name }) => name === "search_planning_cases");
   const result = await search.execute({ residential_only: true, requires_action: true });
 
   assert.equal(result.results.length, 5);
+  assert.deepEqual(result.freshness, {
+    state: "current",
+    as_of: "2026-09-01",
+    reverify_on: "2026-09-02",
+  });
+});
+
+test("every tool output carries the same exact freshness context", async () => {
+  const registered = [];
+  await registerPlanningTools({
+    modelContext: { registerTool: async (tool) => registered.push(tool) },
+    cases,
+    onBrief: () => {},
+    asOf: "2026-09-02",
+  });
+  const tools = Object.fromEntries(registered.map((tool) => [tool.name, tool]));
+  const outputs = await Promise.all([
+    tools.search_planning_cases.execute({}),
+    tools.inspect_case_record.execute({ case_id: "RZ26-00511" }),
+    tools.stage_source_backed_brief.execute({
+      case_ids: ["RZ26-00511"],
+      audience: "Land and development",
+    }),
+  ]);
+
+  outputs.forEach((output) => assert.deepEqual(output.freshness, {
+    state: "reverification_due",
+    as_of: "2026-09-02",
+    reverify_on: "2026-09-02",
+  }));
 });
 
 test("the registered tools inspect evidence and stage a visible review-required brief", async () => {
@@ -43,6 +74,7 @@ test("the registered tools inspect evidence and stage a visible review-required 
     modelContext: { registerTool: async (tool) => registered.push(tool) },
     cases,
     onBrief: (brief) => { stagedBrief = brief; },
+    asOf: "2026-09-01",
   });
 
   const inspect = registered.find(({ name }) => name === "inspect_case_record");
@@ -56,6 +88,11 @@ test("the registered tools inspect evidence and stage a visible review-required 
     staged: true,
     review_required: true,
     item_count: 1,
+    freshness: {
+      state: "current",
+      as_of: "2026-09-01",
+      reverify_on: "2026-09-02",
+    },
     message: "The brief is staged in the page for human review. Nothing was published or sent.",
   });
   await assert.rejects(() => inspect.execute({ case_id: "UNKNOWN" }), /Unknown planning record/);

@@ -1,7 +1,37 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
 
-const { inspectCaseRecord, searchPlanningCases, stageSourceBackedBrief } = require("../site/core.js");
+const core = require("../site/core.js");
+const { inspectCaseRecord, searchPlanningCases, stageSourceBackedBrief } = core;
+
+test("snapshot freshness becomes due on the shared re-verification date", () => {
+  assert.deepEqual(core.evaluateSnapshotFreshness?.({
+    verified_at: "2026-08-25",
+    reverify_on: "2026-09-02",
+  }, "2026-09-02"), {
+    state: "reverification_due",
+    as_of: "2026-09-02",
+    reverify_on: "2026-09-02",
+  });
+});
+
+test("snapshot freshness fails closed when verification metadata is incomplete", () => {
+  assert.deepEqual(core.evaluateSnapshotFreshness({ verified_at: "2026-08-25" }, "2026-09-01"), {
+    state: "verification_date_only",
+    as_of: "2026-09-01",
+    reverify_on: null,
+  });
+});
+
+test("snapshot freshness rejects a malformed comparison date", () => {
+  assert.throws(
+    () => core.evaluateSnapshotFreshness({
+      verified_at: "2026-08-25",
+      reverify_on: "2026-09-02",
+    }, "09/02/2026"),
+    /ISO civil date/
+  );
+});
 
 test("an agent can find residential Bentonville cases that still need action", () => {
   const cases = [

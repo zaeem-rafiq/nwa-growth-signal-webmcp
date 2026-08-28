@@ -5,6 +5,39 @@
 })(typeof window === "undefined" ? globalThis : window, () => {
   const ACTION_STATUSES = new Set(["Scheduled", "Tabled", "Recommended"]);
   const BRIEF_AUDIENCES = new Set(["Land and development", "Lending and title", "Public-interest planning"]);
+  const SNAPSHOT = Object.freeze({ verified_at: "2026-08-25", reverify_on: "2026-09-02" });
+
+  function isIsoCivilDate(value) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value || "")) return false;
+    const date = new Date(`${value}T00:00:00Z`);
+    return !Number.isNaN(date.valueOf()) && date.toISOString().slice(0, 10) === value;
+  }
+
+  function evaluateSnapshotFreshness(snapshot, asOf) {
+    if (!isIsoCivilDate(asOf)) throw new Error("Freshness requires an ISO civil date (YYYY-MM-DD).");
+    if (!isIsoCivilDate(snapshot?.verified_at) || !isIsoCivilDate(snapshot?.reverify_on)) {
+      return {
+        state: "verification_date_only",
+        as_of: asOf,
+        reverify_on: isIsoCivilDate(snapshot?.reverify_on) ? snapshot.reverify_on : null,
+      };
+    }
+    return {
+      state: asOf >= snapshot.reverify_on ? "reverification_due" : "current",
+      as_of: asOf,
+      reverify_on: snapshot.reverify_on,
+    };
+  }
+
+  function northwestArkansasCivilDate(date = new Date()) {
+    const parts = Object.fromEntries(new Intl.DateTimeFormat("en-US", {
+      timeZone: "America/Chicago",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).formatToParts(date).map(({ type, value }) => [type, value]));
+    return `${parts.year}-${parts.month}-${parts.day}`;
+  }
 
   function filingsFor(record) {
     return record.filings || [];
@@ -75,5 +108,12 @@
     };
   }
 
-  return { inspectCaseRecord, searchPlanningCases, stageSourceBackedBrief };
+  return {
+    SNAPSHOT,
+    evaluateSnapshotFreshness,
+    inspectCaseRecord,
+    northwestArkansasCivilDate,
+    searchPlanningCases,
+    stageSourceBackedBrief,
+  };
 });
