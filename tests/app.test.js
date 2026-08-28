@@ -5,6 +5,7 @@ const path = require("node:path");
 const vm = require("node:vm");
 
 const core = require("../site/core.js");
+const { PRIMARY_HUMAN_TRACE } = require("../scripts/benchmark.js");
 const cases = require("../site/cases.json");
 const appSource = fs.readFileSync(path.join(__dirname, "..", "site", "app.js"), "utf8");
 
@@ -201,6 +202,45 @@ test("the human action-needed filter returns the same ordered records as the dom
   assert.deepEqual(
     elements.get("#record-list").children.map((row) => row.attributes.get("data-record-id")),
     expectedIds
+  );
+});
+
+test("the primary fixed script exercises every named human action and stages exact filings", async () => {
+  const document = await runApp({
+    fetchResponse: { ok: true, json: async () => cases },
+    registerPlanningTools: async () => {},
+  });
+  const elements = document.elements;
+  const activated = [];
+
+  elements.get("#action-filter").value = "true";
+  await elements.get("#action-filter").dispatch("change");
+  activated.push("Set Action needed to Yes");
+  for (const [recordId, caseId] of [
+    ["signal-1", "RZ26-0041"],
+    ["signal-3", "RZ26-00419"],
+    ["signal-4", "RZ26-00511"],
+  ]) {
+    await elements.get("#record-list").querySelector(`[data-record-id="${recordId}"]`).dispatch("click");
+    activated.push(`Open ${caseId}`);
+    const filing = elements.get("#record-detail").querySelector(`[aria-label="Add ${caseId} from the brief"]`);
+    await filing.dispatch("click");
+    activated.push(`Add ${caseId}`);
+  }
+  await elements.get("#stage-brief").dispatch("click");
+  activated.push("Stage brief");
+
+  assert.deepEqual(activated, PRIMARY_HUMAN_TRACE);
+  assert.equal(activated.length, 8);
+  assert.deepEqual(
+    elements.get("#brief-preview").querySelector(".brief-filings").children.map((row) => row.querySelector("strong").textContent),
+    ["RZ26-0041"]
+  );
+  assert.deepEqual(
+    elements.get("#brief-preview").children
+      .filter((element) => element.className === "brief-item")
+      .flatMap((item) => item.querySelector(".brief-filings").children.map((row) => row.querySelector("strong").textContent)),
+    ["RZ26-0041", "RZ26-00419", "RZ26-00511"]
   );
 });
 
