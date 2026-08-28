@@ -63,7 +63,7 @@ The official [WebMCP Challenge criteria](https://webmcp.devpost.com/) are mapped
 - **Artifact:** `site/webmcp.js`, the on-page live execution receipt, `scripts/benchmark.js`, and `tests/webmcp.test.js`.
 - **Reproduce:** Run `node scripts/benchmark.js 2026-09-01`, then perform search, inspect, and stage in one continuous supported-browser session.
 - **Falsifier:** A tool is missing, a receipt row is not produced by its real handler, a tool result differs from the canonical core outcome, or a tool can review or write externally.
-- **Observed result:** All three tools were exercised and both fixed scenarios had identical core and adapter hashes in the fresh-fixture report; supported candidate-browser receipt verification remains part of the release check.
+- **Observed result:** All three tools were exercised in the supported candidate browser and produced three succeeded receipt rows. Both fixed benchmark scenarios had identical core and adapter hashes in the fresh-fixture report.
 
 ### Execution
 
@@ -71,7 +71,7 @@ The official [WebMCP Challenge criteria](https://webmcp.devpost.com/) are mapped
 - **Artifact:** `site/`, the 74 dependency-free tests, the benchmark, and candidate viewport/browser evidence.
 - **Reproduce:** Run `node --test tests/*.test.js`, serve `site/`, and exercise the ordinary-browser and supported-WebMCP paths.
 - **Falsifier:** Any test fails; exact filing selection reintroduces a sibling filing; the due state changes procedural status; or a browser path reaches a dead end or obscures review state.
-- **Observed result:** The current automated suite passes 74/74. Candidate browser and viewport verification is required before this branch is described as release-ready.
+- **Observed result:** The current automated suite passes 74/74. The candidate passed browser verification at 375, 768, and 1440 pixels with no horizontal overflow or console warnings and errors.
 
 ### Potential Impact
 
@@ -87,7 +87,20 @@ The official [WebMCP Challenge criteria](https://webmcp.devpost.com/) are mapped
 - **Artifact:** Filing-specific status rendering, the shared receipt and brief, the freshness gate, and the sourced comparison on the page.
 - **Reproduce:** Inspect the multi-filing Rogers case, stage only `RZ26-00511`, and open the official comparison links.
 - **Falsifier:** The candidate collapses the withdrawn and scheduled filings, uses an unsourced or negative competitor claim, or presents a planning action as approval or construction permission.
-- **Observed result:** `VAR26-0397` and `RZ26-00511` remain independently selectable with their own statuses. The adjacent-workflow descriptions link to official CivicPlus, Regrid, and PermitFlow pages checked August 28, 2026; candidate browser visibility remains a release check.
+- **Observed result:** `VAR26-0397` and `RZ26-00511` remain independently selectable with their own statuses. The adjacent-workflow descriptions link to official CivicPlus, Regrid, and PermitFlow pages checked August 28, 2026, and were visible in the candidate browser.
+
+## Candidate browser verification
+
+On August 28, 2026, the branch candidate was served locally and exercised in ChatGPT's supported in-app browser:
+
+- the page exposed all three WebMCP tools and loaded all five verified records;
+- one continuous agent run searched five records, inspected `RZ26-00511` as `Scheduled`, and staged exactly `RZ26-0041`, `RZ26-00511`, and `RZ26-00345`;
+- the handler-originated receipt showed three succeeded calls and reported `3 filings staged · human review required.`;
+- the visible workspace remained review-required until the separate human control recorded review, and neither state claimed publication;
+- the combined `Withdrawn` plus `Action still pending` filter returned zero records, then Reset restored all five records; and
+- 375-, 768-, and 1440-pixel viewports had no horizontal overflow, with no browser console warnings or errors.
+
+Candidate evidence is stored under `docs/ui-audit/after/candidate-2026-08-28-*.png`. This proves the local branch candidate, not the public deployment.
 
 ## Independent runtime reproduction
 
