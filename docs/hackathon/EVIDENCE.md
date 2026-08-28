@@ -10,33 +10,84 @@ One agent request drives three native WebMCP actions in the same interface:
 2. `inspect_case_record` returns filing-level status, non-claims, and official municipal URLs.
 3. `stage_source_backed_brief` updates the visible brief workspace and requires human review.
 
-The staging tool does not publish, send, or persist a brief externally.
+Each handler emits a bounded, session-local receipt row as it starts and succeeds or fails. The receipt proves handler execution order; it does not own the brief lifecycle. The staging tool does not publish, send, or persist a brief externally, and no tool can record final review.
 
 ## Reproducible benchmark
 
 Run from the repository root:
 
 ```sh
-node scripts/benchmark.js
+node scripts/benchmark.js 2026-09-01
 ```
 
-Expected release result for the dataset verified August 25, 2026:
+Observed fresh-fixture result for the dataset verified August 25, 2026:
 
 | Measure | Result |
 |---|---:|
+| Snapshot freshness | `current` as of 2026-09-01 |
+| Re-verification boundary | 2026-09-02 |
 | Planning records checked | 5 |
 | Filing-level status checks | 8/8 |
 | Records whose source URLs stay within the municipal-domain allowlist | 5/5 |
 | Records matching the pinned affirmative-copy baseline | 5/5 |
 | Approval/adoption/construction overclaims in affirmative record copy | 0 |
 | WebMCP tools exercised | 3/3 |
-| Action-pending search results | 5 |
-| Records staged in the demo brief | 3 |
+| Fixed core-to-adapter scenarios with exact canonical parity | 2/2 |
+| Primary script interface actions | 8 human controls / 3 agent tools |
+| Primary / counter brief size | 3 / 2 filings |
 | Human review required | Yes |
-| Visible brief callbacks | 1 |
+| Visible brief callbacks across both scenarios | 2 |
 | Release gate | Pass |
 
-This is a deterministic handler-level contract benchmark. Statuses and affirmative copy are checked against pinned release baselines; source URLs are checked against a municipal-domain allowlist. It does not independently prove that a URL supports a claim, nor is it evidence of customer adoption, revenue, or time saved.
+The primary script searches residential records requiring action, inspects `RZ26-00511`, and stages `RZ26-0041`, `RZ26-00419`, and `RZ26-00511` for `Land and development`. The counter-script searches withdrawn residential records in Rogers, inspects `VAR26-0397`, and stages `VAR26-0397` with `RZ26-00345` for `Public-interest planning`. Both compare exact filing IDs, filing/status pairs, audience, official URLs, the standing note, freshness, and `review_required` between the direct core and the registered WebMCP adapter.
+
+The action evidence uses one published atomic rule: one direct human control activation or one browser-agent tool invocation equals one action. Its raw primary traces are included in the JSON report. Eight versus three is evidence for this fixed script only; it is not a user study, observed elapsed-time saving, adoption signal, or general productivity claim.
+
+The freshness gate is fail-closed. This boundary run is expected to exit non-zero:
+
+```sh
+node scripts/benchmark.js 2026-09-02
+```
+
+It reports `reverification_due` and `release_ready: false` without changing any filing's last verified procedural status. Recovery requires checking the official records and updating the verified snapshot, not changing the date or bypassing the gate.
+
+This remains a deterministic adapter-regression and release-data benchmark. Pinned statuses and affirmative copy do not independently prove that a source supports a claim; source relevance and factual support remain manually verified.
+
+## Criterion evidence map
+
+The official [WebMCP Challenge criteria](https://webmcp.devpost.com/) are mapped below without assigning an internal score or predicting a judge's score.
+
+### WebMCP Leverage
+
+- **Claim:** Three page-defined tools form one non-trivial, human-reviewed municipal-planning workflow, and their adapter results match the deterministic core across two distinct scripts.
+- **Artifact:** `site/webmcp.js`, the on-page live execution receipt, `scripts/benchmark.js`, and `tests/webmcp.test.js`.
+- **Reproduce:** Run `node scripts/benchmark.js 2026-09-01`, then perform search, inspect, and stage in one continuous supported-browser session.
+- **Falsifier:** A tool is missing, a receipt row is not produced by its real handler, a tool result differs from the canonical core outcome, or a tool can review or write externally.
+- **Observed result:** All three tools were exercised and both fixed scenarios had identical core and adapter hashes in the fresh-fixture report; supported candidate-browser receipt verification remains part of the release check.
+
+### Execution
+
+- **Claim:** The candidate is a coherent static product for human and agent use, with exact filing selection, explicit failure and fallback states, freshness disclosure, and a human-only review boundary.
+- **Artifact:** `site/`, the 68 dependency-free tests, the benchmark, and candidate viewport/browser evidence.
+- **Reproduce:** Run `node --test tests/*.test.js`, serve `site/`, and exercise the ordinary-browser and supported-WebMCP paths.
+- **Falsifier:** Any test fails; exact filing selection reintroduces a sibling filing; the due state changes procedural status; or a browser path reaches a dead end or obscures review state.
+- **Observed result:** The current automated suite passes 68/68. Candidate browser and viewport verification is required before this branch is described as release-ready.
+
+### Potential Impact
+
+- **Claim:** The demonstrated workflow addresses a specific research problem for real-estate, development, and public-interest users by keeping municipal evidence, filing-level status, and human review in one shared task surface.
+- **Artifact:** The two benchmark scenarios, the raw eight-control and three-tool traces, the exact canonical outcomes, and the staged workspace.
+- **Reproduce:** Inspect `interaction_evidence` and both `scenarios` in the fresh benchmark output, then compare the same primary outcome through the visible human controls.
+- **Falsifier:** The two paths yield different filings, statuses, sources, audience, standing note, freshness, or review boundary; or the copy presents the action count as observed user effect.
+- **Observed result:** Both fixed tasks reached equal canonical outcomes, and the primary script required eight human control activations or three agent tool invocations under the stated rule. Customer adoption, revenue, elapsed-time savings, and observed user effects are absent.
+
+### Creativity & Ambition
+
+- **Claim:** The candidate applies WebMCP to a source-bound municipal editorial workflow in which agents can assemble work but cannot erase procedural distinctions or human accountability.
+- **Artifact:** Filing-specific status rendering, the shared receipt and brief, the freshness gate, and the sourced comparison on the page.
+- **Reproduce:** Inspect the multi-filing Rogers case, stage only `RZ26-00511`, and open the official comparison links.
+- **Falsifier:** The candidate collapses the withdrawn and scheduled filings, uses an unsourced or negative competitor claim, or presents a planning action as approval or construction permission.
+- **Observed result:** `VAR26-0397` and `RZ26-00511` remain independently selectable with their own statuses. The adjacent-workflow descriptions link to official CivicPlus, Regrid, and PermitFlow pages checked August 28, 2026; candidate browser visibility remains a release check.
 
 ## Independent runtime reproduction
 
@@ -47,6 +98,18 @@ On August 27, 2026, the public deployment was opened in ChatGPT's in-app browser
 - staged `RZ26-0041`, `RZ26-00419`, and `RZ26-00511` for a land-and-development audience;
 - observed the visible status `AGENT STAGED 3 RECORDS. REVIEW REQUIRED; NOTHING WAS PUBLISHED.`; and
 - encountered no browser console warnings or errors.
+
+The final deployed workflow was repeated on August 28, 2026 against `https://nwa-growth-signal-webmcp.pages.dev/`:
+
+- the production page loaded with `WebMCP ready · 3 tools exposed`;
+- `search_planning_cases` returned all five residential records still awaiting another procedural action;
+- `inspect_case_record` preserved `VAR26-0397` as `Withdrawn` and `RZ26-00511` as `Scheduled`, with the requested filing identified separately;
+- `stage_source_backed_brief` staged `RZ26-0041`, `RZ26-00419`, and `RZ26-00511` for the land-and-development audience;
+- the visible workspace reported `AGENT STAGED 3 RECORDS. REVIEW REQUIRED; NOTHING WAS PUBLISHED.`;
+- the manual review action changed that state to `HUMAN REVIEW RECORDED FOR THIS SESSION. NOTHING WAS PUBLISHED OR SENT.`; and
+- the browser console contained no warnings or errors.
+
+Those observations remain proof of the earlier public deployment. They do not establish that the public URL contains this branch's handler-originated receipt, explicit freshness state, two-scenario benchmark, or sourced comparison. Those candidate additions require a separately authorized deployment and a new live-browser check.
 
 ## Three-page PDF verification
 
@@ -59,24 +122,59 @@ The hackathon sample was reopened and rendered on August 27, 2026:
 
 The source PDF is not tagged. That limitation is disclosed below and is not represented as resolved.
 
+## Published demo baseline and revised candidate
+
+The published baseline is `demo/output/NWA-Growth-Signal-WebMCP-Demo.mp4` with the sidecar caption file `demo/output/NWA-Growth-Signal-WebMCP-Demo.srt`.
+
+- Runtime: 2 minutes 31.8 seconds.
+- Format: 1280×720 H.264/AAC.
+- Caption cues: 30.
+- Full media decode: passed.
+- Integrated loudness: −16.10 LUFS; true peak: −1.84 dBTP.
+- Narration: Google Gemini Kore host and Iapetus expert.
+- Participant listening approval: passed August 28, 2026.
+- Public YouTube availability: verified as `public` at https://youtu.be/y3lzrrvDKP8 on August 28, 2026.
+- Public player duration: 2 minutes 32 seconds.
+- Public YouTube captions: the 30-cue English (United States) SRT was published in YouTube Studio on August 28, 2026; the public player still reported captions unavailable during the immediate propagation check.
+
+Technical media checks, participant listening approval, public video availability, and the caption upload are complete. Public-player caption propagation remains a separate verification item. Devpost displayed `Project submitted!` at https://devpost.com/software/nwa-growth-signal on August 28, 2026.
+
+The public Devpost story was replaced on August 28, 2026 after a rendered-page audit found seven empty template headings. The revised page was reopened and verified with nine populated sections, explicit challenge-period provenance, explicit WebMCP-fit and better-user-experience explanations, the agent-human collaboration boundary, implementation details, and no remaining empty template sequence. The submission remained `Submitted` with `5/5 steps done` after the save.
+
+`docs/hackathon/DEMO.md` now contains a prepared revision that requires the agent-host prompt, all three handler-originated receipt rows, the resulting brief, and freshness state in one continuous segment. That revised capture has not been recorded or published, and the existing public video is not represented as containing it.
+
 ## Provenance and challenge window
 
 The municipal-record research predates or is independent from the hackathon implementation. The WebMCP application, tool registration, shared agent-human staging workflow, tests, and release evidence are tracked separately in this repository's timestamped Git history. The repository history should remain the authoritative record of what was implemented during the challenge window.
 
 ## Release gate
 
-Before recording or submitting:
+Before releasing, recording the revised candidate, or updating the submission:
 
 - confirm the public repository contains the candidate commit;
 - confirm the production deployment serves that same commit's interface and three-page hackathon PDF;
-- rerun `node --test tests/*.test.js` and `node scripts/benchmark.js`;
-- reproduce the three-tool workflow in a supported browser; and
+- rerun `node --test tests/*.test.js` and the benchmark with the actual release date;
+- if `as_of >= 2026-09-02`, re-verify every included filing from the official records and update the snapshot before release;
+- reproduce the host prompt, three live receipt transitions, exact brief, and human-review boundary in one continuous supported-browser run;
+- confirm any revised Devpost copy and video are still prepared drafts until separately authorized and published; and
 - keep the judged deployment unchanged during judging unless the official rules require otherwise.
+
+## Sourced adjacent-workflow context
+
+Official product pages checked August 28, 2026 describe:
+
+- [CivicPlus](https://www.civicplus.com/agenda-meeting-management/) as agenda and meeting management;
+- [Regrid](https://regrid.com/property-app) as a parcel and property-map application; and
+- [PermitFlow](https://www.permitflow.com/) as permitting workflow software.
+
+The candidate describes NWA Growth Signal affirmatively as a dated, filing-specific planning evidence desk shared by people and browser agents. It does not claim these products lack a capability or claim general superiority.
 
 ## Honest limitations
 
 - The dataset is a five-record editorial sample, not a live municipal database.
 - Scheduled and tabled records require re-verification after the September 1 meetings.
 - The automated benchmark proves handler behavior, pinned release-data fidelity, and the municipal-domain boundary. Source relevance and factual support remain manually verified.
+- The eight-control versus three-tool result belongs only to the declared interface script; no observed user-time, adoption, revenue, or general productivity evidence exists.
+- The repository candidate is not proof that the public deployment, Devpost story, or YouTube video contains the new receipt, freshness, parity, or comparison evidence.
 - The PDF is a visual sample; PDF tagging remains a separate accessibility limitation.
 - Agent-side recovery after an initial record-load failure would require a public WebMCP contract change and is not included.
