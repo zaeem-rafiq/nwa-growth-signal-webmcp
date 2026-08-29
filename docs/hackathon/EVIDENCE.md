@@ -53,6 +53,20 @@ It reports `reverification_due` and `release_ready: false` without changing any 
 
 This remains a deterministic adapter-regression and release-data benchmark. Pinned statuses and affirmative copy do not independently prove that a source supports a claim; source relevance and factual support remain manually verified.
 
+### Held-out historical source-risk study
+
+Run the separate pre-challenge study:
+
+```sh
+node scripts/historical-impact-benchmark.js
+```
+
+The local candidate checks 23 real Rogers requests and 26 procedural events from six 2025 meetings against 12 official agenda and minutes documents. Inspection and brief staging each preserved 26/26 exact statuses; every event's expected source pair remained present in 26/26 record-wide outputs; 23/23 requests passed the same-meeting official agenda/minutes boundary; all three multi-meeting lifecycles were preserved; and no record falls inside the challenge period.
+
+The transparent agenda-only heuristic produced three determinate predictions: one matched the eventual minutes and two incorrectly implied final approval for requests that were tabled. The other 20 requests remained unknown from request wording alone. This heuristic is a deliberately limited failure-mode probe, not a competitor or extraction model.
+
+The study demonstrates a real source-risk and verifies the product's deterministic status-preservation contract after records are manually structured. It does not demonstrate automated extraction accuracy, adoption, elapsed-time savings, revenue, or changed practitioner decisions. The full protocol and record boundary are in [`HISTORICAL-IMPACT-BENCHMARK.md`](HISTORICAL-IMPACT-BENCHMARK.md). This evidence is local until separately approved, merged, deployed, and added to the public submission.
+
 ## Criterion evidence map
 
 The official [WebMCP Challenge criteria](https://webmcp.devpost.com/) are mapped below without assigning an internal score or predicting a judge's score.
@@ -68,18 +82,18 @@ The official [WebMCP Challenge criteria](https://webmcp.devpost.com/) are mapped
 ### Execution
 
 - **Claim:** The candidate is a coherent static product for human and agent use, with exact filing selection, explicit failure and fallback states, freshness disclosure, and a human-only review boundary.
-- **Artifact:** `site/`, the 74 dependency-free tests, the benchmark, and candidate viewport/browser evidence.
+- **Artifact:** `site/`, the 80 dependency-free tests, the release benchmark, the held-out historical benchmark, and candidate viewport/browser evidence.
 - **Reproduce:** Run `node --test tests/*.test.js`, serve `site/`, and exercise the ordinary-browser and supported-WebMCP paths.
 - **Falsifier:** Any test fails; exact filing selection reintroduces a sibling filing; the due state changes procedural status; or a browser path reaches a dead end or obscures review state.
-- **Observed result:** The current automated suite passes 74/74. The candidate passed browser verification at 375, 768, and 1440 pixels with no horizontal overflow or console warnings and errors.
+- **Observed result:** The current automated suite passes 80/80. The candidate passed browser verification at 375, 768, and 1440 pixels with no horizontal overflow or console warnings and errors.
 
 ### Potential Impact
 
-- **Claim:** The demonstrated workflow addresses a specific research problem for real-estate, development, and public-interest users by keeping municipal evidence, filing-level status, and human review in one shared task surface.
-- **Artifact:** The two benchmark scenarios, the raw eight-control and three-tool traces, the exact canonical outcomes, and the staged workspace.
-- **Reproduce:** Inspect `interaction_evidence` and both `scenarios` in the fresh benchmark output, then compare the same primary outcome through the visible human controls.
-- **Falsifier:** The two paths yield different filings, statuses, sources, audience, standing note, freshness, or review boundary; or the copy presents the action count as observed user effect.
-- **Observed result:** Both fixed tasks reached equal canonical outcomes, and the primary script required eight human control activations or three agent tool invocations under the stated rule. Customer adoption, revenue, elapsed-time savings, and observed user effects are absent.
+- **Claim:** The workflow addresses a demonstrated municipal-research failure mode: agenda wording may not reveal the eventual outcome, and one request can change status across meetings. NWA Growth Signal is designed to keep each verified event, official source pair, and human review boundary intact for real-estate, development, and public-interest work.
+- **Artifact:** `benchmark/historical-cases.json`, `scripts/historical-impact-benchmark.js`, the two release-benchmark scenarios, and the staged workspace.
+- **Reproduce:** Run `node scripts/historical-impact-benchmark.js`; inspect the 26 exact status checks, three multi-meeting lifecycles, and agenda-only baseline. Then run the fresh release benchmark and compare the same primary outcome through the visible human controls.
+- **Falsifier:** Any historical event changes or disappears through inspection or staging; any request lacks its official agenda and minutes pair; the historical cohort leaks into the challenge period; or the copy presents the study as automated ingestion or observed user impact.
+- **Observed result:** The held-out study preserved 26/26 status events through both product paths; every event's expected source pair remained present in 26/26 record-wide outputs; and all three changing lifecycles remained intact. The agenda-only probe left 20/23 outcomes unknown and made two false-finality overclaims among three determinate predictions. Separately, both fixed release tasks reached equal canonical outcomes, with eight human control activations or three agent tool invocations under the stated rule. No adoption, revenue, elapsed-time, or changed-decision claim is made.
 
 ### Creativity & Ambition
 
@@ -193,9 +207,9 @@ The candidate describes NWA Growth Signal affirmatively as a dated, filing-speci
 
 ## Honest limitations
 
-- The dataset is a five-record editorial sample, not a live municipal database.
+- The deployed dataset is a five-record editorial sample, not a live municipal database; the separate 23-request historical cohort is an offline validation asset, not additional live coverage.
 - Scheduled and tabled records require re-verification after the September 1 meetings.
-- The automated benchmark proves handler behavior, pinned release-data fidelity, and the municipal-domain boundary. Source relevance and factual support remain manually verified.
+- The release benchmark proves handler behavior, pinned release-data fidelity, and the municipal-domain boundary. The historical benchmark proves status preservation after manual structuring, not automated extraction accuracy. Source relevance and factual support remain manually verified.
 - The eight-control versus three-tool result belongs only to the declared interface script; no observed user-time, adoption, revenue, or general productivity evidence exists.
 - The repository candidate is not proof that the public deployment, Devpost story, or YouTube video contains the new receipt, freshness, parity, or comparison evidence.
 - The PDF is a visual sample; PDF tagging remains a separate accessibility limitation.

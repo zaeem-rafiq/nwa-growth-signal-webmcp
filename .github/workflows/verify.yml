@@ -19,3 +19,5 @@ jobs:
         run: node --test tests/*.test.js
       - name: Benchmark current snapshot
         run: node scripts/benchmark.js
+      - name: Benchmark historical impact
+        run: node scripts/historical-impact-benchmark.js
