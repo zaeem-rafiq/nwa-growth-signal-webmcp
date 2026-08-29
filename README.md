@@ -4,7 +4,7 @@ An agent-native municipal planning desk for Bentonville and Rogers, Arkansas. Th
 
 **Current public demo:** https://nwa-growth-signal-webmcp.pages.dev/
 
-The repository candidate adds a handler-originated execution receipt, explicit snapshot freshness, a two-scenario parity benchmark, and a sourced product comparison. Those additions are not represented as public until an authorized deployment serves the candidate commit.
+The public release includes a handler-originated execution receipt, explicit snapshot freshness, a two-scenario parity benchmark, and a sourced product comparison. The deployed workflow and three succeeded receipt rows were browser-verified on August 29, 2026.
 
 ## What agents can do
 

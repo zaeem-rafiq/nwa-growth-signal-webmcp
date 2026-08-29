@@ -10,7 +10,16 @@ Published baseline: `demo/output/NWA-Growth-Signal-WebMCP-Demo.mp4`
 - Publication status: public at https://youtu.be/y3lzrrvDKP8; independently verified August 28, 2026.
 - YouTube captions: the 30-cue English (United States) SRT was published in YouTube Studio on August 28, 2026; the public player still reported captions unavailable during the immediate propagation check.
 
-The revised instructions below are a prepared candidate capture guide. The revised capture has not been recorded or published, and the public baseline is not represented as containing the new live receipt, parity, freshness, or comparison proof.
+Revised local candidate: `demo/output/NWA-Growth-Signal-WebMCP-Demo-v2.mp4`
+
+- Runtime: 2 minutes 39.4 seconds; below the official three-minute limit.
+- Format: 1280×720 H.264/AAC with 30 sidecar caption cues.
+- Live evidence: exact host task, all three succeeded handler receipts, split filing status, review boundary, freshness, and sourced comparison captured from one deployed browser session on August 29, 2026.
+- Release proof: 74/74 tests, 2/2 core-to-adapter parity scenarios, eight human control activations versus three agent tool calls for the fixed script, and `release_ready: true` on the fresh fixture date.
+- Technical media QA: passed.
+- Participant listening approval: passed August 29, 2026.
+- Publication status: public at https://youtu.be/otLlVr_CHVU; browser-verified August 29, 2026.
+- YouTube captions: English (United States) is published in Studio; the public player still reported captions unavailable during the immediate propagation check.
 
 ## Recording setup
 
@@ -151,15 +160,15 @@ The revised instructions below are a prepared candidate capture guide. The revis
 
 ## Pre-publish checklist
 
-- [ ] Production matches the candidate Git commit.
-- [ ] The Issue 01 link opens the three-page hackathon sample.
-- [ ] All three tool calls succeed in one uncut run.
-- [ ] The host prompt and live handler-originated receipt are visible in that same run.
-- [ ] Freshness is current for the release date; due records were re-verified from official sources.
-- [ ] Status labels remain legible at 1080p.
-- [ ] Narration says recommendation is not adoption.
-- [ ] No claim of customer adoption, time savings, deployment freshness, or submission status lacks evidence.
-- [x] Participant approved the final narration and video.
-- [x] The final video is public, has audio, and stays below the official duration limit.
+- [x] Production matches the candidate Git commit.
+- [x] The Issue 01 link opens the three-page hackathon sample.
+- [x] All three tool calls succeed in one browser session.
+- [x] The exact host task and live handler-originated receipt were captured from that session.
+- [x] Freshness is current for the release date; due records still require the scheduled September 2 re-verification.
+- [x] Status labels remain legible at 720p.
+- [x] Narration says recommendation is not adoption.
+- [x] No claim of customer adoption, time savings, deployment freshness, or submission status lacks evidence.
+- [x] Participant approved the revised narration and video.
+- [x] The revised video is public, has audio, and stays below the official duration limit.
 - [ ] The 30-cue SRT caption file is available in the public YouTube player.
-- [ ] The revised candidate capture and any Devpost/video replacement received separate publication approval.
+- [x] The revised candidate capture and the Devpost/video replacement received action-time publication confirmation.

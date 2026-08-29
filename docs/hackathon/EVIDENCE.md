@@ -122,7 +122,7 @@ The final deployed workflow was repeated on August 28, 2026 against `https://nwa
 - the manual review action changed that state to `HUMAN REVIEW RECORDED FOR THIS SESSION. NOTHING WAS PUBLISHED OR SENT.`; and
 - the browser console contained no warnings or errors.
 
-Those observations remain proof of the earlier public deployment. They do not establish that the public URL contains this branch's handler-originated receipt, explicit freshness state, two-scenario benchmark, or sourced comparison. Those candidate additions require a separately authorized deployment and a new live-browser check.
+The deployed workflow was repeated again on August 29, 2026 after the release containing the handler-originated receipt, explicit freshness state, two-scenario benchmark, and sourced comparison. The live page showed three succeeded receipt rows, the exact three-filing brief, `review_required: true`, current freshness, and no console errors. The public Devpost page and revised YouTube demo were then updated and browser-verified against that release.
 
 ## Three-page PDF verification
 
@@ -135,7 +135,7 @@ The hackathon sample was reopened and rendered on August 27, 2026:
 
 The source PDF is not tagged. That limitation is disclosed below and is not represented as resolved.
 
-## Published demo baseline and revised candidate
+## Published demo baseline and revised release
 
 The published baseline is `demo/output/NWA-Growth-Signal-WebMCP-Demo.mp4` with the sidecar caption file `demo/output/NWA-Growth-Signal-WebMCP-Demo.srt`.
 
@@ -152,9 +152,18 @@ The published baseline is `demo/output/NWA-Growth-Signal-WebMCP-Demo.mp4` with t
 
 Technical media checks, participant listening approval, public video availability, and the caption upload are complete. Public-player caption propagation remains a separate verification item. Devpost displayed `Project submitted!` at https://devpost.com/software/nwa-growth-signal on August 28, 2026.
 
+The revised public release is `demo/output/NWA-Growth-Signal-WebMCP-Demo-v2.mp4` with `demo/output/NWA-Growth-Signal-WebMCP-Demo-v2.srt`.
+
+- Runtime: 2 minutes 39.4 seconds; 1280×720 H.264/AAC.
+- Caption cues: 30.
+- Full media decode: passed; integrated loudness −16.50 LUFS and true peak −1.47 dBTP.
+- Narration: Google Gemini Kore host and Iapetus expert; participant-approved August 29, 2026.
+- Public YouTube availability: verified at https://youtu.be/otLlVr_CHVU on August 29, 2026.
+- YouTube Studio reports the English (United States) track as published; the public player still reported captions unavailable during the immediate propagation check.
+
 The public Devpost story was replaced on August 28, 2026 after a rendered-page audit found seven empty template headings. The revised page was reopened and verified with nine populated sections, explicit challenge-period provenance, explicit WebMCP-fit and better-user-experience explanations, the agent-human collaboration boundary, implementation details, and no remaining empty template sequence. The submission remained `Submitted` with `5/5 steps done` after the save.
 
-`docs/hackathon/DEMO.md` now contains a prepared revision that requires the agent-host prompt, all three handler-originated receipt rows, the resulting brief, and freshness state in one continuous segment. That revised capture has not been recorded or published, and the existing public video is not represented as containing it.
+`docs/hackathon/DEMO.md` records the revised public demo containing the exact host task, all three handler-originated receipt rows, the resulting brief, freshness state, 74-test parity proof, and sourced comparison. Devpost embedded the revised YouTube URL and publicly displayed the updated evidence story on August 29, 2026.
 
 ## Provenance and challenge window
 
@@ -169,7 +178,7 @@ Before releasing, recording the revised candidate, or updating the submission:
 - rerun `node --test tests/*.test.js` and the benchmark with the actual release date;
 - if `as_of >= 2026-09-02`, re-verify every included filing from the official records and update the snapshot before release;
 - reproduce the host prompt, three live receipt transitions, exact brief, and human-review boundary in one continuous supported-browser run;
-- confirm any revised Devpost copy and video are still prepared drafts until separately authorized and published; and
+- confirm any revised Devpost copy and video are separately authorized, published, and re-opened from their public URLs; and
 - keep the judged deployment unchanged during judging unless the official rules require otherwise.
 
 ## Sourced adjacent-workflow context
