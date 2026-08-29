@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-08-29
+
+- Added a held-out historical benchmark covering 23 real Rogers planning requests, 26 procedural events, 12 official agenda/minutes documents, and three multi-meeting lifecycles.
+- Added executable checks for exact status and source-pair preservation through inspection and brief staging, field-specific official-source completeness, lifecycle integrity, challenge-period isolation, and unique local event IDs.
+- Documented the observed agenda-only failure modes and the study's limits without claiming adoption, automated extraction, elapsed-time savings, or business outcomes.
+
 ## 2026-08-28
 
 - Preserved exact filing selection across human and agent staging, including separate statuses for multi-filing records.

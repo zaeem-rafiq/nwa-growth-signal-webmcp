@@ -14,5 +14,6 @@ test("pull requests and pushes run the dependency-free release gates on Node 22"
   assert.match(workflow, /node-version:\s*["']?22["']?/);
   assert.match(workflow, /run:\s*node --test tests\/\*\.test\.js/);
   assert.match(workflow, /run:\s*node scripts\/benchmark\.js/);
+  assert.match(workflow, /run:\s*node scripts\/historical-impact-benchmark\.js/);
   assert.doesNotMatch(workflow, /\b(?:npm|pnpm|yarn)\s+(?:ci|install)\b/);
 });

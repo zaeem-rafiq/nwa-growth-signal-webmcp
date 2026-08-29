@@ -1,0 +1,446 @@
+[
+  {
+    "id": "HB-001",
+    "official_case_id": null,
+    "title": "Reginald Wright Rezone",
+    "agenda_language": "Approving a rezone subject to standard review.",
+    "events": [
+      {
+        "id": "HB-001-E1",
+        "meeting_date": "2025-01-07",
+        "status": "Approved by Planning Commission",
+        "decision_body": "Planning Commission",
+        "sources": {
+          "agenda": "https://rogersar.portal.civicclerk.com/event/980/files/agenda/4610",
+          "minutes": "https://rogersar.portal.civicclerk.com/event/980/files/minutes/4747"
+        }
+      }
+    ]
+  },
+  {
+    "id": "HB-002",
+    "official_case_id": null,
+    "title": "Newell Bellview Development Rezone",
+    "agenda_language": "A rezone request subject to enhanced review.",
+    "events": [
+      {
+        "id": "HB-002-E1",
+        "meeting_date": "2025-01-07",
+        "status": "Approved by Planning Commission",
+        "decision_body": "Planning Commission",
+        "sources": {
+          "agenda": "https://rogersar.portal.civicclerk.com/event/980/files/agenda/4610",
+          "minutes": "https://rogersar.portal.civicclerk.com/event/980/files/minutes/4747"
+        }
+      }
+    ]
+  },
+  {
+    "id": "HB-003",
+    "official_case_id": null,
+    "title": "RRA Real Estate Developers Rezone",
+    "agenda_language": "Approving a rezoning subject to enhanced review.",
+    "events": [
+      {
+        "id": "HB-003-E1",
+        "meeting_date": "2025-01-07",
+        "status": "Tabled",
+        "decision_body": "Planning Commission",
+        "sources": {
+          "agenda": "https://rogersar.portal.civicclerk.com/event/980/files/agenda/4610",
+          "minutes": "https://rogersar.portal.civicclerk.com/event/980/files/minutes/4747"
+        }
+      }
+    ]
+  },
+  {
+    "id": "HB-004",
+    "official_case_id": null,
+    "title": "Starner Tax Group Variance",
+    "agenda_language": "Requesting a variance from the Unified Development Code.",
+    "events": [
+      {
+        "id": "HB-004-E1",
+        "meeting_date": "2025-01-07",
+        "status": "Approved by Board of Adjustment",
+        "decision_body": "Board of Adjustment",
+        "sources": {
+          "agenda": "https://rogersar.portal.civicclerk.com/event/980/files/agenda/4610",
+          "minutes": "https://rogersar.portal.civicclerk.com/event/980/files/minutes/4747"
+        }
+      }
+    ]
+  },
+  {
+    "id": "HB-005",
+    "official_case_id": null,
+    "title": "Brendan Wallace Variance",
+    "agenda_language": "Requesting a variance from the Unified Development Code.",
+    "events": [
+      {
+        "id": "HB-005-E1",
+        "meeting_date": "2025-01-07",
+        "status": "Approved by Board of Adjustment",
+        "decision_body": "Board of Adjustment",
+        "sources": {
+          "agenda": "https://rogersar.portal.civicclerk.com/event/980/files/agenda/4610",
+          "minutes": "https://rogersar.portal.civicclerk.com/event/980/files/minutes/4747"
+        }
+      }
+    ]
+  },
+  {
+    "id": "HB-006",
+    "official_case_id": null,
+    "title": "Chestnut Flats Variance",
+    "agenda_language": "Requesting a variance from the Unified Development Code.",
+    "events": [
+      {
+        "id": "HB-006-E1",
+        "meeting_date": "2025-01-07",
+        "status": "Tabled",
+        "decision_body": "Board of Adjustment",
+        "sources": {
+          "agenda": "https://rogersar.portal.civicclerk.com/event/980/files/agenda/4610",
+          "minutes": "https://rogersar.portal.civicclerk.com/event/980/files/minutes/4747"
+        }
+      },
+      {
+        "id": "HB-006-E2",
+        "meeting_date": "2025-02-04",
+        "status": "Withdrawn",
+        "decision_body": "Board of Adjustment",
+        "sources": {
+          "agenda": "https://rogersar.portal.civicclerk.com/event/994/files/agenda/4750",
+          "minutes": "https://rogersar.portal.civicclerk.com/event/994/files/minutes/5311"
+        }
+      }
+    ]
+  },
+  {
+    "id": "HB-007",
+    "official_case_id": null,
+    "title": "Arvest Bank Downtown Variance",
+    "agenda_language": "Requesting a variance from the Unified Development Code.",
+    "events": [
+      {
+        "id": "HB-007-E1",
+        "meeting_date": "2025-01-07",
+        "status": "Tabled",
+        "decision_body": "Board of Adjustment",
+        "sources": {
+          "agenda": "https://rogersar.portal.civicclerk.com/event/980/files/agenda/4610",
+          "minutes": "https://rogersar.portal.civicclerk.com/event/980/files/minutes/4747"
+        }
+      },
+      {
+        "id": "HB-007-E2",
+        "meeting_date": "2025-02-04",
+        "status": "Approved by Board of Adjustment",
+        "decision_body": "Board of Adjustment",
+        "sources": {
+          "agenda": "https://rogersar.portal.civicclerk.com/event/994/files/agenda/4750",
+          "minutes": "https://rogersar.portal.civicclerk.com/event/994/files/minutes/5311"
+        }
+      }
+    ]
+  },
+  {
+    "id": "HB-008",
+    "official_case_id": null,
+    "title": "Marquee Townhomes Variance",
+    "agenda_language": "Requesting a variance from the Unified Development Code.",
+    "events": [
+      {
+        "id": "HB-008-E1",
+        "meeting_date": "2025-01-07",
+        "status": "Approved by Board of Adjustment",
+        "decision_body": "Board of Adjustment",
+        "sources": {
+          "agenda": "https://rogersar.portal.civicclerk.com/event/980/files/agenda/4610",
+          "minutes": "https://rogersar.portal.civicclerk.com/event/980/files/minutes/4747"
+        }
+      }
+    ]
+  },
+  {
+    "id": "HB-009",
+    "official_case_id": null,
+    "title": "Teufel Medical Office Variance",
+    "agenda_language": "Requesting a variance from the Unified Development Code.",
+    "events": [
+      {
+        "id": "HB-009-E1",
+        "meeting_date": "2025-01-07",
+        "status": "Approved by Board of Adjustment",
+        "decision_body": "Board of Adjustment",
+        "sources": {
+          "agenda": "https://rogersar.portal.civicclerk.com/event/980/files/agenda/4610",
+          "minutes": "https://rogersar.portal.civicclerk.com/event/980/files/minutes/4747"
+        }
+      }
+    ]
+  },
+  {
+    "id": "HB-010",
+    "official_case_id": null,
+    "title": "Beauty 4 Ashes Investments Rezone",
+    "agenda_language": "Approving a rezone subject to standard review.",
+    "events": [
+      {
+        "id": "HB-010-E1",
+        "meeting_date": "2025-01-21",
+        "status": "Tabled",
+        "decision_body": "Planning Commission",
+        "sources": {
+          "agenda": "https://rogersar.portal.civicclerk.com/event/1005/files/agenda/4639",
+          "minutes": "https://rogersar.portal.civicclerk.com/event/1005/files/minutes/4753"
+        }
+      }
+    ]
+  },
+  {
+    "id": "HB-011",
+    "official_case_id": null,
+    "title": "Dung Nguyen and Xinh Dinh Le Rezone",
+    "agenda_language": "A rezone request subject to enhanced review.",
+    "events": [
+      {
+        "id": "HB-011-E1",
+        "meeting_date": "2025-01-21",
+        "status": "Tabled",
+        "decision_body": "Planning Commission",
+        "sources": {
+          "agenda": "https://rogersar.portal.civicclerk.com/event/1005/files/agenda/4639",
+          "minutes": "https://rogersar.portal.civicclerk.com/event/1005/files/minutes/4753"
+        }
+      }
+    ]
+  },
+  {
+    "id": "HB-012",
+    "official_case_id": null,
+    "title": "Hoskins S. 26th Street Variance",
+    "agenda_language": "Requesting a variance from the Unified Development Code.",
+    "events": [
+      {
+        "id": "HB-012-E1",
+        "meeting_date": "2025-01-21",
+        "status": "Approved by Board of Adjustment",
+        "decision_body": "Board of Adjustment",
+        "sources": {
+          "agenda": "https://rogersar.portal.civicclerk.com/event/1005/files/agenda/4639",
+          "minutes": "https://rogersar.portal.civicclerk.com/event/1005/files/minutes/4753"
+        }
+      }
+    ]
+  },
+  {
+    "id": "HB-013",
+    "official_case_id": null,
+    "title": "Gateway Plaza Rezone",
+    "agenda_language": "A rezone subject to standard review.",
+    "events": [
+      {
+        "id": "HB-013-E1",
+        "meeting_date": "2025-04-01",
+        "status": "Recommended to City Council",
+        "decision_body": "Planning Commission",
+        "sources": {
+          "agenda": "https://rogersar.portal.civicclerk.com/event/996/files/agenda/4863",
+          "minutes": "https://rogersar.portal.civicclerk.com/event/996/files/minutes/4889"
+        }
+      }
+    ]
+  },
+  {
+    "id": "HB-014",
+    "official_case_id": null,
+    "title": "First National Bank Variance",
+    "agenda_language": "Requesting a variance from the Unified Development Code.",
+    "events": [
+      {
+        "id": "HB-014-E1",
+        "meeting_date": "2025-04-01",
+        "status": "Denied by Board of Adjustment",
+        "decision_body": "Board of Adjustment",
+        "sources": {
+          "agenda": "https://rogersar.portal.civicclerk.com/event/996/files/agenda/4863",
+          "minutes": "https://rogersar.portal.civicclerk.com/event/996/files/minutes/4889"
+        }
+      }
+    ]
+  },
+  {
+    "id": "HB-015",
+    "official_case_id": null,
+    "title": "Greer Lingle Middle School Variance",
+    "agenda_language": "Requesting a variance from the Unified Development Code.",
+    "events": [
+      {
+        "id": "HB-015-E1",
+        "meeting_date": "2025-04-01",
+        "status": "Approved with condition by Board of Adjustment",
+        "decision_body": "Board of Adjustment",
+        "sources": {
+          "agenda": "https://rogersar.portal.civicclerk.com/event/996/files/agenda/4863",
+          "minutes": "https://rogersar.portal.civicclerk.com/event/996/files/minutes/4889"
+        }
+      }
+    ]
+  },
+  {
+    "id": "HB-016",
+    "official_case_id": null,
+    "title": "Michael's at Pleasant Crossing Variance",
+    "agenda_language": "Requesting a variance from the Unified Development Code.",
+    "events": [
+      {
+        "id": "HB-016-E1",
+        "meeting_date": "2025-04-01",
+        "status": "Approved by Board of Adjustment",
+        "decision_body": "Board of Adjustment",
+        "sources": {
+          "agenda": "https://rogersar.portal.civicclerk.com/event/996/files/agenda/4863",
+          "minutes": "https://rogersar.portal.civicclerk.com/event/996/files/minutes/4889"
+        }
+      }
+    ]
+  },
+  {
+    "id": "HB-017",
+    "official_case_id": null,
+    "title": "Maple Grove Rezone",
+    "agenda_language": "A request to consider a rezoning subject to enhanced review.",
+    "events": [
+      {
+        "id": "HB-017-E1",
+        "meeting_date": "2025-04-15",
+        "status": "Tabled",
+        "decision_body": "Planning Commission",
+        "sources": {
+          "agenda": "https://rogersar.portal.civicclerk.com/event/1008/files/agenda/4879",
+          "minutes": "https://rogersar.portal.civicclerk.com/event/1008/files/minutes/5312"
+        }
+      },
+      {
+        "id": "HB-017-E2",
+        "meeting_date": "2025-05-06",
+        "status": "Denied by Planning Commission",
+        "decision_body": "Planning Commission",
+        "sources": {
+          "agenda": "https://rogersar.portal.civicclerk.com/event/997/files/agenda/4914",
+          "minutes": "https://rogersar.portal.civicclerk.com/event/997/files/minutes/5313"
+        }
+      }
+    ]
+  },
+  {
+    "id": "HB-018",
+    "official_case_id": null,
+    "title": "Kennametal Variance",
+    "agenda_language": "Requesting a variance from the Unified Development Code.",
+    "events": [
+      {
+        "id": "HB-018-E1",
+        "meeting_date": "2025-04-15",
+        "status": "Approved by Board of Adjustment",
+        "decision_body": "Board of Adjustment",
+        "sources": {
+          "agenda": "https://rogersar.portal.civicclerk.com/event/1008/files/agenda/4879",
+          "minutes": "https://rogersar.portal.civicclerk.com/event/1008/files/minutes/5312"
+        }
+      }
+    ]
+  },
+  {
+    "id": "HB-019",
+    "official_case_id": null,
+    "title": "La Creperie Rezone",
+    "agenda_language": "A request to consider a rezoning subject to standard review.",
+    "events": [
+      {
+        "id": "HB-019-E1",
+        "meeting_date": "2025-05-06",
+        "status": "Approved by Planning Commission",
+        "decision_body": "Planning Commission",
+        "sources": {
+          "agenda": "https://rogersar.portal.civicclerk.com/event/997/files/agenda/4914",
+          "minutes": "https://rogersar.portal.civicclerk.com/event/997/files/minutes/5313"
+        }
+      }
+    ]
+  },
+  {
+    "id": "HB-020",
+    "official_case_id": null,
+    "title": "Reyes Riviero Rezone — 1400 N. D Street",
+    "agenda_language": "A request to consider a rezoning subject to standard review.",
+    "events": [
+      {
+        "id": "HB-020-E1",
+        "meeting_date": "2025-05-06",
+        "status": "Tabled",
+        "decision_body": "Planning Commission",
+        "sources": {
+          "agenda": "https://rogersar.portal.civicclerk.com/event/997/files/agenda/4914",
+          "minutes": "https://rogersar.portal.civicclerk.com/event/997/files/minutes/5313"
+        }
+      }
+    ]
+  },
+  {
+    "id": "HB-021",
+    "official_case_id": null,
+    "title": "Reyes Riviero Rezone — 509 N. 8th Street",
+    "agenda_language": "A request to consider a rezoning subject to standard review.",
+    "events": [
+      {
+        "id": "HB-021-E1",
+        "meeting_date": "2025-05-06",
+        "status": "Approved by Planning Commission",
+        "decision_body": "Planning Commission",
+        "sources": {
+          "agenda": "https://rogersar.portal.civicclerk.com/event/997/files/agenda/4914",
+          "minutes": "https://rogersar.portal.civicclerk.com/event/997/files/minutes/5313"
+        }
+      }
+    ]
+  },
+  {
+    "id": "HB-022",
+    "official_case_id": null,
+    "title": "Crossfit NWA Variance",
+    "agenda_language": "Requesting a variance from the Unified Development Code.",
+    "events": [
+      {
+        "id": "HB-022-E1",
+        "meeting_date": "2025-05-06",
+        "status": "Approved by Board of Adjustment",
+        "decision_body": "Board of Adjustment",
+        "sources": {
+          "agenda": "https://rogersar.portal.civicclerk.com/event/997/files/agenda/4914",
+          "minutes": "https://rogersar.portal.civicclerk.com/event/997/files/minutes/5313"
+        }
+      }
+    ]
+  },
+  {
+    "id": "HB-023",
+    "official_case_id": null,
+    "title": "Voja Radosavljevic Variance",
+    "agenda_language": "Requesting a variance from the Unified Development Code.",
+    "events": [
+      {
+        "id": "HB-023-E1",
+        "meeting_date": "2025-05-06",
+        "status": "Approved by Board of Adjustment",
+        "decision_body": "Board of Adjustment",
+        "sources": {
+          "agenda": "https://rogersar.portal.civicclerk.com/event/997/files/agenda/4914",
+          "minutes": "https://rogersar.portal.civicclerk.com/event/997/files/minutes/5313"
+        }
+      }
+    ]
+  }
+]

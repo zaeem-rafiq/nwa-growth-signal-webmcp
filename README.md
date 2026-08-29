@@ -28,12 +28,13 @@ Open `http://localhost:8000`. The human interface works in ordinary browsers. We
 node --test tests/*.test.js
 ```
 
-The 74-test suite covers exact filing selection, snapshot freshness, handler-side input validation, atomic tool registration, bounded execution receipts, browser fallback states, two-scenario workflow parity, official-source boundaries, and injection-safe rendering.
+The 80-test suite covers exact filing selection, snapshot freshness, handler-side input validation, atomic tool registration, bounded execution receipts, browser fallback states, two-scenario workflow parity, official-source boundaries, historical benchmark integrity, and injection-safe rendering.
 
 ## Reproduce the hackathon evidence
 
 ```sh
 node scripts/benchmark.js 2026-09-01
+node scripts/historical-impact-benchmark.js
 ```
 
 The fresh-fixture run compares the direct core and registered WebMCP paths across two fixed scripts. It requires exact equality for filing IDs, filing/status pairs, audience, official URLs, the standing note, freshness, and `review_required`. The primary script records eight direct human control activations and three browser-agent tool invocations under a published atomic counting rule; this is scripted interface evidence, not observed time savings or general productivity evidence.
@@ -44,7 +45,9 @@ The snapshot boundary is inclusive. This command is expected to exit non-zero wi
 node scripts/benchmark.js 2026-09-02
 ```
 
-See [`docs/hackathon/EVIDENCE.md`](docs/hackathon/EVIDENCE.md) for the proof contract and [`docs/hackathon/DEMO.md`](docs/hackathon/DEMO.md) for the prepared revised recording guide.
+The separate historical-impact study evaluates 23 held-out Rogers requests from six 2025 meetings using 12 official agenda and minutes documents. It preserved the exact status for all 26 procedural events, and every event's expected source pair remained present in the record-wide inspection and staging outputs, including across three multi-meeting lifecycles. A transparent agenda-only heuristic returned 20 unknown outcomes and made two false-finality overclaims among its three determinate predictions. This is source-risk and preservation evidence—not a user study, automated-ingestion result, or claim of time saved.
+
+See [`docs/hackathon/EVIDENCE.md`](docs/hackathon/EVIDENCE.md) for the proof contract, [`docs/hackathon/HISTORICAL-IMPACT-BENCHMARK.md`](docs/hackathon/HISTORICAL-IMPACT-BENCHMARK.md) for the study protocol and limitations, and [`docs/hackathon/DEMO.md`](docs/hackathon/DEMO.md) for the prepared revised recording guide.
 
 ## Demo prompt
 
