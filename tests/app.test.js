@@ -5,6 +5,7 @@ const path = require("node:path");
 const vm = require("node:vm");
 
 const core = require("../site/core.js");
+const { PRIMARY_HUMAN_TRACE } = require("../scripts/benchmark.js");
 const cases = require("../site/cases.json");
 const appSource = fs.readFileSync(path.join(__dirname, "..", "site", "app.js"), "utf8");
 
@@ -58,10 +59,11 @@ class FakeElement {
 function createDocument(modelContext) {
   const elements = new Map();
   const selectors = [
-    "#city-filter", "#status-filter", "#reset-filters", "#result-count", "#record-list", "#record-list-status",
+    "#city-filter", "#status-filter", "#action-filter", "#reset-filters", "#result-count", "#record-list", "#record-list-status",
     "#record-detail", ".signal-desk", "#desk-message", "#desk-message-copy", "#retry-load",
     "#selection-tray", "#selection-count", "#selected-records", "#brief-audience", "#stage-brief", "#brief-preview",
     "#mark-reviewed", "#workspace-status", "#webmcp-state", "#demo-prompt", "#copy-prompt", "#copy-status",
+    "#receipt-empty", "#receipt-rows", "#receipt-disclosure", "#freshness-summary", "#freshness-state", "#freshness-detail",
   ];
   selectors.forEach((selector) => elements.set(selector, new FakeElement()));
   elements.get("#brief-audience").value = "Land and development";
@@ -88,10 +90,10 @@ function createDocument(modelContext) {
   return document;
 }
 
-async function runApp({ modelContext, fetchResponse, registerPlanningTools, clipboardWrite = async () => {}, abortSignal = AbortSignal }) {
+async function runApp({ modelContext, fetchResponse, registerPlanningTools, clipboardWrite = async () => {}, abortSignal = AbortSignal, signalCore = core }) {
   const document = createDocument(modelContext);
   const window = {
-    NWASignal: core,
+    NWASignal: signalCore,
     NWAWebMCP: { registerPlanningTools },
     getSelection: () => document.selection,
   };
@@ -117,6 +119,66 @@ test("the app exposes an unsupported-browser fallback without losing the human i
 
   assert.equal(state.dataset.state, "unsupported");
   assert.equal(state.querySelector("strong").textContent, "WebMCP not exposed in this browser");
+});
+
+test("the live receipt replaces calls by ID, keeps the latest eight, and discloses truncation", async () => {
+  let onActivity;
+  const document = await runApp({
+    modelContext: { registerTool() {} },
+    fetchResponse: { ok: true, json: async () => cases },
+    registerPlanningTools: async (options) => { onActivity = options.onActivity; },
+  });
+  const elements = document.elements;
+
+  assert.equal(elements.get("#receipt-empty").textContent, "No agent calls have run in this session.");
+  onActivity({ id: 1, tool: "search_planning_cases", status: "started", code: "CALL_STARTED", summary: "Call started." });
+  onActivity({ id: 1, tool: "search_planning_cases", status: "succeeded", code: "SEARCH_COMPLETE", summary: "5 verified records matched." });
+  for (let id = 2; id <= 9; id += 1) {
+    onActivity({ id, tool: "inspect_case_record", status: "succeeded", code: "RECORD_FOUND", summary: `Record ${id} found.` });
+  }
+
+  const rows = elements.get("#receipt-rows");
+  assert.equal(rows.children.length, 8);
+  assert.equal(rows.children[0].attributes.get("data-call-id"), "2");
+  assert.equal(rows.children[7].attributes.get("data-call-id"), "9");
+  assert.equal(rows.children.some((row) => row.querySelector(".receipt-state").textContent === "started"), false);
+  assert.equal(elements.get("#receipt-empty").hidden, true);
+  assert.equal(elements.get("#receipt-disclosure").hidden, false);
+});
+
+test("agent receipts stay separate from the human-owned workspace review lifecycle", async () => {
+  let onActivity;
+  let onBrief;
+  const document = await runApp({
+    modelContext: { registerTool() {} },
+    fetchResponse: { ok: true, json: async () => cases },
+    registerPlanningTools: async (options) => {
+      onActivity = options.onActivity;
+      onBrief = options.onBrief;
+    },
+  });
+  const elements = document.elements;
+  const brief = core.stageSourceBackedBrief(cases, {
+    case_ids: ["RZ26-00511"],
+    audience: "Public-interest planning",
+  });
+
+  onActivity({ id: 1, tool: "stage_source_backed_brief", status: "started", code: "CALL_STARTED", summary: "Call started." });
+  onBrief(brief);
+  onActivity({ id: 1, tool: "stage_source_backed_brief", status: "succeeded", code: "BRIEF_STAGED", summary: "1 filing staged · human review required." });
+
+  assert.match(elements.get("#workspace-status").textContent, /Agent staged 1 record\. Review required/);
+  assert.equal(elements.get("#mark-reviewed").disabled, false);
+  assert.equal(elements.get("#receipt-rows").children[0].querySelector(".receipt-state").textContent, "succeeded");
+
+  await elements.get("#mark-reviewed").dispatch("click");
+  assert.match(elements.get("#workspace-status").textContent, /Human review recorded/);
+  assert.equal(elements.get("#receipt-rows").children[0].querySelector(".receipt-state").textContent, "succeeded");
+
+  elements.get("#brief-audience").value = "Lending and title";
+  await elements.get("#brief-audience").dispatch("change");
+  assert.match(elements.get("#workspace-status").textContent, /Stage the brief again/);
+  assert.equal(elements.get("#receipt-rows").children[0].querySelector(".receipt-state").textContent, "succeeded");
 });
 
 test("the app reports registration and verified-record load failures", async () => {
@@ -172,7 +234,7 @@ test("selection, staging, invalidation, focus, and clipboard recovery execute in
 
   elements.get("#city-filter").value = "Rogers";
   await elements.get("#city-filter").dispatch("change");
-  assert.match(elements.get("#selected-records").querySelector(".selection-disclosure").textContent, /1 selected record is outside current filters/);
+  assert.match(elements.get("#selected-records").querySelector(".selection-disclosure").textContent, /1 selected filing is outside current filters/);
 
   await elements.get("#stage-brief").dispatch("click");
   await elements.get("#selected-records").querySelector(".remove-selection").dispatch("click");
@@ -180,6 +242,99 @@ test("selection, staging, invalidation, focus, and clipboard recovery execute in
   assert.equal(elements.get("#stage-brief").disabled, true);
   assert.equal(elements.get("#mark-reviewed").disabled, true);
   assert.equal(elements.get("#brief-audience").focused, true);
+});
+
+test("the human action-needed filter returns the same ordered records as the domain search", async () => {
+  const document = await runApp({
+    fetchResponse: { ok: true, json: async () => cases },
+    registerPlanningTools: async () => {},
+  });
+  const elements = document.elements;
+
+  elements.get("#status-filter").value = "Withdrawn";
+  elements.get("#action-filter").value = "true";
+  await elements.get("#action-filter").dispatch("change");
+
+  const expectedIds = core.searchPlanningCases(cases, {
+    status: "Withdrawn",
+    residential_only: true,
+    requires_action: true,
+  }).map(({ id }) => id);
+  assert.deepEqual(
+    elements.get("#record-list").children
+      .filter((row) => row.attributes.has("data-record-id"))
+      .map((row) => row.attributes.get("data-record-id")),
+    expectedIds
+  );
+});
+
+test("the primary fixed script exercises every named human action and stages exact filings", async () => {
+  const document = await runApp({
+    fetchResponse: { ok: true, json: async () => cases },
+    registerPlanningTools: async () => {},
+  });
+  const elements = document.elements;
+  const activated = [];
+
+  elements.get("#action-filter").value = "true";
+  await elements.get("#action-filter").dispatch("change");
+  activated.push("Set Action needed to Yes");
+  for (const [recordId, caseId] of [
+    ["signal-1", "RZ26-0041"],
+    ["signal-3", "RZ26-00419"],
+    ["signal-4", "RZ26-00511"],
+  ]) {
+    await elements.get("#record-list").querySelector(`[data-record-id="${recordId}"]`).dispatch("click");
+    activated.push(`Open ${caseId}`);
+    const filing = elements.get("#record-detail").querySelector(`[aria-label="Add ${caseId} from the brief"]`);
+    await filing.dispatch("click");
+    activated.push(`Add ${caseId}`);
+  }
+  await elements.get("#stage-brief").dispatch("click");
+  activated.push("Stage brief");
+
+  assert.deepEqual(activated, PRIMARY_HUMAN_TRACE);
+  assert.equal(activated.length, 8);
+  assert.deepEqual(
+    elements.get("#brief-preview").querySelector(".brief-filings").children.map((row) => row.querySelector("strong").textContent),
+    ["RZ26-0041"]
+  );
+  assert.deepEqual(
+    elements.get("#brief-preview").children
+      .filter((element) => element.className === "brief-item")
+      .flatMap((item) => item.querySelector(".brief-filings").children.map((row) => row.querySelector("strong").textContent)),
+    ["RZ26-0041", "RZ26-00419", "RZ26-00511"]
+  );
+});
+
+test("multi-filing records keep each filing ID beside its own status through staging", async () => {
+  const document = await runApp({
+    fetchResponse: { ok: true, json: async () => cases },
+    registerPlanningTools: async () => {},
+  });
+  const elements = document.elements;
+  await elements.get("#record-list").querySelector('[data-record-id="signal-4"]').dispatch("click");
+  const detailRows = elements.get("#record-detail").querySelector(".detail-filings").children;
+
+  assert.deepEqual(detailRows.map((row) => [
+    row.querySelector("strong").textContent,
+    row.querySelector(".status-badge").textContent,
+  ]), [
+    ["VAR26-0397", "Withdrawn"],
+    ["RZ26-00511", "Scheduled"],
+  ]);
+
+  await detailRows[0].querySelector(".select-record").dispatch("click");
+  await elements.get("#record-detail").querySelector(".detail-filings").children[1].querySelector(".select-record").dispatch("click");
+  await elements.get("#stage-brief").dispatch("click");
+
+  assert.deepEqual(elements.get("#brief-preview").querySelector(".brief-filings")?.children.map((row) => [
+    row.querySelector("strong").textContent,
+    row.querySelector(".status-badge").textContent,
+  ]), [
+    ["VAR26-0397", "Withdrawn"],
+    ["RZ26-00511", "Scheduled"],
+  ]);
 });
 
 test("the retry control recovers after a record-load failure", async () => {
@@ -249,15 +404,38 @@ test("an agent-staged brief synchronizes the human review workspace", async () =
     registerPlanningTools: async (options) => { onBrief = options.onBrief; },
   });
   const brief = core.stageSourceBackedBrief(cases, {
-    case_ids: [cases[2].id],
+    case_ids: ["RZ26-00511"],
     audience: "Public-interest planning",
   });
 
   onBrief(brief);
+  await document.elements.get("#stage-brief").dispatch("click");
 
   assert.equal(document.elements.get("#selection-count").textContent, "1 selected");
   assert.equal(document.elements.get("#brief-audience").value, "Public-interest planning");
   assert.match(document.elements.get("#brief-preview").querySelector(".brief-snapshot").textContent, /1 record staged/);
-  assert.equal(document.elements.get("#brief-preview").querySelector(".brief-sources").querySelector("a").href, cases[2].sources[0].url);
-  assert.match(document.elements.get("#workspace-status").textContent, /Agent staged 1 record/);
+  assert.equal(document.elements.get("#brief-preview").querySelector(".brief-filings").querySelector("strong").textContent, "RZ26-00511");
+  assert.equal(document.elements.get("#brief-preview").querySelector(".brief-filings").querySelector(".status-badge").textContent, "Scheduled");
+  assert.equal(document.elements.get("#brief-preview").querySelector(".brief-sources").querySelector("a").href, cases[3].sources[0].url);
+  assert.match(document.elements.get("#workspace-status").textContent, /Human staged 1 record/);
+});
+
+test("a due snapshot requests official re-verification without changing procedural statuses", async () => {
+  const dueCore = { ...core, northwestArkansasCivilDate: () => "2026-09-02" };
+  const document = await runApp({
+    fetchResponse: { ok: true, json: async () => cases },
+    registerPlanningTools: async () => {},
+    signalCore: dueCore,
+  });
+  const elements = document.elements;
+
+  assert.equal(elements.get("#freshness-summary").dataset.state, "reverification_due");
+  assert.equal(elements.get("#freshness-state").textContent, "Official re-verification required");
+  assert.match(elements.get("#freshness-detail").textContent, /Procedural statuses are unchanged; official re-verification is required/);
+  assert.match(elements.get("#record-detail").querySelector(".freshness-line").textContent, /Procedural statuses are unchanged; official re-verification is required/);
+  assert.equal(elements.get("#record-detail").querySelector(".status-badge").textContent, cases[0].filings[0].status);
+
+  await elements.get("#record-detail").querySelector(".select-record").dispatch("click");
+  await elements.get("#stage-brief").dispatch("click");
+  assert.match(elements.get("#brief-preview").querySelector(".brief-freshness").textContent, /Procedural statuses are unchanged; official re-verification is required/);
 });

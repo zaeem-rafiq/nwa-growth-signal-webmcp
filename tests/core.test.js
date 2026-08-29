@@ -1,7 +1,50 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
 
-const { inspectCaseRecord, searchPlanningCases, stageSourceBackedBrief } = require("../site/core.js");
+const core = require("../site/core.js");
+const { inspectCaseRecord, searchPlanningCases, stageSourceBackedBrief } = core;
+
+test("snapshot freshness becomes due on the shared re-verification date", () => {
+  assert.deepEqual(core.evaluateSnapshotFreshness?.({
+    verified_at: "2026-08-25",
+    reverify_on: "2026-09-02",
+  }, "2026-09-02"), {
+    state: "reverification_due",
+    as_of: "2026-09-02",
+    reverify_on: "2026-09-02",
+  });
+});
+
+test("snapshot freshness fails closed when verification metadata is incomplete", () => {
+  assert.deepEqual(core.evaluateSnapshotFreshness({ verified_at: "2026-08-25" }, "2026-09-01"), {
+    state: "verification_date_only",
+    as_of: "2026-09-01",
+    reverify_on: null,
+  });
+  assert.deepEqual(core.evaluateSnapshotFreshness({
+    verified_at: "2026-08-25",
+    reverify_on: "2026-09-02",
+  }, "2026-08-24"), {
+    state: "verification_date_only",
+    as_of: "2026-08-24",
+    reverify_on: "2026-09-02",
+  });
+});
+
+test("Northwest Arkansas civil dates change at Chicago midnight", () => {
+  assert.equal(core.northwestArkansasCivilDate(new Date("2026-09-02T04:30:00Z")), "2026-09-01");
+  assert.equal(core.northwestArkansasCivilDate(new Date("2026-09-02T05:30:00Z")), "2026-09-02");
+});
+
+test("snapshot freshness rejects a malformed comparison date", () => {
+  assert.throws(
+    () => core.evaluateSnapshotFreshness({
+      verified_at: "2026-08-25",
+      reverify_on: "2026-09-02",
+    }, "09/02/2026"),
+    /ISO civil date/
+  );
+});
 
 test("an agent can find residential Bentonville cases that still need action", () => {
   const cases = [
@@ -63,6 +106,18 @@ test("status filtering exposes only the filings that match", () => {
   const [record] = searchPlanningCases(cases, { status: "Scheduled" });
 
   assert.deepEqual(record.matching_filings, [{ case_id: "RZ26-00511", status: "Scheduled" }]);
+});
+
+test("status and action filters must match the same filing", () => {
+  const cases = [{
+    id: "signal-4",
+    filings: [
+      { case_id: "VAR26-0397", status: "Withdrawn" },
+      { case_id: "RZ26-00511", status: "Scheduled" },
+    ],
+  }];
+
+  assert.deepEqual(searchPlanningCases(cases, { status: "Withdrawn", requires_action: true }), []);
 });
 
 test("a staged brief preserves recommendation language instead of calling it approval", () => {

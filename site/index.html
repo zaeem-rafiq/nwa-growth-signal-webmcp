@@ -58,6 +58,24 @@
         </aside>
       </section>
 
+      <section class="execution-receipt" id="execution-receipt" aria-labelledby="execution-receipt-title">
+        <div class="section-label">Live WebMCP receipt</div>
+        <div>
+          <h2 id="execution-receipt-title">Real calls. Visible outcomes.</h2>
+          <p>Session-local evidence from the three registered tool handlers. The review decision remains with the person using this page.</p>
+          <div class="freshness-summary" id="freshness-summary" data-state="checking" role="status" aria-live="polite" aria-atomic="true">
+            <span class="freshness-kicker">Release freshness</span>
+            <strong id="freshness-state">Checking snapshot</strong>
+            <span id="freshness-detail">Procedural statuses remain as recorded.</span>
+          </div>
+        </div>
+        <div class="receipt-region" id="receipt-region" role="log" aria-live="polite" aria-relevant="additions text">
+          <p class="empty-state" id="receipt-empty">No agent calls have run in this session.</p>
+          <div class="receipt-rows" id="receipt-rows"></div>
+          <p class="receipt-disclosure" id="receipt-disclosure" hidden>Only the latest eight agent calls are shown.</p>
+        </div>
+      </section>
+
       <section class="desk-section" id="desk" aria-labelledby="desk-title">
         <header class="desk-header">
           <div>
@@ -84,6 +102,13 @@
               <option value="Tabled">Tabled</option>
               <option value="Withdrawn">Withdrawn</option>
               <option value="Recommended">Recommended</option>
+            </select>
+          </label>
+          <label>
+            <span>Next government action</span>
+            <select id="action-filter" disabled>
+              <option value="">Every verified record</option>
+              <option value="true">Action still pending</option>
             </select>
           </label>
           <button class="text-button reset-button" id="reset-filters" type="button" disabled>Reset filters</button>
@@ -152,6 +177,37 @@
           <div><dt>Withdrawn</dt><dd>Pulled by the applicant. The body did not deny it.</dd></div>
           <div><dt>Recommended</dt><dd>Advanced by a commission; separate council action remains.</dd></div>
         </dl>
+      </section>
+
+      <section class="comparison" aria-labelledby="comparison-title">
+        <div class="section-label">Workflow field ledger</div>
+        <header class="comparison-intro">
+          <h2 id="comparison-title">Four products. Four working contexts.</h2>
+          <p>Each product is described by the job published on its own site.</p>
+          <p class="source-date">Sources verified August 28, 2026</p>
+        </header>
+        <ol class="comparison-ledger" role="list">
+          <li>
+            <span>Agenda lifecycle</span>
+            <h3><a href="https://www.civicplus.com/agenda-meeting-management/" target="_blank" rel="noopener">CivicPlus <span class="visually-hidden">official product page, opens in a new tab</span></a></h3>
+            <p>Manages the agenda and meeting lifecycle, from agenda creation through public content.</p>
+          </li>
+          <li>
+            <span>Parcel research</span>
+            <h3><a href="https://regrid.com/property-app" target="_blank" rel="noopener">Regrid Property App <span class="visually-hidden">official product page, opens in a new tab</span></a></h3>
+            <p>Supports parcel lookup, boundaries, filters, layers, and property research.</p>
+          </li>
+          <li>
+            <span>Permit operations</span>
+            <h3><a href="https://www.permitflow.com/" target="_blank" rel="noopener">PermitFlow <span class="visually-hidden">official product page, opens in a new tab</span></a></h3>
+            <p>Automates construction permit workflows, including filing and tracking.</p>
+          </li>
+          <li>
+            <span>Planning snapshot</span>
+            <h3>NWA Growth Signal</h3>
+            <p>NWA Growth Signal translates a dated Bentonville/Rogers municipal-planning snapshot into filing-level status, official-source context, agent staging, and human review.</p>
+          </li>
+        </ol>
       </section>
 
       <section class="non-claims" aria-label="Explicit non-claims">

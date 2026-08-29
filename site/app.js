@@ -2,6 +2,7 @@
   const elements = {
     city: document.querySelector("#city-filter"),
     status: document.querySelector("#status-filter"),
+    action: document.querySelector("#action-filter"),
     reset: document.querySelector("#reset-filters"),
     count: document.querySelector("#result-count"),
     list: document.querySelector("#record-list"),
@@ -23,15 +24,24 @@
     prompt: document.querySelector("#demo-prompt"),
     copyPrompt: document.querySelector("#copy-prompt"),
     copyStatus: document.querySelector("#copy-status"),
+    receiptEmpty: document.querySelector("#receipt-empty"),
+    receiptRows: document.querySelector("#receipt-rows"),
+    receiptDisclosure: document.querySelector("#receipt-disclosure"),
+    freshnessSummary: document.querySelector("#freshness-summary"),
+    freshnessState: document.querySelector("#freshness-state"),
+    freshnessDetail: document.querySelector("#freshness-detail"),
   };
 
   const state = {
     cases: [],
     filtered: [],
-    activeId: null,
-    selectedIds: new Set(),
+    activeRecordId: null,
+    selectedFilingIds: new Set(),
     stagedBrief: null,
     ready: false,
+    receiptCalls: [],
+    receiptTruncated: false,
+    freshness: null,
   };
 
   function node(tag, options = {}) {
@@ -47,18 +57,103 @@
     return badge;
   }
 
+  function freshnessCopy(freshness) {
+    if (freshness.state === "reverification_due") {
+      return {
+        title: "Official re-verification required",
+        detail: `Snapshot due ${freshness.reverify_on}. Procedural statuses are unchanged; official re-verification is required before release.`,
+      };
+    }
+    if (freshness.state === "verification_date_only") {
+      return {
+        title: "Verification date only",
+        detail: "The snapshot cannot be treated as current. Procedural statuses are unchanged; official re-verification is required before release.",
+      };
+    }
+    return {
+      title: "Snapshot current",
+      detail: `Verified ${window.NWASignal.SNAPSHOT.verified_at}; re-verify from ${freshness.reverify_on}. Procedural statuses are unchanged.`,
+    };
+  }
+
+  function renderSnapshotFreshness() {
+    state.freshness = window.NWASignal.evaluateSnapshotFreshness(
+      window.NWASignal.SNAPSHOT,
+      window.NWASignal.northwestArkansasCivilDate()
+    );
+    const copy = freshnessCopy(state.freshness);
+    elements.freshnessSummary.dataset.state = state.freshness.state;
+    elements.freshnessState.textContent = copy.title;
+    elements.freshnessDetail.textContent = copy.detail;
+  }
+
+  function freshnessLine(className = "freshness-line") {
+    return node("p", { className, text: freshnessCopy(state.freshness).detail });
+  }
+
+  function renderActivityReceipt() {
+    elements.receiptRows.replaceChildren();
+    elements.receiptEmpty.textContent = "No agent calls have run in this session.";
+    elements.receiptEmpty.hidden = Boolean(state.receiptCalls.length);
+    elements.receiptDisclosure.hidden = !state.receiptTruncated;
+    state.receiptCalls.forEach((call) => {
+      const row = node("article", { className: "receipt-row" });
+      row.setAttribute("data-call-id", call.id);
+      row.dataset.status = call.status;
+      const heading = node("div", { className: "receipt-row-heading" });
+      heading.append(
+        node("span", { className: "receipt-number", text: `#${String(call.id).padStart(2, "0")}` }),
+        node("code", { text: call.tool }),
+        node("span", { className: "receipt-state", text: call.status })
+      );
+      row.append(heading, node("p", { className: "receipt-summary", text: call.summary }));
+      elements.receiptRows.append(row);
+    });
+  }
+
+  function recordActivity(event) {
+    const tools = ["search_planning_cases", "inspect_case_record", "stage_source_backed_brief"];
+    const statuses = ["started", "succeeded", "failed"];
+    const codes = ["CALL_STARTED", "SEARCH_COMPLETE", "RECORD_FOUND", "BRIEF_STAGED", "VALIDATION_FAILED", "CALLBACK_FAILED", "TOOL_FAILED"];
+    if (!Number.isSafeInteger(event?.id) || event.id < 1 || !tools.includes(event.tool) ||
+        !statuses.includes(event.status) || !codes.includes(event.code) || typeof event.summary !== "string") return;
+    const call = {
+      id: event.id,
+      tool: event.tool,
+      status: event.status,
+      summary: event.summary.slice(0, 120),
+    };
+    const existingIndex = state.receiptCalls.findIndex(({ id }) => id === call.id);
+    if (existingIndex >= 0) state.receiptCalls[existingIndex] = call;
+    else state.receiptCalls.push(call);
+    if (state.receiptCalls.length > 8) {
+      state.receiptCalls = state.receiptCalls.slice(-8);
+      state.receiptTruncated = true;
+    }
+    renderActivityReceipt();
+  }
+
   function currentFilters() {
     return {
       city: elements.city.value || undefined,
       status: elements.status.value || undefined,
       residential_only: true,
+      requires_action: elements.action.value === "true" || undefined,
     };
+  }
+
+  function displayedFilings(record) {
+    return record.matching_filings || record.filings || [];
+  }
+
+  function recordHasSelectedFiling(record) {
+    return record.case_ids.some((caseId) => state.selectedFilingIds.has(caseId));
   }
 
   function applyFilters() {
     state.filtered = window.NWASignal.searchPlanningCases(state.cases, currentFilters());
-    if (!state.filtered.some(({ id }) => id === state.activeId)) {
-      state.activeId = state.filtered[0]?.id || null;
+    if (!state.filtered.some(({ id }) => id === state.activeRecordId)) {
+      state.activeRecordId = state.filtered[0]?.id || null;
     }
     renderRecordList();
     renderRecordDetail();
@@ -79,9 +174,9 @@
       const button = node("button", { className: "record-row" });
       button.type = "button";
       button.setAttribute("data-record-id", record.id);
-      button.setAttribute("aria-current", String(record.id === state.activeId));
+      button.setAttribute("aria-current", String(record.id === state.activeRecordId));
       button.addEventListener("click", () => {
-        state.activeId = record.id;
+        state.activeRecordId = record.id;
         renderRecordList();
         renderRecordDetail();
         focusRecordRow(record.id);
@@ -95,7 +190,7 @@
       const meta = node("span", { className: "row-meta" });
       meta.append(node("span", { text: record.city }));
       record.status_labels.forEach((status) => meta.append(statusBadge(status)));
-      if (state.selectedIds.has(record.id)) meta.append(node("span", { className: "selection-marker", text: "Selected" }));
+      if (recordHasSelectedFiling(record)) meta.append(node("span", { className: "selection-marker", text: "Selected" }));
       button.append(top, meta);
       elements.list.append(button);
     });
@@ -113,7 +208,8 @@
 
   function renderRecordDetail() {
     elements.detail.replaceChildren();
-    const record = window.NWASignal.inspectCaseRecord(state.cases, state.activeId);
+    const record = state.filtered.find(({ id }) => id === state.activeRecordId) ||
+      window.NWASignal.inspectCaseRecord(state.cases, state.activeRecordId);
     if (!record) {
       elements.detail.append(node("p", { className: "empty-state", text: "Choose a record from the index." }));
       return;
@@ -126,9 +222,20 @@
     );
     const title = node("h3", { className: "detail-title", text: record.title });
     title.id = "record-title";
-    const caseLine = node("p", { className: "case-line", text: `${record.city}, Arkansas · ${record.case_ids.join(" · ")}` });
-    const statuses = node("div", { className: "detail-statuses" });
-    record.status_labels.forEach((status) => statuses.append(statusBadge(status)));
+    const caseLine = node("p", { className: "case-line", text: `${record.city}, Arkansas` });
+    const filings = node("div", { className: "detail-filings" });
+    displayedFilings(record).forEach((filing) => {
+      const row = node("div", { className: "filing-row" });
+      const select = node("button", {
+        className: "button button-secondary select-record",
+        text: state.selectedFilingIds.has(filing.case_id) ? "Remove filing" : "Add filing",
+      });
+      select.type = "button";
+      select.setAttribute("aria-label", `${state.selectedFilingIds.has(filing.case_id) ? "Remove" : "Add"} ${filing.case_id} from the brief`);
+      select.addEventListener("click", () => toggleSelection(filing.case_id, "detail"));
+      row.append(node("strong", { text: filing.case_id }), statusBadge(filing.status), select);
+      filings.append(row);
+    });
 
     const sources = node("section", { className: "record-section" });
     sources.append(node("h4", { text: "Official sources" }));
@@ -151,37 +258,30 @@
     record.non_claims.forEach((claim) => nonClaimList.append(node("li", { text: claim })));
     nonClaims.append(nonClaimList);
 
-    const select = node("button", {
-      className: "button button-secondary select-record",
-      text: state.selectedIds.has(record.id) ? "Remove from brief" : "Add to brief",
-    });
-    select.type = "button";
-    select.addEventListener("click", () => toggleSelection(record.id, "detail"));
-
     elements.detail.append(
       folio,
       title,
       caseLine,
-      statuses,
+      freshnessLine(),
+      filings,
       labeledSection("Record summary", record.summary),
       labeledSection("What is proposed", record.proposal),
       labeledSection("Why it matters", record.significance),
       labeledSection("Next procedural step", record.next_step),
       sources,
-      nonClaims,
-      select
+      nonClaims
     );
   }
 
   function toggleSelection(id, focusTarget) {
-    if (state.selectedIds.has(id)) state.selectedIds.delete(id);
-    else state.selectedIds.add(id);
+    if (state.selectedFilingIds.has(id)) state.selectedFilingIds.delete(id);
+    else state.selectedFilingIds.add(id);
     invalidateBrief();
     renderRecordList();
     renderRecordDetail();
     renderSelectedRecords();
-    elements.workspaceStatus.textContent = state.selectedIds.size
-      ? `${state.selectedIds.size} ${state.selectedIds.size === 1 ? "record" : "records"} ready to stage.`
+    elements.workspaceStatus.textContent = state.selectedFilingIds.size
+      ? `${state.selectedFilingIds.size} ${state.selectedFilingIds.size === 1 ? "filing" : "filings"} ready to stage.`
       : "Awaiting a selection.";
     if (focusTarget === "detail") elements.detail.querySelector(".select-record")?.focus();
     if (focusTarget === "workspace") (elements.selected.querySelector(".remove-selection") || elements.audience).focus();
@@ -189,31 +289,32 @@
 
   function renderSelectedRecords() {
     elements.selected.replaceChildren();
-    elements.selectionCount.textContent = `${state.selectedIds.size} selected`;
-    elements.selectionTray.dataset.empty = String(!state.selectedIds.size);
-    elements.stage.disabled = !state.ready || !state.selectedIds.size;
-    if (!state.selectedIds.size) {
+    elements.selectionCount.textContent = `${state.selectedFilingIds.size} selected`;
+    elements.selectionTray.dataset.empty = String(!state.selectedFilingIds.size);
+    elements.stage.disabled = !state.ready || !state.selectedFilingIds.size;
+    if (!state.selectedFilingIds.size) {
       elements.selected.append(node("p", { className: "empty-state", text: "No records selected." }));
       return;
     }
 
-    const visibleIds = new Set(state.filtered.map(({ id }) => id));
-    const hiddenCount = [...state.selectedIds].filter((id) => !visibleIds.has(id)).length;
+    const visibleIds = new Set(state.filtered.flatMap((record) => displayedFilings(record).map(({ case_id: caseId }) => caseId)));
+    const hiddenCount = [...state.selectedFilingIds].filter((id) => !visibleIds.has(id)).length;
     if (hiddenCount) {
       elements.selected.append(node("p", {
         className: "selection-disclosure",
-        text: `${hiddenCount} selected ${hiddenCount === 1 ? "record is" : "records are"} outside current filters.`,
+        text: `${hiddenCount} selected ${hiddenCount === 1 ? "filing is" : "filings are"} outside current filters.`,
       }));
     }
 
-    state.selectedIds.forEach((id) => {
+    state.selectedFilingIds.forEach((id) => {
       const record = window.NWASignal.inspectCaseRecord(state.cases, id);
+      const filing = record.requested_filing;
       const row = node("div", { className: "selected-row" });
       const copy = node("div");
-      copy.append(node("strong", { text: record.title }), node("span", { text: record.case_ids.join(" / ") }));
+      copy.append(node("strong", { text: record.title }), node("span", { text: `${filing.case_id} · ${filing.status}` }));
       const remove = node("button", { className: "remove-selection", text: "×" });
       remove.type = "button";
-      remove.setAttribute("aria-label", `Remove ${record.title} from the brief`);
+      remove.setAttribute("aria-label", `Remove ${filing.case_id} from the brief`);
       remove.addEventListener("click", () => toggleSelection(id, "workspace"));
       row.append(copy, remove);
       elements.selected.append(row);
@@ -227,18 +328,20 @@
     elements.preview.append(node("p", {
       className: "brief-snapshot",
       text: `Audience: ${brief.audience} · ${brief.items.length} ${brief.items.length === 1 ? "record" : "records"} staged`,
-    }));
+    }), freshnessLine("freshness-line brief-freshness"));
     brief.items.forEach((record) => {
       const item = node("article", { className: "brief-item" });
       const heading = node("strong", { text: record.title });
-      const selectedCaseIds = record.selected_filings?.map(({ case_id: caseId }) => caseId) || record.case_ids;
       const provenance = node("p", {
         className: "brief-provenance",
-        text: `${record.city}, Arkansas · ${selectedCaseIds.join(" / ")} · Verified ${record.verified_at}`,
+        text: `${record.city}, Arkansas · Verified ${record.verified_at}`,
       });
-      const statuses = node("div", { className: "detail-statuses" });
-      const selectedStatuses = record.selected_filings?.map(({ status }) => status) || record.status_labels;
-      selectedStatuses.forEach((status) => statuses.append(statusBadge(status)));
+      const filings = node("div", { className: "detail-statuses brief-filings" });
+      (record.selected_filings || record.filings || []).forEach((filing) => {
+        const row = node("div", { className: "filing-row" });
+        row.append(node("strong", { text: filing.case_id }), statusBadge(filing.status));
+        filings.append(row);
+      });
       const sources = node("ol", { className: "brief-sources" });
       record.sources.forEach((source) => {
         const link = node("a", { text: source.title });
@@ -250,7 +353,7 @@
         sourceItem.append(link);
         sources.append(sourceItem);
       });
-      item.append(heading, provenance, statuses, node("p", { text: record.summary }), node("p", { text: record.next_step }), sources);
+      item.append(heading, provenance, filings, node("p", { text: record.summary }), node("p", { text: record.next_step }), sources);
       elements.preview.append(item);
     });
     elements.preview.append(node("p", { className: "brief-note", text: brief.standing_note }));
@@ -267,12 +370,12 @@
   }
 
   function stageManualBrief() {
-    if (!state.selectedIds.size) {
+    if (!state.selectedFilingIds.size) {
       elements.workspaceStatus.textContent = "Select at least one verified record before staging a brief.";
       return;
     }
     const brief = window.NWASignal.stageSourceBackedBrief(state.cases, {
-      case_ids: [...state.selectedIds],
+      case_ids: [...state.selectedFilingIds],
       audience: elements.audience.value,
     });
     renderBrief(brief, "human");
@@ -288,7 +391,7 @@
     state.ready = false;
     elements.signalDesk.dataset.loading = "true";
     elements.signalDesk.setAttribute("aria-busy", "true");
-    [elements.city, elements.status, elements.reset, elements.audience, elements.stage].forEach((control) => {
+    [elements.city, elements.status, elements.action, elements.reset, elements.audience, elements.stage].forEach((control) => {
       control.disabled = true;
     });
   }
@@ -297,10 +400,10 @@
     state.ready = ready;
     elements.signalDesk.dataset.loading = "false";
     elements.signalDesk.setAttribute("aria-busy", "false");
-    [elements.city, elements.status, elements.reset, elements.audience].forEach((control) => {
+    [elements.city, elements.status, elements.action, elements.reset, elements.audience].forEach((control) => {
       control.disabled = !ready;
     });
-    elements.stage.disabled = !ready || !state.selectedIds.size;
+    elements.stage.disabled = !ready || !state.selectedFilingIds.size;
   }
 
   async function registerWebMCP() {
@@ -313,8 +416,11 @@
       await window.NWAWebMCP.registerPlanningTools({
         modelContext: document.modelContext,
         cases: state.cases,
+        onActivity: recordActivity,
         onBrief: (brief) => {
-          state.selectedIds = new Set(brief.items.map(({ id }) => id));
+          state.selectedFilingIds = new Set(brief.items.flatMap((record) =>
+            (record.selected_filings || record.filings || []).map(({ case_id: caseId }) => caseId)
+          ));
           renderRecordList();
           renderSelectedRecords();
           renderRecordDetail();
@@ -337,7 +443,7 @@
       if (!response.ok) throw new Error(`Planning records failed to load (${response.status}).`);
       state.cases = await response.json();
       state.filtered = state.cases;
-      state.activeId = state.cases[0]?.id || null;
+      state.activeRecordId = state.cases[0]?.id || null;
       setDeskReady(true);
       applyFilters();
       await registerWebMCP();
@@ -355,9 +461,11 @@
 
   elements.city.addEventListener("change", applyFilters);
   elements.status.addEventListener("change", applyFilters);
+  elements.action.addEventListener("change", applyFilters);
   elements.reset.addEventListener("click", () => {
     elements.city.value = "";
     elements.status.value = "";
+    elements.action.value = "";
     applyFilters();
   });
   elements.stage.addEventListener("click", stageManualBrief);
@@ -386,5 +494,7 @@
     }
   });
 
+  renderActivityReceipt();
+  renderSnapshotFreshness();
   initialize();
 })();
