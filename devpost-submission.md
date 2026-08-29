@@ -1,6 +1,6 @@
 # NWA Growth Signal
 
-> **Published and verified August 29, 2026.** The public deployment, Devpost story, judge instructions, and revised YouTube demo now contain the live execution receipt, two-scenario parity evidence, freshness gate, and sourced comparison.
+> **Public baseline verified August 29, 2026.** The deployment, Devpost story, judge instructions, and revised YouTube demo contain the live execution receipt, two-scenario parity evidence, freshness gate, and sourced comparison. The held-out historical study and 80-test references below are a local candidate update; they are not yet published on Devpost or deployed.
 
 ## One-line Summary
 
@@ -50,6 +50,14 @@ The hardest problem was preserving truth at the filing level. Parcel-level summa
 
 The second challenge was making the agent useful without giving it an unsafe side effect. The staging tool can assemble a brief, but it cannot publish, send, or persist one. The third was proving quality without overstating impact: the release benchmark measures handler behavior and task compression, not customer adoption, revenue, or unverified time savings.
 
+## Impact validation
+
+To test whether that problem appears in real municipal work—not only in our five-record demo—we assembled a held-out cohort of 23 Rogers planning requests from six 2025 Planning Commission and Board of Adjustment meetings. The study pairs every request with its official agenda and published minutes, covering 26 procedural events and three requests whose status changed across meetings.
+
+NWA Growth Signal preserved 26/26 exact status events through both record inspection and brief staging; every event's expected source pair remained present in 26/26 record-wide outputs; 23/23 requests had same-meeting official agenda/minutes pairs; and all three multi-meeting lifecycles remained intact. A transparent agenda-only request-verb probe could determine only three of 23 eventual outcomes; one matched, while two approval-oriented agenda items were actually tabled. The remaining 20 outcomes were unknown from the request wording alone.
+
+That is the practitioner risk the product addresses: a researcher who treats agenda language or one meeting as the result can miss tabling, withdrawal, denial, or a later status change. This is a real-record source-risk validation—not a user study, automated-ingestion result, or claim of time, revenue, adoption, or changed decisions.
+
 ## Accomplishments that we're proud of
 
 - Three native WebMCP tools running on the public deployment.
@@ -57,7 +65,7 @@ The second challenge was making the agent useful without giving it an unsafe sid
 - Three succeeded page receipts reading `5 verified records matched`, `RZ26-00511 · Scheduled`, and `3 filings staged · human review required` in one live browser session.
 - Eight of eight filing-status checks preserved across five source-backed records.
 - Five of five records constrained to official municipal-source domains.
-- Seventy-four passing tests, all three tools exercised, and zero approval overclaims in the deterministic release benchmark.
+- Eighty passing tests, all three tools exercised, zero approval overclaims in the deterministic release benchmark, and a passing 23-request held-out historical study.
 - Exact core-to-adapter equality across a primary and counter-scenario, including filing/status pairs, sources, audience, freshness, standing note, and review requirement.
 - A live, bounded execution receipt that remains distinct from the human-only review action.
 - A fail-closed September 2 re-verification boundary that preserves last-verified statuses while blocking release readiness.
@@ -92,9 +100,10 @@ Local reproduction from the repository root:
 python3 -m http.server 8000 --directory site
 node --test tests/*.test.js
 node scripts/benchmark.js 2026-09-01
+node scripts/historical-impact-benchmark.js
 ```
 
-The expected automated result is 74 passing tests and a fresh benchmark with `release_ready: true`, 2/2 exact parity scenarios, 8/8 filing-status checks, 5/5 municipal-source records, 3/3 tools exercised, zero approval overclaims, and the raw eight-control/three-tool traces. `node scripts/benchmark.js 2026-09-02` is expected to exit non-zero with `reverification_due` until the official snapshot is refreshed.
+The expected automated result is 80 passing tests; a fresh release benchmark with `release_ready: true`, 2/2 exact parity scenarios, 8/8 filing-status checks, 5/5 municipal-source records, 3/3 tools exercised, zero approval overclaims, and the raw eight-control/three-tool traces; and a historical study with 23 requests, 26/26 exact statuses through both product paths, expected-source presence in 26/26 record-wide outputs, 23/23 same-meeting official source pairs, three preserved multi-meeting lifecycles, and zero challenge-period leakage. `node scripts/benchmark.js 2026-09-02` is expected to exit non-zero with `reverification_due` until the official snapshot is refreshed.
 
 ## Public Demo Link
 
@@ -149,7 +158,7 @@ Official pages checked August 28, 2026 describe [CivicPlus](https://www.civicplu
 
 - The dataset is a five-record editorial snapshot verified August 25, 2026, not a live municipal database.
 - Scheduled and tabled records require re-verification after the September 1 meetings.
-- The benchmark proves handler behavior, pinned release-data fidelity, and municipal-domain boundaries; it does not prove customer adoption, revenue, or time saved.
+- The release benchmark proves handler behavior, pinned release-data fidelity, and municipal-domain boundaries. The historical benchmark proves status preservation after manual structuring; it does not prove automated extraction accuracy, customer adoption, revenue, time saved, or changed practitioner decisions.
 - The eight-control versus three-tool result applies only to the declared script and is not observed user-effect evidence.
 - YouTube Studio reports the English (United States) captions as published, but the public-player caption control had not propagated during the immediate check.
 - Source relevance and factual support remain manually verified.
