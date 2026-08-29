@@ -1,6 +1,6 @@
 # NWA Growth Signal
 
-> **Prepared candidate update — not publication proof.** The public deployment, Devpost page, and YouTube video are not represented as containing this branch's live execution receipt, two-scenario parity evidence, freshness gate, or sourced comparison until those surfaces are separately authorized, released, and verified.
+> **Published and verified August 29, 2026.** The public deployment, Devpost story, judge instructions, and revised YouTube demo now contain the live execution receipt, two-scenario parity evidence, freshness gate, and sourced comparison.
 
 ## One-line Summary
 
@@ -54,6 +54,7 @@ The second challenge was making the agent useful without giving it an unsafe sid
 
 - Three native WebMCP tools running on the public deployment.
 - One browser-verified request driving search, inspection, and visible brief staging end to end.
+- Three succeeded page receipts reading `5 verified records matched`, `RZ26-00511 · Scheduled`, and `3 filings staged · human review required` in one live browser session.
 - Eight of eight filing-status checks preserved across five source-backed records.
 - Five of five records constrained to official municipal-source domains.
 - Seventy-four passing tests, all three tools exercised, and zero approval overclaims in the deterministic release benchmark.
@@ -73,9 +74,7 @@ We also learned that human review works best when it is part of the shared produ
 
 The immediate release requirement is to re-verify the official records when the snapshot reaches its inclusive September 2 boundary. From there, the project could add repeatable ingestion from official municipal records, status-change diffs, and coverage for more Northwest Arkansas cities while preserving the same filing-level evidence and human-review contract. Any future publishing or alerting workflow would remain explicitly user-approved.
 
-## Prepared Candidate Testing Instructions
-
-Activate these instructions on Devpost only after the public URL is verified to serve the candidate commit.
+## Testing Instructions
 
 Live judge flow:
 
@@ -95,13 +94,13 @@ node --test tests/*.test.js
 node scripts/benchmark.js 2026-09-01
 ```
 
-The expected automated result is 68 passing tests and a fresh benchmark with `release_ready: true`, 2/2 exact parity scenarios, 8/8 filing-status checks, 5/5 municipal-source records, 3/3 tools exercised, zero approval overclaims, and the raw eight-control/three-tool traces. `node scripts/benchmark.js 2026-09-02` is expected to exit non-zero with `reverification_due` until the official snapshot is refreshed.
+The expected automated result is 74 passing tests and a fresh benchmark with `release_ready: true`, 2/2 exact parity scenarios, 8/8 filing-status checks, 5/5 municipal-source records, 3/3 tools exercised, zero approval overclaims, and the raw eight-control/three-tool traces. `node scripts/benchmark.js 2026-09-02` is expected to exit non-zero with `reverification_due` until the official snapshot is refreshed.
 
 ## Public Demo Link
 
 https://nwa-growth-signal-webmcp.pages.dev/
 
-This is the existing public deployment. Candidate receipt, parity, freshness, and comparison proof must be re-verified there after an authorized deployment before this prepared update is published.
+The production deployment was verified August 29, 2026. One native WebMCP session returned all three succeeded receipt rows, the current freshness state, the exact three-filing brief, and `review_required: true` with no console errors.
 
 ## Public Repository Link
 
@@ -111,37 +110,36 @@ The repository is public and includes an MIT license.
 
 ## Demo Video
 
-- Approved local candidate: `demo/output/NWA-Growth-Signal-WebMCP-Demo.mp4`
-- Runtime: 2 minutes 31.8 seconds
+- Revised local candidate: `demo/output/NWA-Growth-Signal-WebMCP-Demo-v2.mp4`
+- Runtime: 2 minutes 39.4 seconds
 - Format: 1280×720 H.264/AAC with a 30-cue sidecar caption file
-- Narration: Google Gemini Kore host and Iapetus expert; participant-approved August 28, 2026
-- Public YouTube URL: https://youtu.be/y3lzrrvDKP8
+- Narration: Google Gemini Kore host and Iapetus expert; participant-approved August 29, 2026
+- Public YouTube URL: https://youtu.be/otLlVr_CHVU
 
-The existing public video opens with the problem and WebMCP contract, then shows the live search, the multi-filing Poplar record, the shared brief workspace, the human-review boundary, and the earlier deterministic release proof. A revised candidate guide in `docs/hackathon/DEMO.md` requires the host prompt and three live receipt rows in one continuous segment; that revision has not been recorded or published.
+The public demo shows the exact host task, the multi-filing Poplar record, three live succeeded receipt rows captured from one browser session, the human-review boundary, the 74-test two-scenario release gate, and the sourced comparison.
 
 ## Screenshot Shot List
 
-1. `demo/assets/hero.png` — product thesis and one-prompt/three-action framing.
-2. `demo/assets/tool-contract.png` — WebMCP-ready state and the three visible tool names.
-3. `demo/assets/desk-search.png` — five-record, two-municipality Signal Desk with dated verification.
-4. `demo/assets/inspect-poplar.png` — separate Withdrawn and Scheduled filings on one parcel.
-5. `demo/assets/benchmark.png` — earlier release proof; it does not show the new 74-test, two-scenario report.
-
-`demo/assets/staged-brief.png` is an alternate capture for the visible human-review boundary.
+1. `demo/assets/live-prompt.png` — exact deployed host task.
+2. `demo/assets/live-inspect-poplar.png` — separate Withdrawn and Scheduled filings on one parcel.
+3. `demo/assets/live-receipt-stage.png` — three succeeded live receipt rows and current freshness.
+4. `demo/assets/live-review-required.png` — human-only review control and nothing-published status.
+5. `demo/assets/benchmark-v2-crop.png` — 74 tests, 2/2 parity scenarios, freshness, and raw eight-versus-three traces.
+6. `demo/assets/live-comparison.png` — sourced CivicPlus, Regrid, PermitFlow, and NWA Growth Signal context.
 
 ## Submission Readiness Notes
 
-- Live application: ready; the complete deployed search, inspect, stage, and human-review workflow was browser-verified August 28, 2026 with no console warnings or errors.
+- Live application: ready; the deployed search, inspect, stage, freshness, and human-review workflow was browser-verified August 29, 2026 with three succeeded receipt rows and no console errors.
 - Public repository and visible license: ready.
 - Automated checks and deterministic benchmark: ready.
-- Demo content, technical QA, and participant listening approval: ready.
-- Public YouTube video: ready and independently verified as public on August 28, 2026.
-- YouTube captions: 30-cue English (United States) SRT published in YouTube Studio on August 28, 2026; public-player propagation remains pending verification.
+- Revised demo content, technical QA, and participant listening approval: ready.
+- Revised public YouTube video: published and browser-verified August 29, 2026 at https://youtu.be/otLlVr_CHVU.
+- YouTube captions: the 30-cue English (United States) SRT is published in YouTube Studio; the public player still reported captions unavailable during the immediate propagation check.
 - Country-of-residence form answer: United States, confirmed by the participant August 28, 2026.
 - September 1 scheduled and tabled records: require a final source-status check before the entry is locked.
 - Devpost submission: completed and browser-verified August 28, 2026 at https://devpost.com/software/nwa-growth-signal.
-- Public “About the project” story: replaced and browser-verified August 28, 2026 with nine populated sections covering the official WebMCP-fit, user-experience, agent-human collaboration, implementation, and existing-project disclosure requirements.
-- Receipt/parity/freshness/comparison candidate: prepared in the repository; not yet claimed on the public deployment, Devpost page, or YouTube video.
+- Public “About the project” story: replaced and browser-verified August 29, 2026 with the 74-test, live-receipt, parity, freshness, comparison, human-review, and existing-project evidence.
+- Receipt/parity/freshness/comparison release: live and browser-verified on the public deployment, Devpost page, and revised YouTube demo.
 
 ## Sourced Adjacent-Workflow Context
 
@@ -153,7 +151,7 @@ Official pages checked August 28, 2026 describe [CivicPlus](https://www.civicplu
 - Scheduled and tabled records require re-verification after the September 1 meetings.
 - The benchmark proves handler behavior, pinned release-data fidelity, and municipal-domain boundaries; it does not prove customer adoption, revenue, or time saved.
 - The eight-control versus three-tool result applies only to the declared script and is not observed user-effect evidence.
-- Repository candidate evidence is not proof that the public deployment, Devpost story, or YouTube video contains the same change.
+- YouTube Studio reports the English (United States) captions as published, but the public-player caption control had not propagated during the immediate check.
 - Source relevance and factual support remain manually verified.
 - The downloadable PDF is a visual sample and is not tagged for assistive technology.
 - Agent-side recovery after an initial record-load failure would require a public tool-contract change and is not included.
@@ -174,4 +172,4 @@ Official fields retrieved August 28, 2026:
 - **AI tools used (28258):** Codex, Hyperagent, and Google Gemini neural speech generation.
 - **Learning level (28259):** Significant
 - **Career AI value (28260):** Yes
-- **Required public video:** https://youtu.be/y3lzrrvDKP8
+- **Required public video:** https://youtu.be/otLlVr_CHVU
