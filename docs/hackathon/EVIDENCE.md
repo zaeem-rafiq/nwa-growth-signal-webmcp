@@ -61,11 +61,11 @@ Run the separate pre-challenge study:
 node scripts/historical-impact-benchmark.js
 ```
 
-The local candidate checks 23 real Rogers requests and 26 procedural events from six 2025 meetings against 12 official agenda and minutes documents. Inspection and brief staging each preserved 26/26 exact statuses; every event's expected source pair remained present in 26/26 record-wide outputs; 23/23 requests passed the same-meeting official agenda/minutes boundary; all three multi-meeting lifecycles were preserved; and no record falls inside the challenge period.
+The published study checks 23 real Rogers requests and 26 procedural events from six 2025 meetings against 12 official agenda and minutes documents. Inspection and brief staging each preserved 26/26 exact statuses; every event's expected source pair remained present in 26/26 record-wide outputs; 23/23 requests passed the same-meeting official agenda/minutes boundary; all three multi-meeting lifecycles were preserved; and no record falls inside the challenge period.
 
 The transparent agenda-only heuristic produced three determinate predictions: one matched the eventual minutes and two incorrectly implied final approval for requests that were tabled. The other 20 requests remained unknown from request wording alone. This heuristic is a deliberately limited failure-mode probe, not a competitor or extraction model.
 
-The study demonstrates a real source-risk and verifies the product's deterministic status-preservation contract after records are manually structured. It does not demonstrate automated extraction accuracy, adoption, elapsed-time savings, revenue, or changed practitioner decisions. The full protocol and record boundary are in [`HISTORICAL-IMPACT-BENCHMARK.md`](HISTORICAL-IMPACT-BENCHMARK.md). This evidence is local until separately approved, merged, deployed, and added to the public submission.
+The study demonstrates a real source-risk and verifies the product's deterministic status-preservation contract after records are manually structured. It does not demonstrate automated extraction accuracy, adoption, elapsed-time savings, revenue, or changed practitioner decisions. The full protocol and record boundary are in [`HISTORICAL-IMPACT-BENCHMARK.md`](HISTORICAL-IMPACT-BENCHMARK.md). The study was merged, deployed, and added to the public submission on August 29, 2026.
 
 ## Criterion evidence map
 

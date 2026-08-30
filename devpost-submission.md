@@ -1,6 +1,6 @@
 # NWA Growth Signal
 
-> **Public baseline verified August 29, 2026.** The deployment, Devpost story, judge instructions, and revised YouTube demo contain the live execution receipt, two-scenario parity evidence, freshness gate, and sourced comparison. The held-out historical study and 80-test references below are a local candidate update; they are not yet published on Devpost or deployed.
+> **Public release verified August 29, 2026.** The deployment, Devpost story, judge instructions, and revised YouTube demo contain the live execution receipt, two-scenario parity evidence, freshness gate, sourced comparison, held-out historical study, and 80-test release result.
 
 ## One-line Summary
 
