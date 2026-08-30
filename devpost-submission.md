@@ -1,6 +1,6 @@
 # NWA Growth Signal
 
-> **Public release verified August 29, 2026.** The deployment, Devpost story, judge instructions, and revised YouTube demo contain the live execution receipt, two-scenario parity evidence, freshness gate, sourced comparison, held-out historical study, and 80-test release result.
+> **Public submission verified August 30, 2026.** Devpost lists the project as New and embeds the current 2-minute-46-second public YouTube demo. The deployed application and reproducible public-repository evidence remain the 80-test release.
 
 ## One-line Summary
 
@@ -14,7 +14,7 @@ NWA Growth Signal started with a practical question: can an agent help someone r
 
 ## What changed during the challenge
 
-The municipal research and editorial concept existed before August 25. During the submission period, beginning with repository commit `85c27f7` on August 26, the project added the public WebMCP application, three native page-defined tools, the shared agent-human staging workflow, filing-level status safeguards, dependency-free tests, a deterministic release benchmark, responsive and accessible interface states, a public repository, and the Cloudflare deployment.
+NWA Growth Signal was created during the submission period. The repository begins with commit `85c27f7` on August 26, 2026. The project includes the public WebMCP application, three native page-defined tools, the shared agent-human staging workflow, filing-level status safeguards, dependency-free tests, a deterministic release benchmark, responsive and accessible interface states, a public repository, and the Cloudflare deployment.
 
 ## What it does
 
@@ -42,7 +42,7 @@ What was difficult before becomes a genuine collaboration: the person states the
 
 The application is a dependency-free static HTML, CSS, and JavaScript site deployed on Cloudflare Pages. `site/cases.json` contains the dated editorial sample. `site/core.js` owns deterministic record operations. `site/webmcp.js` registers the three tools with `document.modelContext.registerTool`. `site/app.js` keeps manual and agent-driven state synchronized in the visible interface.
 
-The ordinary-browser fallback preserves the complete human interface when WebMCP is unavailable. There is no database, authentication layer, external write path, or hidden publishing service. Codex supported implementation, review, testing, browser dogfooding, evidence checks, UI/UX audit work, and submission preparation. Hyperagent supported the earlier municipal research and editorial workflow, and Google Gemini generated the participant-approved two-speaker demo narration.
+The ordinary-browser fallback preserves the complete human interface when WebMCP is unavailable. There is no database, authentication layer, external write path, or hidden publishing service. Codex supported implementation, review, testing, browser dogfooding, evidence checks, UI/UX audit work, and submission preparation. Hyperagent supported municipal research and editorial work during the challenge, and Google Gemini generated the participant-approved two-speaker demo narration.
 
 ## Challenges we ran into
 
@@ -119,35 +119,25 @@ The repository is public and includes an MIT license.
 
 ## Demo Video
 
-- Revised local candidate: `demo/output/NWA-Growth-Signal-WebMCP-Demo-v2.mp4`
-- Runtime: 2 minutes 39.4 seconds
-- Format: 1280×720 H.264/AAC with a 30-cue sidecar caption file
-- Narration: Google Gemini Kore host and Iapetus expert; participant-approved August 29, 2026
-- Public YouTube URL: https://youtu.be/otLlVr_CHVU
+- Runtime: 2 minutes 46 seconds
+- Format: 1280×720 H.264/AAC with a published 31-cue English (United States) track
+- Narration: Google Gemini Kore host and Iapetus expert; participant-approved August 30, 2026
+- Public YouTube URL: https://youtu.be/N1ykmBzcf4Y
 
-The public demo shows the exact host task, the multi-filing Poplar record, three live succeeded receipt rows captured from one browser session, the human-review boundary, the 74-test two-scenario release gate, and the sourced comparison.
-
-## Screenshot Shot List
-
-1. `demo/assets/live-prompt.png` — exact deployed host task.
-2. `demo/assets/live-inspect-poplar.png` — separate Withdrawn and Scheduled filings on one parcel.
-3. `demo/assets/live-receipt-stage.png` — three succeeded live receipt rows and current freshness.
-4. `demo/assets/live-review-required.png` — human-only review control and nothing-published status.
-5. `demo/assets/benchmark-v2-crop.png` — 74 tests, 2/2 parity scenarios, freshness, and raw eight-versus-three traces.
-6. `demo/assets/live-comparison.png` — sourced CivicPlus, Regrid, PermitFlow, and NWA Growth Signal context.
+The public demo identifies the fragmented-record problem and the Northwest Arkansas land-analyst user in its first 16.2 seconds. It then shows search, inspection, and staging as three action-state-payoff sequences, including the split-filing Poplar record and the separate human-review boundary.
 
 ## Submission Readiness Notes
 
 - Live application: ready; the deployed search, inspect, stage, freshness, and human-review workflow was browser-verified August 29, 2026 with three succeeded receipt rows and no console errors.
 - Public repository and visible license: ready.
 - Automated checks and deterministic benchmark: ready.
-- Revised demo content, technical QA, and participant listening approval: ready.
-- Revised public YouTube video: published and browser-verified August 29, 2026 at https://youtu.be/otLlVr_CHVU.
-- YouTube captions: the 30-cue English (United States) SRT is published in YouTube Studio; the public player still reported captions unavailable during the immediate propagation check.
+- Current demo content, technical QA, and participant listening approval: ready.
+- Current public YouTube video: published and browser-verified August 30, 2026 at https://youtu.be/N1ykmBzcf4Y.
+- YouTube captions: the 31-cue English (United States) track and timestamped transcript are public; the player caption control remained inconsistent during the latest check.
 - Country-of-residence form answer: United States, confirmed by the participant August 28, 2026.
 - September 1 scheduled and tabled records: require a final source-status check before the entry is locked.
-- Devpost submission: completed and browser-verified August 28, 2026 at https://devpost.com/software/nwa-growth-signal.
-- Public “About the project” story: replaced and browser-verified August 29, 2026 with the 74-test, live-receipt, parity, freshness, comparison, human-review, and existing-project evidence.
+- Devpost submission: completed and browser-verified August 30, 2026 at https://devpost.com/software/nwa-growth-signal with video ID `N1ykmBzcf4Y` embedded.
+- Public “About the project” story: browser-verified August 30, 2026 with created-during-submission provenance and the 80-test public-release evidence.
 - Receipt/parity/freshness/comparison release: live and browser-verified on the public deployment, Devpost page, and revised YouTube demo.
 
 ## Sourced Adjacent-Workflow Context
@@ -160,20 +150,20 @@ Official pages checked August 28, 2026 describe [CivicPlus](https://www.civicplu
 - Scheduled and tabled records require re-verification after the September 1 meetings.
 - The release benchmark proves handler behavior, pinned release-data fidelity, and municipal-domain boundaries. The historical benchmark proves status preservation after manual structuring; it does not prove automated extraction accuracy, customer adoption, revenue, time saved, or changed practitioner decisions.
 - The eight-control versus three-tool result applies only to the declared script and is not observed user-effect evidence.
-- YouTube Studio reports the English (United States) captions as published, but the public-player caption control had not propagated during the immediate check.
+- YouTube exposes the timestamped transcript, but the public-player caption control remained inconsistent during the latest check.
 - Source relevance and factual support remain manually verified.
 - The downloadable PDF is a visual sample and is not tagged for assistive technology.
 - Agent-side recovery after an initial record-load failure would require a public tool-contract change and is not included.
 
 ## TODO Official Form Fields
 
-Official fields retrieved August 28, 2026:
+Official fields last verified August 30, 2026:
 
 - **Submitter Type (28249):** Individual
 - **Country of residence (28250):** United States
 - **Organization name (28251, optional):** Not applicable
-- **App Status (28252):** Existing
-- **Existing-project update (28253):** The NWA Growth Signal editorial concept and municipal-record research existed before the challenge. During the submission period, beginning with repository commit `85c27f7` on August 26, 2026, the project added the public WebMCP application, three native page-defined tools, the shared agent-human staging workflow, filing-level status safeguards, dependency-free tests, deterministic release evidence, responsive UI audit improvements, public repository, and Cloudflare deployment.
+- **App Status (28252):** New
+- **Existing-project update (28253):** Leave blank; App Status is New.
 - **Live URL (28254):** https://nwa-growth-signal-webmcp.pages.dev/
 - **Testing instructions (28255):** Use the live judge flow under “Testing Instructions” above. No credentials are required.
 - **Public code repository (28256):** https://github.com/zaeem-rafiq/nwa-growth-signal-webmcp
@@ -181,4 +171,4 @@ Official fields retrieved August 28, 2026:
 - **AI tools used (28258):** Codex, Hyperagent, and Google Gemini neural speech generation.
 - **Learning level (28259):** Significant
 - **Career AI value (28260):** Yes
-- **Required public video:** https://youtu.be/otLlVr_CHVU
+- **Required public video:** https://youtu.be/N1ykmBzcf4Y
