@@ -1,6 +1,6 @@
 # NWA Growth Signal
 
-> **Facts and production snapshot verified September 2, 2026.** Production serves the September 2 release (all six site files match `main` commit `c579912`); the live ChatGPT-browser tool check is the remaining step before this text goes to Devpost. The public demo runs the 80-test release. The video was recorded against the August 25 snapshot, so its on-screen statuses predate the September 1 hearings.
+> **Facts and production snapshot verified September 2, 2026.** Production serves the September 2 release (all six site files match `main` commit `c579912`); the native three-tool run in the ChatGPT desktop browser was completed against it on September 2. The public demo runs the 80-test release. The video was recorded against the August 25 snapshot, so its on-screen statuses predate the September 1 hearings.
 
 ## One-line Summary
 
@@ -122,7 +122,7 @@ The demo shows search, inspection, and staging as three action-state-payoff sequ
 
 ## Submission Readiness Notes
 
-- Live application: September 2 snapshot deployed to production and verified; the native WebMCP tool run in the ChatGPT desktop browser is pending.
+- Live application: September 2 snapshot deployed to production and verified, including the native three-tool run in the ChatGPT desktop browser on September 2.
 - Public repository, MIT license, automated checks, and deterministic benchmark: ready.
 - Public video and narration approval: verified August 30, 2026.
 - Devpost entry: browser-verified August 30, 2026 at https://devpost.com/software/nwa-growth-signal.

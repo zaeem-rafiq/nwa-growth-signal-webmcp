@@ -80,7 +80,7 @@ After PR #6 merged as `c579912` and `site/` was deployed to the production branc
 - The Poplar record shows `VAR26-0397 · Withdrawn` and `RZ26-00511 · Recommended` with the three official Rogers URLs.
 - The human path staged `RZ26-00511`, `RZ26-00419`, and `RZ26-0041`, reported `Human staged 3 records. Review required; nothing was published.`, and the review control then reported `Human review recorded for this session. Nothing was published or sent.`
 - The browser console had zero warnings and zero errors; the 375-pixel viewport showed all five records with no horizontal overflow.
-- The native WebMCP tool run (three succeeded receipt rows) against this production release still needs a supported browser session; it is not claimed here.
+- Native WebMCP run, September 2, 2026, in the ChatGPT desktop browser against this production release: the demo prompt drove all three tools; `search_planning_cases` matched five residential, action-pending records; `inspect_case_record` returned `RZ26-00511 · Recommended` with `VAR26-0397` still Withdrawn; `stage_source_backed_brief` staged `RZ26-0041`, `RZ26-00419`, and `RZ26-00511` for Land and development with `review_required: true`. The agent reported no console errors and did not mark the brief reviewed, publish, or send it. The participant ran and observed this session.
 
 ## Criterion evidence map
 
