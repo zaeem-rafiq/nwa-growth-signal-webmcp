@@ -15,3 +15,16 @@ test("the product ships five verified records backed only by official municipal 
     record.case_ids.includes(case_id) && record.status_labels.includes(status)
   )));
 });
+
+test("every filing carries a verified status history that ends in its current status", () => {
+  const official = /^https:\/\/(?:www\.)?(?:bentonvillear\.portal\.civicclerk\.com|bentonville\.ar\.gov|rogersar\.gov|permitting\.rogersar\.gov)\//;
+  const filings = cases.flatMap((record) => record.filings);
+  assert.equal(filings.length, 8);
+  for (const filing of filings) {
+    assert.deepEqual(filing.status_history.map(({ verified_at }) => verified_at), ["2026-08-25", "2026-09-02"]);
+    assert.equal(filing.status_history[1].status, filing.status);
+    assert.ok(filing.status_history.every(({ source }) => official.test(source)));
+  }
+  const changed = filings.filter(({ status_history: h }) => h[0].status !== h[1].status).map(({ case_id }) => case_id);
+  assert.deepEqual(changed, ["RZ26-00419", "RZ26-00511"]);
+});

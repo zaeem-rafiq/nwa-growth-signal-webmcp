@@ -337,6 +337,26 @@ test("multi-filing records keep each filing ID beside its own status through sta
   ]);
 });
 
+test("each filing shows its verified status history in the detail and the staged brief", async () => {
+  const document = await runApp({
+    fetchResponse: { ok: true, json: async () => cases },
+    registerPlanningTools: async () => {},
+  });
+  const elements = document.elements;
+  await elements.get("#record-list").querySelector('[data-record-id="signal-4"]').dispatch("click");
+  const detailRows = elements.get("#record-detail").querySelector(".detail-filings").children;
+
+  assert.match(detailRows[0].querySelector(".filing-history").textContent, /^Unchanged since 2026-08-25: Withdrawn\./);
+  assert.match(detailRows[1].querySelector(".filing-history").textContent, /^2026-08-25: Scheduled → 2026-09-02: Recommended\. New 9\/1\/26 row/);
+
+  await detailRows[1].querySelector(".select-record").dispatch("click");
+  await elements.get("#stage-brief").dispatch("click");
+
+  const briefRows = elements.get("#brief-preview").querySelector(".brief-filings").children;
+  assert.equal(briefRows.length, 1);
+  assert.match(briefRows[0].querySelector(".filing-history").textContent, /2026-08-25: Scheduled → 2026-09-02: Recommended/);
+});
+
 test("the retry control recovers after a record-load failure", async () => {
   let attempts = 0;
   const document = await runApp({
