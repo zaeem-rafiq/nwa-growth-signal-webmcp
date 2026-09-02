@@ -30,7 +30,7 @@ test("real handler calls emit monotonic started and succeeded receipt events", a
     cases,
     onBrief: () => {},
     onActivity: (event) => events.push(event),
-    asOf: "2026-09-01",
+    asOf: "2026-09-02",
   });
   const tools = Object.fromEntries(registered.map((tool) => [tool.name, tool]));
 
@@ -45,7 +45,7 @@ test("real handler calls emit monotonic started and succeeded receipt events", a
     { id: 1, tool: "search_planning_cases", status: "started", code: "CALL_STARTED", summary: "Call started." },
     { id: 1, tool: "search_planning_cases", status: "succeeded", code: "SEARCH_COMPLETE", summary: "5 verified records matched." },
     { id: 2, tool: "inspect_case_record", status: "started", code: "CALL_STARTED", summary: "Call started." },
-    { id: 2, tool: "inspect_case_record", status: "succeeded", code: "RECORD_FOUND", summary: "RZ26-00511 · Scheduled." },
+    { id: 2, tool: "inspect_case_record", status: "succeeded", code: "RECORD_FOUND", summary: "RZ26-00511 · Recommended." },
     { id: 3, tool: "stage_source_backed_brief", status: "started", code: "CALL_STARTED", summary: "Call started." },
     { id: 3, tool: "stage_source_backed_brief", status: "succeeded", code: "BRIEF_STAGED", summary: "1 filing staged · human review required." },
   ]);
@@ -111,7 +111,7 @@ test("a receipt callback failure cannot change search or staging outcomes", asyn
     cases,
     onBrief: (brief) => { stagedBrief = brief; },
     onActivity: () => { throw new Error("receipt sink unavailable"); },
-    asOf: "2026-09-01",
+    asOf: "2026-09-02",
   });
   const tools = Object.fromEntries(registered.map((tool) => [tool.name, tool]));
 
@@ -189,7 +189,7 @@ test("the agent workflow finds every residential record still awaiting procedura
     modelContext: { registerTool: async (tool) => registered.push(tool) },
     cases,
     onBrief: () => {},
-    asOf: "2026-09-01",
+    asOf: "2026-09-02",
   });
 
   const search = registered.find(({ name }) => name === "search_planning_cases");
@@ -198,8 +198,8 @@ test("the agent workflow finds every residential record still awaiting procedura
   assert.equal(result.results.length, 5);
   assert.deepEqual(result.freshness, {
     state: "current",
-    as_of: "2026-09-01",
-    reverify_on: "2026-09-02",
+    as_of: "2026-09-02",
+    reverify_on: "2026-09-08",
   });
 });
 
@@ -209,7 +209,7 @@ test("every tool output carries the same exact freshness context", async () => {
     modelContext: { registerTool: async (tool) => registered.push(tool) },
     cases,
     onBrief: () => {},
-    asOf: "2026-09-02",
+    asOf: "2026-09-08",
   });
   const tools = Object.fromEntries(registered.map((tool) => [tool.name, tool]));
   const outputs = await Promise.all([
@@ -223,8 +223,8 @@ test("every tool output carries the same exact freshness context", async () => {
 
   outputs.forEach((output) => assert.deepEqual(output.freshness, {
     state: "reverification_due",
-    as_of: "2026-09-02",
-    reverify_on: "2026-09-02",
+    as_of: "2026-09-08",
+    reverify_on: "2026-09-08",
   }));
 });
 
@@ -235,7 +235,7 @@ test("the registered tools inspect evidence and stage a visible review-required 
     modelContext: { registerTool: async (tool) => registered.push(tool) },
     cases,
     onBrief: (brief) => { stagedBrief = brief; },
-    asOf: "2026-09-01",
+    asOf: "2026-09-02",
   });
 
   const inspect = registered.find(({ name }) => name === "inspect_case_record");
@@ -243,7 +243,7 @@ test("the registered tools inspect evidence and stage a visible review-required 
   const record = await inspect.execute({ case_id: "RZ26-00511" });
   const result = await stage.execute({ case_ids: ["RZ26-00511"], audience: "Lending and title" });
 
-  assert.equal(record.requested_filing.status, "Scheduled");
+  assert.equal(record.requested_filing.status, "Recommended");
   assert.deepEqual(stagedBrief.items[0].selected_filings, [record.requested_filing]);
   assert.deepEqual(result, {
     staged: true,
@@ -253,8 +253,8 @@ test("the registered tools inspect evidence and stage a visible review-required 
     filing_ids: ["RZ26-00511"],
     freshness: {
       state: "current",
-      as_of: "2026-09-01",
-      reverify_on: "2026-09-02",
+      as_of: "2026-09-02",
+      reverify_on: "2026-09-08",
     },
     message: "The brief is staged in the page for human review. Nothing was published or sent.",
   });
@@ -273,7 +273,7 @@ test("staging two filings on one record reports both filing IDs", async () => {
     cases,
     onBrief: () => {},
     onActivity: (event) => events.push(event),
-    asOf: "2026-09-01",
+    asOf: "2026-09-02",
   });
   const stage = registered.find(({ name }) => name === "stage_source_backed_brief");
 

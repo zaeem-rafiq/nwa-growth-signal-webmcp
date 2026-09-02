@@ -17,15 +17,15 @@ Each handler emits a bounded, session-local receipt row as it starts and succeed
 Run from the repository root:
 
 ```sh
-node scripts/benchmark.js 2026-09-01
+node scripts/benchmark.js 2026-09-02
 ```
 
-Observed fresh-fixture result for the dataset verified August 25, 2026:
+Observed fresh-fixture result for the dataset re-verified September 2, 2026:
 
 | Measure | Result |
 |---|---:|
-| Snapshot freshness | `current` as of 2026-09-01 |
-| Re-verification boundary | 2026-09-02 |
+| Snapshot freshness | `current` as of 2026-09-02 |
+| Re-verification boundary | 2026-09-08 |
 | Planning records checked | 5 |
 | Filing-level status checks | 8/8 |
 | Records whose source URLs stay within the municipal-domain allowlist | 5/5 |
@@ -46,7 +46,7 @@ The action evidence uses one published atomic rule: one direct human control act
 The freshness gate is fail-closed. This boundary run is expected to exit non-zero:
 
 ```sh
-node scripts/benchmark.js 2026-09-02
+node scripts/benchmark.js 2026-09-08
 ```
 
 It reports `reverification_due` and `release_ready: false` without changing any filing's last verified procedural status. Recovery requires checking the official records and updating the verified snapshot, not changing the date or bypassing the gate.
@@ -67,6 +67,10 @@ The transparent agenda-only heuristic produced three determinate predictions: on
 
 The study demonstrates a real source-risk and verifies the product's deterministic status-preservation contract after records are manually structured. It does not demonstrate automated extraction accuracy, adoption, elapsed-time savings, revenue, or changed practitioner decisions. The full protocol and record boundary are in [`HISTORICAL-IMPACT-BENCHMARK.md`](HISTORICAL-IMPACT-BENCHMARK.md). The study was merged, deployed, and added to the public submission on August 29, 2026.
 
+## September 2, 2026 re-verification
+
+The August 25 snapshot reached its inclusive boundary on September 2, 2026. Every filing was re-checked against the same official sources on that date. Four of the five records had moved in the official record within eight days; the changes and their sources are listed in the README re-verification log and reproduced in `site/cases.json`. No record was given a status that the official record does not state: Rogers recommendations remain recommendations, the Bentonville hearings carry no outcome until minutes are published, and the two entries that disappeared from official listings keep their last published status with the removal stated. The snapshot's next boundary is September 8, 2026, the next City Council date in both cities.
+
 ## Criterion evidence map
 
 The official [WebMCP Challenge criteria](https://webmcp.devpost.com/) are mapped below without assigning an internal score or predicting a judge's score.
@@ -75,7 +79,7 @@ The official [WebMCP Challenge criteria](https://webmcp.devpost.com/) are mapped
 
 - **Claim:** Three page-defined tools form one non-trivial, human-reviewed municipal-planning workflow, and their adapter results match the deterministic core across two distinct scripts.
 - **Artifact:** `site/webmcp.js`, the on-page live execution receipt, `scripts/benchmark.js`, and `tests/webmcp.test.js`.
-- **Reproduce:** Run `node scripts/benchmark.js 2026-09-01`, then perform search, inspect, and stage in one continuous supported-browser session.
+- **Reproduce:** Run `node scripts/benchmark.js 2026-09-02`, then perform search, inspect, and stage in one continuous supported-browser session.
 - **Falsifier:** A tool is missing, a receipt row is not produced by its real handler, a tool result differs from the canonical core outcome, or a tool can review or write externally.
 - **Observed result:** All three tools were exercised in the supported candidate browser and produced three succeeded receipt rows. Both fixed benchmark scenarios had identical core and adapter hashes in the fresh-fixture report.
 
@@ -190,7 +194,7 @@ Before releasing, recording the revised candidate, or updating the submission:
 - confirm the public repository contains the candidate commit;
 - confirm the production deployment serves that same commit's interface and three-page hackathon PDF;
 - rerun `node --test tests/*.test.js` and the benchmark with the actual release date;
-- if `as_of >= 2026-09-02`, re-verify every included filing from the official records and update the snapshot before release;
+- if `as_of >= 2026-09-08`, re-verify every included filing from the official records and update the snapshot before release;
 - reproduce the host prompt, three live receipt transitions, exact brief, and human-review boundary in one continuous supported-browser run;
 - confirm any revised Devpost copy and video are separately authorized, published, and re-opened from their public URLs; and
 - keep the judged deployment unchanged during judging unless the official rules require otherwise.
@@ -208,7 +212,7 @@ The candidate describes NWA Growth Signal affirmatively as a dated, filing-speci
 ## Honest limitations
 
 - The deployed dataset is a five-record editorial sample, not a live municipal database; the separate 23-request historical cohort is an offline validation asset, not additional live coverage.
-- Scheduled and tabled records require re-verification after the September 1 meetings.
+- Bentonville's September 1 minutes were not published as of September 2, so the three Bentonville records carry no September 1 outcome; the two Rogers recommendations await separate City Council action.
 - The release benchmark proves handler behavior, pinned release-data fidelity, and the municipal-domain boundary. The historical benchmark proves status preservation after manual structuring, not automated extraction accuracy. Source relevance and factual support remain manually verified.
 - The eight-control versus three-tool result belongs only to the declared interface script; no observed user-time, adoption, revenue, or general productivity evidence exists.
 - The repository candidate is not proof that the public deployment, Devpost story, or YouTube video contains the new receipt, freshness, parity, or comparison evidence.

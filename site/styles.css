@@ -226,7 +226,7 @@ a:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
 .freshness-kicker { color: var(--muted); font-family: ui-monospace, monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; }
 .freshness-summary strong { font-size: 15px; letter-spacing: 0.04em; text-transform: uppercase; }
 .freshness-summary #freshness-detail { max-width: 48ch; color: var(--muted); font-size: 13px; }
-.freshness-summary[data-state="reverification_due"] strong { color: var(--red); }
+.freshness-summary[data-state="reverification_due"] strong { color: var(--amber); }
 .receipt-region { min-width: 0; border-top: 2px solid var(--ink); }
 .receipt-row { padding: 14px 0; border-bottom: 1px solid var(--rule); }
 .receipt-row-heading { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 10px; align-items: baseline; }

@@ -164,7 +164,7 @@ Revised local candidate: `demo/output/NWA-Growth-Signal-WebMCP-Demo-v2.mp4`
 - [x] The Issue 01 link opens the three-page hackathon sample.
 - [x] All three tool calls succeed in one browser session.
 - [x] The exact host task and live handler-originated receipt were captured from that session.
-- [x] Freshness is current for the release date; due records still require the scheduled September 2 re-verification.
+- [x] Freshness is current for the release date; the scheduled September 2 re-verification was completed on September 2, 2026 (next boundary September 8). The video shows the August 25 statuses.
 - [x] Status labels remain legible at 720p.
 - [x] Narration says recommendation is not adoption.
 - [x] No claim of customer adoption, time savings, deployment freshness, or submission status lacks evidence.
