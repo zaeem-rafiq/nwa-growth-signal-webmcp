@@ -55,7 +55,7 @@ See [`docs/hackathon/EVIDENCE.md`](docs/hackathon/EVIDENCE.md) for the proof con
 
 ## Evidence boundary
 
-The included dataset was first verified August 25, 2026 and re-verified September 2, 2026 from official Bentonville and Rogers records. Its release-review boundary is September 8, 2026, the next Rogers and Bentonville City Council date; once due, the last verified statuses remain visible but the release gate stays closed until the official records are checked again. No building permits, price forecasts, demographic targeting, or investment recommendations are included.
+The included dataset was first verified August 25, 2026 and re-verified September 2, 2026 from official Bentonville and Rogers records. Its release-review boundary is September 8, 2026, the next Rogers and Bentonville City Council date; once due, the last verified statuses remain visible but the release gate stays closed until the official records are checked again. The judged deployment is frozen from the September 3, 2026 submission deadline through judging, so from September 8 the live page reports re-verification due by design; every status shown is the one verified September 2. No building permits, price forecasts, demographic targeting, or investment recommendations are included.
 
 ### Re-verification log
 
