@@ -174,9 +174,9 @@ test("the hero lists all four WebMCP tools and the receipt names four handlers",
 
   assert.deepEqual(tools, [
     ["01", "search_planning_cases"],
-    ["02", "inspect_case_record"],
-    ["03", "stage_source_backed_brief"],
-    ["04", "list_status_changes"],
+    ["02", "list_status_changes"],
+    ["03", "inspect_case_record"],
+    ["04", "stage_source_backed_brief"],
   ]);
   assert.match(html, /One prompt\. Four accountable actions\./);
   assert.match(html, /four registered tool handlers/);

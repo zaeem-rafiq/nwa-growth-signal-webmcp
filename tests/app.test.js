@@ -313,13 +313,17 @@ test("the primary fixed script exercises every named human action and stages exa
   elements.get("#action-filter").value = "true";
   await elements.get("#action-filter").dispatch("change");
   activated.push("Set Action needed to Yes");
-  for (const [recordId, caseId] of [
-    ["signal-1", "RZ26-0041"],
-    ["signal-3", "RZ26-00419"],
-    ["signal-4", "RZ26-00511"],
+  for (const [recordId, caseId, add] of [
+    ["signal-1", "RZ26-0041", true],
+    ["signal-2", "FP26-0003", false],
+    ["signal-3", "RZ26-00419", true],
+    ["signal-4", "RZ26-00511", true],
+    ["signal-5", "RZ26-00345", false],
   ]) {
     await elements.get("#record-list").querySelector(`[data-record-id="${recordId}"]`).dispatch("click");
     activated.push(`Open ${caseId}`);
+    assert.ok(elements.get("#record-detail").querySelector(".filing-history"), `${caseId} shows its status history`);
+    if (!add) continue;
     const filing = elements.get("#record-detail").querySelector(`[aria-label="Add ${caseId} from the brief"]`);
     await filing.dispatch("click");
     activated.push(`Add ${caseId}`);
@@ -328,7 +332,7 @@ test("the primary fixed script exercises every named human action and stages exa
   activated.push("Stage brief");
 
   assert.deepEqual(activated, PRIMARY_HUMAN_TRACE);
-  assert.equal(activated.length, 8);
+  assert.equal(activated.length, 10);
   assert.deepEqual(
     elements.get("#brief-preview").querySelector(".brief-filings").children.map((row) => row.querySelector("strong").textContent),
     ["RZ26-0041"]

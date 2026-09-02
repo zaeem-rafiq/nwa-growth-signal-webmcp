@@ -4,7 +4,7 @@ This document separates executable proof from claims that still need external co
 
 ## Central loop
 
-One agent request drives three native WebMCP actions in the same interface, and a fourth read-only tool answers what moved between verifications:
+One agent request drives four native WebMCP actions in the same interface:
 
 1. `search_planning_cases` finds bounded Bentonville and Rogers records.
 2. `inspect_case_record` returns filing-level status, non-claims, and official municipal URLs.
@@ -35,17 +35,17 @@ Observed fresh-fixture result for the dataset re-verified September 2, 2026:
 | WebMCP tools exercised | 4/4 |
 | Fixed core-to-adapter scenarios with exact canonical parity | 2/2 |
 | Filings changed since August 25 per `list_status_changes` | 2: `RZ26-00419`, `RZ26-00511` |
-| Primary script interface actions | 8 human controls / 3 agent tools |
+| Primary script interface actions | 10 human controls / 4 agent tools |
 | Primary / counter brief size | 3 / 2 filings |
 | Human review required | Yes |
 | Visible brief callbacks across both scenarios | 2 |
 | Release gate | Pass |
 
-The primary script searches residential records requiring action, inspects `RZ26-00511`, and stages `RZ26-0041`, `RZ26-00419`, and `RZ26-00511` for `Land and development`. The counter-script searches withdrawn residential records in Rogers, inspects `VAR26-0397`, and stages `VAR26-0397` with `RZ26-00345` for `Public-interest planning`. Both compare exact filing IDs, filing/status pairs, audience, official URLs, the standing note, freshness, and `review_required` between the direct core and the registered WebMCP adapter.
+The primary script searches residential records requiring action, lists the status changes, inspects `RZ26-00511`, and stages `RZ26-0041`, `RZ26-00419`, and `RZ26-00511` for `Land and development`. The counter-script searches withdrawn residential records in Rogers, inspects `VAR26-0397`, and stages `VAR26-0397` with `RZ26-00345` for `Public-interest planning`. Both compare exact filing IDs, filing/status pairs, audience, official URLs, the standing note, freshness, and `review_required` between the direct core and the registered WebMCP adapter.
 
 Each script also calls `list_status_changes`: the primary script with its default filters (changed filings only) and the counter-script for Rogers with `changed_only: false`. The comparison adds the previous verification date and every status-change entry (record, filing, dated from and to status with source and note, and the changed flag) to the canonical outcome, so both scenario hashes changed when the step was added on September 2. The release gate also requires the listed changes to be exactly `RZ26-00419` and `RZ26-00511`.
 
-The action evidence uses one published atomic rule: one direct human control activation or one browser-agent tool invocation equals one action. Its raw primary traces are included in the JSON report. Eight versus three is evidence for this fixed script only; it is not a user study, observed elapsed-time saving, adoption signal, or general productivity claim.
+The action evidence uses one published atomic rule: one direct human control activation or one browser-agent tool invocation equals one action. Its raw primary traces are included in the JSON report. Ten versus four is evidence for this fixed script only; it is not a user study, observed elapsed-time saving, adoption signal, or general productivity claim.
 
 The freshness gate is fail-closed. This boundary run is expected to exit non-zero:
 
@@ -91,6 +91,15 @@ After PR #6 merged as `c579912` and `site/` was deployed to the production branc
 - Native WebMCP run, September 2, 2026, in the ChatGPT desktop browser against this production release: the demo prompt drove all three tools; `search_planning_cases` matched five residential, action-pending records; `inspect_case_record` returned `RZ26-00511 · Recommended` with `VAR26-0397` still Withdrawn; `stage_source_backed_brief` staged `RZ26-0041`, `RZ26-00419`, and `RZ26-00511` for Land and development with `review_required: true`. The agent reported no console errors and did not mark the brief reviewed, publish, or send it. The participant ran and observed this session.
 - Second native run, September 2, 2026, after the status-history release (`2083b44`) was deployed: `inspect_case_record` for `RZ26-00419` returned `Recommended` with `status_history` `[2026-08-25 Tabled, 2026-09-02 Recommended]` and for `RZ26-00511` returned `Recommended` with `[2026-08-25 Scheduled, 2026-09-02 Recommended]`, each entry carrying the outcome-table URL and its note; the demo task then produced `5 verified records matched`, `RZ26-0041 · Scheduled`, and `3 filings staged · human review required` with `review_required: true` and an empty console-error list. The verbatim agent report is kept outside the repository at `demo/native-run-2026-09-02b.md`.
 
+### Production verification, September 2, 2026 (four-tool release)
+
+After PR #14 merged as `420a127` and `site/` was deployed to the production branch, https://nwa-growth-signal-webmcp.pages.dev/ was checked directly:
+
+- `cases.json`, `core.js`, `webmcp.js`, `app.js`, and `styles.css` served by production have the same SHA-1 as the merged source, and `index.html` matches when fetched at `/` (the `/index.html` path returns a 308 redirect to `/`).
+- Playwright with a stub `document.modelContext`: the page reported `WebMCP ready · 4 tools exposed`, registered all four tools, `list_status_changes` returned `RZ26-00419` (Tabled to Recommended) and `RZ26-00511` (Scheduled to Recommended) with `previous_verified_at: 2026-08-25`, the receipt row read `2 filings changed since 2026-08-25.`, the console had no errors or warnings, and the 375-pixel viewport had no horizontal overflow.
+- Third native run, September 2, 2026, in the ChatGPT desktop browser against this release: the page reported `WEBMCP READY · 4 TOOLS EXPOSED` and exposed `search_planning_cases`, `inspect_case_record`, `stage_source_backed_brief`, and `list_status_changes` with read-only hints true, true, false, true. `list_status_changes` with no arguments returned exactly `RZ26-00419` (Tabled to Recommended) and `RZ26-00511` (Scheduled to Recommended), each with the Rogers outcome-table URL and its note for both dates and `previous_verified_at: 2026-08-25`; with `city: Bentonville` and `changed_only: false` it returned the four Bentonville filings, all unchanged, with `FP26-0005` carrying the reissued-agenda note. The demo task then produced `5 verified records matched`, `RZ26-00511 · Recommended`, and `3 filings staged · human review required` with `review_required: true`. The five receipt rows read `2 filings changed since 2026-08-25.`, `0 filings changed since 2026-08-25.`, `5 verified records matched.`, `RZ26-00511 · Recommended.`, and `3 filings staged · human review required.`; the console error list was empty. The agent did not mark the brief reviewed, publish, or send it. The participant ran and observed this session. The verbatim agent report is kept outside the repository at `demo/native-run-2026-09-02c.md`.
+- The public Devpost story at https://devpost.com/software/nwa-growth-signal was edited in place in the owner editor on September 2, 2026 after this release deployed. A before and after read of the rendered public page differs in exactly six places: the implementation paragraph (4 tools, 3 read tools), a new paragraph on `list_status_changes`, the 94-test count in two places, the 4-tool accomplishment, and the status-change diffs sentence under what's next. No other sentence, heading, list, or image changed, and the submission still shows Submitted with 5/5 steps done. - The demo video was re-recorded on September 2, 2026 as a four-call cut (2:51, one continuous local screencast driving search, `list_status_changes`, inspect, and stage; Gemini Kore and Iapetus narration, four segments regenerated and level-matched; participant listening approval September 2) and published at https://youtu.be/Bj0qcwkuwas with the English (United States) caption track. The Devpost story was then edited in place a third time: the embedded video, the four-call prompt paragraph with ten controls versus four tool calls, the four-step contract sentence, both gallery captions, the sentence about when the fourth tool landed, and the judge-only testing steps. A before and after read of the public page shows those changes and nothing else. The judge-only testing instructions field was then corrected in place to the current judge flow: step 2 expects `WebMCP ready · 4 tools exposed`, step 4 expects `RZ26-00511` as `Recommended to City Council` beside `VAR26-0397` as `Withdrawn by applicant`, step 6 expects `verified_at: 2026-09-02` with re-verification due `2026-09-08`, a new step 7 covers `list_status_changes`, the local benchmark command uses `2026-09-02`, and the expected-result paragraph matches the one in `devpost-submission.md`. Before that correction the field still described the August 25 snapshot and a September 1 benchmark date that exits non-zero.
+
 ## Criterion evidence map
 
 The official [WebMCP Challenge criteria](https://webmcp.devpost.com/) are mapped below without assigning an internal score or predicting a judge's score.
@@ -101,7 +110,7 @@ The official [WebMCP Challenge criteria](https://webmcp.devpost.com/) are mapped
 - **Artifact:** `site/webmcp.js`, the on-page live execution receipt, `scripts/benchmark.js`, and `tests/webmcp.test.js`.
 - **Reproduce:** Run `node scripts/benchmark.js 2026-09-02`, then perform search, inspect, stage, and the status-change listing in one continuous supported-browser session.
 - **Falsifier:** A tool is missing, a receipt row is not produced by its real handler, a tool result differs from the canonical core outcome, or a tool can review or write externally.
-- **Observed result:** The first three tools were exercised in the supported candidate browser and produced three succeeded receipt rows. Both fixed benchmark scenarios, each now including the status-change step, had identical core and adapter hashes in the fresh-fixture report. As of this commit production still serves the three-tool release, and `list_status_changes` has not yet been run in a native browser; that run is recorded here only after it happens.
+- **Observed result:** All four tools were exercised in the ChatGPT desktop browser against production on September 2, 2026 and produced five succeeded receipt rows, including `2 filings changed since 2026-08-25.` Both fixed benchmark scenarios, each now including the status-change step, had identical core and adapter hashes in the fresh-fixture report.
 
 ### Execution
 
@@ -117,7 +126,7 @@ The official [WebMCP Challenge criteria](https://webmcp.devpost.com/) are mapped
 - **Artifact:** `benchmark/historical-cases.json`, `scripts/historical-impact-benchmark.js`, the two release-benchmark scenarios, and the staged workspace.
 - **Reproduce:** Run `node scripts/historical-impact-benchmark.js`; inspect the 26 exact status checks, three multi-meeting lifecycles, and agenda-only baseline. Then run the fresh release benchmark and compare the same primary outcome through the visible human controls.
 - **Falsifier:** Any historical event changes or disappears through inspection or staging; any request lacks its official agenda and minutes pair; the historical cohort leaks into the challenge period; or the copy presents the study as automated ingestion or observed user impact.
-- **Observed result:** The held-out study preserved 26/26 status events through both product paths; every event's expected source pair remained present in 26/26 record-wide outputs; and all three changing lifecycles remained intact. The agenda-only probe left 20/23 outcomes unknown and made two false-finality overclaims among three determinate predictions. Separately, both fixed release tasks reached equal canonical outcomes, with eight human control activations or three agent tool invocations under the stated rule. No adoption, revenue, elapsed-time, or changed-decision claim is made.
+- **Observed result:** The held-out study preserved 26/26 status events through both product paths; every event's expected source pair remained present in 26/26 record-wide outputs; and all three changing lifecycles remained intact. The agenda-only probe left 20/23 outcomes unknown and made two false-finality overclaims among three determinate predictions. Separately, both fixed release tasks reached equal canonical outcomes, with ten human control activations or four agent tool invocations under the stated rule. No adoption, revenue, elapsed-time, or changed-decision claim is made.
 
 ### Creativity & Ambition
 
@@ -234,8 +243,9 @@ The candidate describes NWA Growth Signal affirmatively as a dated, filing-speci
 - The deployed dataset is a five-record editorial sample, not a live municipal database; the separate 23-request historical cohort is an offline validation asset, not additional live coverage.
 - Bentonville's September 1 minutes were not published as of September 2, so the three Bentonville records carry no September 1 outcome; the two Rogers recommendations await separate City Council action.
 - The release benchmark proves handler behavior, pinned release-data fidelity, and the municipal-domain boundary. The historical benchmark proves status preservation after manual structuring, not automated extraction accuracy. Source relevance and factual support remain manually verified.
-- The eight-control versus three-tool result belongs only to the declared interface script; no observed user-time, adoption, revenue, or general productivity evidence exists.
+- The ten-control versus four-tool result belongs only to the declared interface script; the two extra human controls are the record opens needed to read status history by hand; no observed user-time, adoption, revenue, or general productivity evidence exists.
 - The repository candidate is not proof that the public deployment, Devpost story, or YouTube video contains the new receipt, freshness, parity, or comparison evidence.
 - The PDF is a visual sample; PDF tagging remains a separate accessibility limitation.
 - Agent-side recovery after an initial record-load failure would require a public WebMCP contract change and is not included.
 - `list_status_changes` compares only the two verified dates carried in each filing's `status_history`; it does not watch official sources or detect changes between verifications.
+- The v7 demo video is a scripted local screencast with a page-injected tool host, labeled as such on screen; the native ChatGPT desktop runs are recorded separately above.
