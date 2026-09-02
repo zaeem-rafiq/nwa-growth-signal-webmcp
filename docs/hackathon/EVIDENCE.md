@@ -83,6 +83,7 @@ After PR #6 merged as `c579912` and `site/` was deployed to the production branc
 - The human path staged `RZ26-00511`, `RZ26-00419`, and `RZ26-0041`, reported `Human staged 3 records. Review required; nothing was published.`, and the review control then reported `Human review recorded for this session. Nothing was published or sent.`
 - The browser console had zero warnings and zero errors; the 375-pixel viewport showed all five records with no horizontal overflow.
 - Native WebMCP run, September 2, 2026, in the ChatGPT desktop browser against this production release: the demo prompt drove all three tools; `search_planning_cases` matched five residential, action-pending records; `inspect_case_record` returned `RZ26-00511 · Recommended` with `VAR26-0397` still Withdrawn; `stage_source_backed_brief` staged `RZ26-0041`, `RZ26-00419`, and `RZ26-00511` for Land and development with `review_required: true`. The agent reported no console errors and did not mark the brief reviewed, publish, or send it. The participant ran and observed this session.
+- Second native run, September 2, 2026, after the status-history release (`2083b44`) was deployed: `inspect_case_record` for `RZ26-00419` returned `Recommended` with `status_history` `[2026-08-25 Tabled, 2026-09-02 Recommended]` and for `RZ26-00511` returned `Recommended` with `[2026-08-25 Scheduled, 2026-09-02 Recommended]`, each entry carrying the outcome-table URL and its note; the demo task then produced `5 verified records matched`, `RZ26-0041 · Scheduled`, and `3 filings staged · human review required` with `review_required: true` and an empty console-error list. The verbatim agent report is kept outside the repository at `demo/native-run-2026-09-02b.md`.
 
 ## Criterion evidence map
 
@@ -99,7 +100,7 @@ The official [WebMCP Challenge criteria](https://webmcp.devpost.com/) are mapped
 ### Execution
 
 - **Claim:** The candidate is a coherent static product for human and agent use, with exact filing selection, explicit failure and fallback states, freshness disclosure, and a human-only review boundary.
-- **Artifact:** `site/`, the 80 dependency-free tests, the release benchmark, the held-out historical benchmark, and candidate viewport/browser evidence.
+- **Artifact:** `site/`, the 82 dependency-free tests, the release benchmark, the held-out historical benchmark, and candidate viewport/browser evidence.
 - **Reproduce:** Run `node --test tests/*.test.js`, serve `site/`, and exercise the ordinary-browser and supported-WebMCP paths.
 - **Falsifier:** Any test fails; exact filing selection reintroduces a sibling filing; the due state changes procedural status; or a browser path reaches a dead end or obscures review state.
 - **Observed result:** The current automated suite passes 82/82. The candidate passed browser verification at 375, 768, and 1440 pixels with no horizontal overflow or console warnings and errors.
