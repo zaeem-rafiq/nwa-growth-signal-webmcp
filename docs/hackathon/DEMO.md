@@ -23,7 +23,7 @@ Revised local candidate: `demo/output/NWA-Growth-Signal-WebMCP-Demo-v2.mp4`
 
 ## v7 dialogue and shot list (four-call prompt)
 
-Rendered with `demo/render-judge-live-v7.sh` from `demo/captures/v7/live-workflow.mp4` (one continuous local screencast against the four-tool release) and the Gemini Kore host and Iapetus expert narration. Total runtime 2:51 (171.3s), inside the official three-minute limit. Captions come from `demo/make-srt-v7.py`, one cue per narration line.
+Rendered with `demo/render-judge-live-v7.sh` from `demo/captures/v7/live-workflow.mp4` (one continuous local screencast against the four-tool release) and the Gemini Kore host and Iapetus expert narration. Total runtime 2:50 (170.8s), inside the official three-minute limit. Captions come from `demo/make-srt-v7.py`, one cue per narration line.
 
 ### 0:00-0:16 - The problem
 
@@ -141,7 +141,7 @@ Keep the host prompt visible, then show `search_planning_cases` returning the bo
 >
 > **Expert:** Both tasks reach the same filing, status, source, audience, freshness, and review outcomes. Ninety-four tests pass. The primary script takes ten human controls or four agent tool calls, not observed time savings.
 
-### 2:39-2:51 - Close
+### 2:39-2:50 - Close
 
 **Picture:** The human-accountability card over the recorded-review state.
 
