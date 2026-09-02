@@ -1,6 +1,6 @@
 # NWA Growth Signal
 
-> **Facts verified September 2, 2026.** The September 2 snapshot is merged on `main`; production deployment and the live ChatGPT-browser check are the remaining release steps before this text goes to Devpost. The public demo runs the 80-test release. The video was recorded against the August 25 snapshot, so its on-screen statuses predate the September 1 hearings.
+> **Facts and production snapshot verified September 2, 2026.** Production serves the September 2 release (all six site files match `main` commit `c579912`); the live ChatGPT-browser tool check is the remaining step before this text goes to Devpost. The public demo runs the 80-test release. The video was recorded against the August 25 snapshot, so its on-screen statuses predate the September 1 hearings.
 
 ## One-line Summary
 
@@ -103,7 +103,7 @@ The expected automated result is 80 passing tests; a release benchmark with `ver
 
 https://nwa-growth-signal-webmcp.pages.dev/
 
-The snapshot described in this draft was verified September 2, 2026. Confirm production serves it (search, inspect, and stage returning `verified_at: 2026-09-02`) before publishing this text.
+Production was verified September 2, 2026: every site file matches the merged commit, the page reports the snapshot as current with re-verification on 2026-09-08, the human path staged the three-record brief with review required, and the browser console had no warnings or errors at 1440 and 375 pixels.
 
 ## Public Repository Link
 
@@ -122,7 +122,7 @@ The demo shows search, inspection, and staging as three action-state-payoff sequ
 
 ## Submission Readiness Notes
 
-- Live application: September 2 snapshot merged; production deployment and live tool check pending.
+- Live application: September 2 snapshot deployed to production and verified; the native WebMCP tool run in the ChatGPT desktop browser is pending.
 - Public repository, MIT license, automated checks, and deterministic benchmark: ready.
 - Public video and narration approval: verified August 30, 2026.
 - Devpost entry: browser-verified August 30, 2026 at https://devpost.com/software/nwa-growth-signal.
@@ -139,7 +139,7 @@ The demo shows search, inspection, and staging as three action-state-payoff sequ
 
 ## TODO Official Form Fields
 
-Official fields last verified September 2, 2026:
+Official fields last verified August 30, 2026:
 
 - **Submitter Type (28249):** Individual
 - **Country of residence (28250):** United States

@@ -71,6 +71,17 @@ The study demonstrates a real source-risk and verifies the product's determinist
 
 The August 25 snapshot reached its inclusive boundary on September 2, 2026. Every filing was re-checked against the same official sources on that date. Four of the five records had moved in the official record within eight days; the changes and their sources are listed in the README re-verification log and reproduced in `site/cases.json`. No record was given a status that the official record does not state: Rogers recommendations remain recommendations, the Bentonville hearings carry no outcome until minutes are published, and the two entries that disappeared from official listings keep their last published status with the removal stated. The snapshot's next boundary is September 8, 2026, the next City Council date in both cities.
 
+### Production verification, September 2, 2026
+
+After PR #6 merged as `c579912` and `site/` was deployed to the production branch, https://nwa-growth-signal-webmcp.pages.dev/ was checked directly:
+
+- `index.html`, `cases.json`, `core.js`, `webmcp.js`, `app.js`, and `styles.css` served by production have the same SHA-1 as the merged source.
+- The page reports `Snapshot current`, verified 2026-09-02 with re-verification on 2026-09-08, and the desk header reads verified September 2, 2026.
+- The Poplar record shows `VAR26-0397 · Withdrawn` and `RZ26-00511 · Recommended` with the three official Rogers URLs.
+- The human path staged `RZ26-00511`, `RZ26-00419`, and `RZ26-0041`, reported `Human staged 3 records. Review required; nothing was published.`, and the review control then reported `Human review recorded for this session. Nothing was published or sent.`
+- The browser console had zero warnings and zero errors; the 375-pixel viewport showed all five records with no horizontal overflow.
+- The native WebMCP tool run (three succeeded receipt rows) against this production release still needs a supported browser session; it is not claimed here.
+
 ## Criterion evidence map
 
 The official [WebMCP Challenge criteria](https://webmcp.devpost.com/) are mapped below without assigning an internal score or predicting a judge's score.
