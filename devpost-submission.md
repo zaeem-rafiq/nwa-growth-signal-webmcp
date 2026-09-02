@@ -1,6 +1,6 @@
 # NWA Growth Signal
 
-> **Facts and production snapshot verified September 2, 2026.** Production serves the September 2 release (all six site files match `main` commit `c579912`); the native three-tool run in the ChatGPT desktop browser was completed against it on September 2. The public demo runs the 80-test release. The video was recorded against the August 25 snapshot, so its on-screen statuses predate the September 1 hearings.
+> **Facts and production snapshot verified September 2, 2026.** Production serves the September 2 release (all six site files match `main` commit `c579912`); the native three-tool run in the ChatGPT desktop browser was completed against it on September 2. The public demo runs the 82-test release. The video was recorded against the August 25 snapshot, so its on-screen statuses predate the September 1 hearings.
 
 ## One-line Summary
 
@@ -32,6 +32,8 @@ The person states the research intent and keeps editorial judgment. The agent se
 
 The page registers all 3 tools atomically with `document.modelContext.registerTool` and supports `AbortSignal`. Handler inputs are validated. The 2 read tools carry `readOnlyHint` annotations. Search, inspection, staging, the ordinary browser interface, and the receipt row all use the same deterministic record operations, so the agent and person work from one application state.
 
+Every filing also carries a `status_history`: its August 25 and September 2 statuses, the official source checked on each date, and a note where the record moved or went silent. The tools return it through their existing outputs, and the page shows the same line beside each filing, so an agent inspecting `RZ26-00419` sees Tabled on August 25 and Recommended on September 2 with the same outcome-table URL for both, not a single current label.
+
 ## What changed during the challenge
 
 The project was created during the challenge. Its first commit was `85c27f7` on August 26, 2026. In the 8 days since the first snapshot, the official record moved 4 times across just 5 tracked records:
@@ -49,7 +51,7 @@ We also tested the approach on a held-out historical study: 23 real Rogers reque
 
 NWA Growth Signal is a dependency-free static HTML, CSS, and JavaScript site deployed on Cloudflare Pages. A dated JSON snapshot holds the editorial sample. Shared JavaScript owns deterministic filtering, record inspection, brief staging, freshness checks, and receipts. The WebMCP adapter and the ordinary browser interface call those same operations.
 
-The release has 80 passing dependency-free tests, a deterministic benchmark, and a fail-closed freshness gate. The team used Codex and Claude Code for implementation, review, testing, and submission work; Hyperagent for municipal research and editorial work; and Google Gemini for the approved demo narration.
+The release has 82 passing dependency-free tests, a deterministic benchmark, and a fail-closed freshness gate. The team used Codex and Claude Code for implementation, review, testing, and submission work; Hyperagent for municipal research and editorial work; and Google Gemini for the approved demo narration.
 
 ## Challenges we ran into
 
@@ -61,7 +63,7 @@ The other hard boundary was useful agent action without an unsafe side effect. S
 
 - A complete public planning desk with 3 native WebMCP tools over 5 verified records.
 - One browser request that searches, inspects, and stages a source-backed brief, with a live receipt for every handler call.
-- 80 passing tests, all 3 tools exercised, input validation, atomic registration, cancellation support, and a fail-closed freshness gate.
+- 82 passing tests, all 3 tools exercised, input validation, atomic registration, cancellation support, and a fail-closed freshness gate.
 - Exact preservation of 26/26 historical status events, 26/26 expected source pairs, 23/23 same-meeting source pairs, and 3 multi-meeting lifecycles.
 - A visible human-review boundary with no publish, send, or persistence path in the staging tool.
 - Loading, empty, error, retry, disabled, focus, copy-recovery, responsive, and keyboard-accessible interface states.
@@ -97,7 +99,7 @@ node scripts/benchmark.js 2026-09-02
 node scripts/historical-impact-benchmark.js
 ```
 
-The expected automated result is 80 passing tests; a release benchmark with `verified_at: 2026-09-02`, re-verification due `2026-09-08`, `release_ready: true`, 2/2 exact parity scenarios, 8/8 filing-status checks, 5/5 municipal-source records, 3/3 tools exercised, zero approval overclaims, and the raw eight-control/three-tool traces; and a historical study with 23 requests, 26/26 exact statuses through both product paths, expected-source presence in 26/26 record-wide outputs, 23/23 same-meeting official source pairs, 3 preserved multi-meeting lifecycles, and zero challenge-period leakage. `node scripts/benchmark.js 2026-09-08` is expected to exit non-zero with `reverification_due` as the due-date example.
+The expected automated result is 82 passing tests; a release benchmark with `verified_at: 2026-09-02`, re-verification due `2026-09-08`, `release_ready: true`, 2/2 exact parity scenarios, 8/8 filing-status checks, 5/5 municipal-source records, 3/3 tools exercised, zero approval overclaims, and the raw eight-control/three-tool traces; and a historical study with 23 requests, 26/26 exact statuses through both product paths, expected-source presence in 26/26 record-wide outputs, 23/23 same-meeting official source pairs, 3 preserved multi-meeting lifecycles, and zero challenge-period leakage. `node scripts/benchmark.js 2026-09-08` is expected to exit non-zero with `reverification_due` as the due-date example.
 
 ## Public Demo Link
 

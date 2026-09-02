@@ -102,7 +102,7 @@ The official [WebMCP Challenge criteria](https://webmcp.devpost.com/) are mapped
 - **Artifact:** `site/`, the 80 dependency-free tests, the release benchmark, the held-out historical benchmark, and candidate viewport/browser evidence.
 - **Reproduce:** Run `node --test tests/*.test.js`, serve `site/`, and exercise the ordinary-browser and supported-WebMCP paths.
 - **Falsifier:** Any test fails; exact filing selection reintroduces a sibling filing; the due state changes procedural status; or a browser path reaches a dead end or obscures review state.
-- **Observed result:** The current automated suite passes 80/80. The candidate passed browser verification at 375, 768, and 1440 pixels with no horizontal overflow or console warnings and errors.
+- **Observed result:** The current automated suite passes 82/82. The candidate passed browser verification at 375, 768, and 1440 pixels with no horizontal overflow or console warnings and errors.
 
 ### Potential Impact
 
