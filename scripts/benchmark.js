@@ -30,6 +30,7 @@ const SCENARIOS = Object.freeze({
       case_ids: Object.freeze(["RZ26-0041", "RZ26-00419", "RZ26-00511"]),
       audience: "Land and development",
     }),
+    changes: Object.freeze({}),
   }),
   counter: Object.freeze({
     search: Object.freeze({ city: "Rogers", status: "Withdrawn", residential_only: true }),
@@ -38,6 +39,7 @@ const SCENARIOS = Object.freeze({
       case_ids: Object.freeze(["VAR26-0397", "RZ26-00345"]),
       audience: "Public-interest planning",
     }),
+    changes: Object.freeze({ city: "Rogers", changed_only: false }),
   }),
 });
 
@@ -87,7 +89,7 @@ function briefStageOutcome(brief) {
   };
 }
 
-function canonicalOutcome({ searchResults, inspected, brief, stage, freshness }) {
+function canonicalOutcome({ searchResults, inspected, brief, stage, changes, freshness }) {
   const inspectedFilings = inspected.requested_filing ? [inspected.requested_filing] : inspected.filings;
   return {
     search: searchResults.map((record) => recordOutcome(record)),
@@ -99,6 +101,10 @@ function canonicalOutcome({ searchResults, inspected, brief, stage, freshness })
       items: brief.items.map((record) => recordOutcome(record)),
     },
     stage,
+    status_changes: {
+      previous_verified_at: changes.previous_verified_at,
+      entries: changes.changes,
+    },
     freshness,
   };
 }
@@ -114,7 +120,8 @@ function runCoreScenario(cases, scenario, freshness) {
     inspected: core.inspectCaseRecord(cases, scenario.inspect),
     brief,
     stage: briefStageOutcome(brief),
-    freshness: { search: freshness, inspection: freshness, staging: freshness },
+    changes: core.listStatusChanges(cases, scenario.changes),
+    freshness: { search: freshness, inspection: freshness, staging: freshness, changes: freshness },
   });
 }
 
@@ -122,6 +129,7 @@ async function runToolScenario(tools, stagedBriefs, scenario) {
   const search = await tools.search_planning_cases.execute(scenario.search);
   const inspected = await tools.inspect_case_record.execute({ case_id: scenario.inspect });
   const stage = await tools.stage_source_backed_brief.execute(scenario.stage);
+  const changes = await tools.list_status_changes.execute(scenario.changes);
   const brief = stagedBriefs.shift();
   if (!brief) throw new Error("The staging tool did not provide a reviewable brief.");
   return canonicalOutcome({
@@ -135,10 +143,12 @@ async function runToolScenario(tools, stagedBriefs, scenario) {
       filing_count: stage.filing_count,
       filing_ids: stage.filing_ids,
     },
+    changes: { previous_verified_at: changes.previous_verified_at, changes: changes.changes },
     freshness: {
       search: search.freshness,
       inspection: inspected.freshness,
       staging: stage.freshness,
+      changes: changes.freshness,
     },
   });
 }
@@ -207,6 +217,9 @@ async function runBenchmark({
     staged_records: primary.brief.items.length,
     staged_brief_callbacks: stagedBriefCallbacks,
     review_required: primary.brief.review_required,
+    changed_filings: primary.status_changes.entries
+      .filter(({ changed }) => changed)
+      .map(({ case_id: caseId }) => caseId),
     scenario_fields_compared: [
       "filing IDs",
       "filing/status pairs",
@@ -214,6 +227,8 @@ async function runBenchmark({
       "official URLs",
       "standing note",
       "stage response",
+      "previous verification date",
+      "status-change entries",
       "freshness",
       "review_required",
     ],
@@ -231,7 +246,8 @@ async function runBenchmark({
     && report.records_with_official_sources === 5
     && report.claim_copy_checks_passed === 5
     && report.approval_overclaims === 0
-    && report.tools_exercised.length === 3
+    && report.tools_exercised.length === 4
+    && report.changed_filings.join(",") === "RZ26-00419,RZ26-00511"
     && report.search_results === 5
     && report.staged_records === 3
     && report.staged_brief_callbacks === 2

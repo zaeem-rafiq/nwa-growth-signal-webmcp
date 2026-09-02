@@ -52,6 +52,14 @@
     }
   }
 
+  function validateChangesInput(input) {
+    if (!hasOnlyKeys(input, ["city", "changed_only"]) ||
+        (input.city !== undefined && !CITIES.includes(input.city)) ||
+        (input.changed_only !== undefined && typeof input.changed_only !== "boolean")) {
+      throw typedError("VALIDATION_FAILED", "Invalid status change filters.");
+    }
+  }
+
   async function registerPlanningTools({ modelContext, cases, onBrief, onActivity, asOf = core.northwestArkansasCivilDate() }) {
     const freshness = core.evaluateSnapshotFreshness(core.SNAPSHOT, asOf);
     let nextCallId = 0;
@@ -72,6 +80,13 @@
           ? filing.case_id : "Verified filing";
         const safeStatus = STATUSES.includes(filing?.status) ? filing.status : "recorded status";
         return { code: "RECORD_FOUND", summary: `${safeId} · ${safeStatus}.` };
+      }
+      if (tool === "list_status_changes") {
+        const changed = Array.isArray(result?.changes)
+          ? result.changes.filter((entry) => entry?.changed === true).length : 0;
+        const since = /^\d{4}-\d{2}-\d{2}$/.test(result?.previous_verified_at || "")
+          ? `since ${result.previous_verified_at}` : "since the previous verification";
+        return { code: "CHANGES_LISTED", summary: `${changed} ${changed === 1 ? "filing" : "filings"} changed ${since}.` };
       }
       return {
         code: "BRIEF_STAGED",
@@ -186,6 +201,30 @@
             filing_ids: filingIds,
             freshness,
             message: "The brief is staged in the page for human review. Nothing was published or sent.",
+          };
+        }),
+      },
+      {
+        name: "list_status_changes",
+        title: "List verified status changes",
+        description: "List the verified filings whose procedural status changed between the previous verification and the current one. Each entry carries both verification dates, the official source checked on each date, and any note about a record that moved or went silent. Set changed_only to false to include the unchanged filings. Nothing is inferred about why a status changed.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            city: { type: "string", enum: CITIES },
+            changed_only: { type: "boolean" },
+          },
+          additionalProperties: false,
+        },
+        annotations: { readOnlyHint: true, untrustedContentHint: false },
+        execute: withActivity("list_status_changes", async (input) => {
+          validateChangesInput(input);
+          const { previous_verified_at, changes } = core.listStatusChanges(cases, input);
+          return {
+            verified_at: core.SNAPSHOT.verified_at,
+            previous_verified_at,
+            freshness,
+            changes,
           };
         }),
       },

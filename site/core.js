@@ -115,10 +115,46 @@
     };
   }
 
+  function itemOrder(record) {
+    const number = Number.parseInt(record.item_number, 10);
+    return Number.isNaN(number) ? Number.MAX_SAFE_INTEGER : number;
+  }
+
+  function listStatusChanges(cases, filters = {}) {
+    const ordered = [...cases].sort((a, b) => itemOrder(a) - itemOrder(b));
+    const entries = ordered.flatMap((record) => filingsFor(record).flatMap((filing) => {
+      const history = Array.isArray(filing.status_history) ? filing.status_history : [];
+      if (history.length < 2) return [];
+      const from = history[history.length - 2];
+      const to = history[history.length - 1];
+      return [{
+        record_id: record.id,
+        title: record.title,
+        city: record.city,
+        case_id: filing.case_id,
+        from,
+        to,
+        changed: from.status !== to.status,
+      }];
+    }));
+    const previousDates = [...new Set(entries.map(({ from }) => from.verified_at))];
+    if (previousDates.length > 1) {
+      throw new Error(`Filings were previously verified on different dates: ${previousDates.join(", ")}.`);
+    }
+    const changedOnly = filters.changed_only !== false;
+    return {
+      previous_verified_at: previousDates[0] ?? null,
+      changes: entries.filter((entry) =>
+        (!filters.city || entry.city === filters.city) && (!changedOnly || entry.changed)
+      ),
+    };
+  }
+
   return {
     SNAPSHOT,
     evaluateSnapshotFreshness,
     inspectCaseRecord,
+    listStatusChanges,
     northwestArkansasCivilDate,
     searchPlanningCases,
     stageSourceBackedBrief,

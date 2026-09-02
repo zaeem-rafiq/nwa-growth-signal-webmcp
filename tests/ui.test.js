@@ -167,3 +167,17 @@ test("the execution proof includes one persistent, politely announced freshness 
   assert.match(css, /\.freshness-summary \{[^}]*border-top:\s*1px solid var\(--rule\)/);
   assert.match(css, /\.freshness-summary\[data-state="reverification_due"\][^}]*var\(--amber\)/);
 });
+
+test("the hero lists all four WebMCP tools and the receipt names four handlers", () => {
+  const html = fs.readFileSync(path.join(site, "index.html"), "utf8");
+  const tools = [...html.matchAll(/<li><span>(\d\d)<\/span><code>([a-z_]+)<\/code><\/li>/g)].map(([, order, name]) => [order, name]);
+
+  assert.deepEqual(tools, [
+    ["01", "search_planning_cases"],
+    ["02", "inspect_case_record"],
+    ["03", "stage_source_backed_brief"],
+    ["04", "list_status_changes"],
+  ]);
+  assert.match(html, /One prompt\. Four accountable actions\./);
+  assert.match(html, /four registered tool handlers/);
+});
