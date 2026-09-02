@@ -9,17 +9,17 @@ const EXPECTED_STATUSES = {
   "FP26-0003": "Scheduled",
   "FP26-0004": "Scheduled",
   "FP26-0005": "Scheduled",
-  "RZ26-00419": "Tabled",
+  "RZ26-00419": "Recommended",
   "VAR26-0397": "Withdrawn",
-  "RZ26-00511": "Scheduled",
+  "RZ26-00511": "Recommended",
   "RZ26-00345": "Recommended",
 };
 const EXPECTED_CLAIM_HASHES = {
-  "signal-1": "930045bd866886d541633be3ff5134cb6e2dea51400794d146b013cf846b717f",
-  "signal-2": "36a6745681a17183992f8d34201f970ede23085709c58f1d74405f45463dc984",
-  "signal-3": "e7d49fe116a41160a4e474db334c51a76c96e9225899b1c8d3f143a327b251b0",
-  "signal-4": "1104f52772085a743b40e83de93f48ddd8c32eac813b661326ed488b198ce663",
-  "signal-5": "026bfb4457ead6ad97f21b9c02e909833bcac9ab014024d405593b4bd60f8497",
+  "signal-1": "68da7d0ed49b31130360a42b1bec2715f74a52d7da9ac7d3cebf2a7f5cc6ecec",
+  "signal-2": "9b9c002a839f091b360580f83da7944474354cfd001bb0c31172db7979dcb01d",
+  "signal-3": "ae703fab80e122815596c188963cc3f8ff3d8d8b216af29da1580f1899edd6b4",
+  "signal-4": "359fa2e065c2992723704837bce54d43dc3c66732a0104193210f2c662882786",
+  "signal-5": "3abece6435a8a8635be8cb76e1abdfa36ee00a25997c16737e707e5c78327ccf",
 };
 
 const SCENARIOS = Object.freeze({

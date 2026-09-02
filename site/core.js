@@ -5,7 +5,7 @@
 })(typeof window === "undefined" ? globalThis : window, () => {
   const ACTION_STATUSES = new Set(["Scheduled", "Tabled", "Recommended"]);
   const BRIEF_AUDIENCES = new Set(["Land and development", "Lending and title", "Public-interest planning"]);
-  const SNAPSHOT = Object.freeze({ verified_at: "2026-08-25", reverify_on: "2026-09-02" });
+  const SNAPSHOT = Object.freeze({ verified_at: "2026-09-02", reverify_on: "2026-09-08" });
 
   function isIsoCivilDate(value) {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(value || "")) return false;

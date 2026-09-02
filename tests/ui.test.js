@@ -165,5 +165,5 @@ test("the execution proof includes one persistent, politely announced freshness 
   assert.match(html, /id="freshness-state"/);
   assert.match(html, /id="freshness-detail"/);
   assert.match(css, /\.freshness-summary \{[^}]*border-top:\s*1px solid var\(--rule\)/);
-  assert.match(css, /\.freshness-summary\[data-state="reverification_due"\][^}]*var\(--red\)/);
+  assert.match(css, /\.freshness-summary\[data-state="reverification_due"\][^}]*var\(--amber\)/);
 });

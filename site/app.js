@@ -60,19 +60,19 @@
   function freshnessCopy(freshness) {
     if (freshness.state === "reverification_due") {
       return {
-        title: "Official re-verification required",
-        detail: `Snapshot due ${freshness.reverify_on}. Procedural statuses are unchanged; official re-verification is required before release.`,
+        title: "Re-verification due",
+        detail: `Last verified ${window.NWASignal.SNAPSHOT.verified_at}. Official records may have changed on or after ${freshness.reverify_on}; statuses are shown as last verified. Confirm current status with the city before relying on an item.`,
       };
     }
     if (freshness.state === "verification_date_only") {
       return {
         title: "Verification date only",
-        detail: "The snapshot cannot be treated as current. Procedural statuses are unchanged; official re-verification is required before release.",
+        detail: "The snapshot cannot be treated as current; statuses are shown as last verified. Confirm current status with the city before relying on an item.",
       };
     }
     return {
       title: "Snapshot current",
-      detail: `Verified ${window.NWASignal.SNAPSHOT.verified_at}; re-verify from ${freshness.reverify_on}. Procedural statuses are unchanged.`,
+      detail: `Verified ${window.NWASignal.SNAPSHOT.verified_at} against the official records; next scheduled re-verification ${freshness.reverify_on}. Statuses are shown as last verified.`,
     };
   }
 

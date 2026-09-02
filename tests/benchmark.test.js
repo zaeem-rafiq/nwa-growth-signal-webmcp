@@ -6,7 +6,7 @@ const { registerPlanningTools } = require("../site/webmcp.js");
 const cases = require("../site/cases.json");
 
 test("the release benchmark proves two fixed core-to-adapter scenarios and their interaction traces", async () => {
-  const report = await runBenchmark({ cases, registerPlanningTools, asOf: "2026-09-01" });
+  const report = await runBenchmark({ cases, registerPlanningTools, asOf: "2026-09-02" });
 
   assert.deepEqual({
     ...report,
@@ -16,11 +16,11 @@ test("the release benchmark proves two fixed core-to-adapter scenarios and their
       tool_sha256: scenario.tool_sha256,
     }])),
   }, {
-    dataset_verified_at: "2026-08-25",
+    dataset_verified_at: "2026-09-02",
     freshness: {
       state: "current",
-      as_of: "2026-09-01",
-      reverify_on: "2026-09-02",
+      as_of: "2026-09-02",
+      reverify_on: "2026-09-08",
     },
     records_checked: 5,
     filing_status_checks: 8,
@@ -51,13 +51,13 @@ test("the release benchmark proves two fixed core-to-adapter scenarios and their
     scenarios: {
       primary: {
         parity: true,
-        core_sha256: "d5dea42a5af03506867779a920c2f5a75b403c0344560b5808ea8c4bf20078ca",
-        tool_sha256: "d5dea42a5af03506867779a920c2f5a75b403c0344560b5808ea8c4bf20078ca",
+        core_sha256: "5c181c4987b2a0a4aee6ae22fdae87e2e3e1f68c3c820c655381089f5e3e7dfe",
+        tool_sha256: "5c181c4987b2a0a4aee6ae22fdae87e2e3e1f68c3c820c655381089f5e3e7dfe",
       },
       counter: {
         parity: true,
-        core_sha256: "221298c02f422f69d0d603095efae6eececefba72cade1eac43c6fa4f3fc4a00",
-        tool_sha256: "221298c02f422f69d0d603095efae6eececefba72cade1eac43c6fa4f3fc4a00",
+        core_sha256: "d70cd73d425dfe70a7a0510a38826aa94a4284653715316f1d08d89708ef34ad",
+        tool_sha256: "d70cd73d425dfe70a7a0510a38826aa94a4284653715316f1d08d89708ef34ad",
       },
     },
     interaction_evidence: {
@@ -112,7 +112,7 @@ test("a tool-side outcome mismatch fails parity and the release gate", async () 
   const report = await runBenchmark({
     cases,
     registerPlanningTools: registerFaultyTools,
-    asOf: "2026-09-01",
+    asOf: "2026-09-02",
   });
 
   assert.equal(report.scenarios.primary.parity, false);
@@ -144,7 +144,7 @@ test("a corrupted staging response fails parity and the release gate", async () 
   const report = await runBenchmark({
     cases,
     registerPlanningTools: registerFaultyTools,
-    asOf: "2026-09-01",
+    asOf: "2026-09-02",
   });
 
   assert.equal(report.scenarios.primary.parity, false);
@@ -153,16 +153,16 @@ test("a corrupted staging response fails parity and the release gate", async () 
 });
 
 test("the benchmark is byte-deterministic for the same fixture date", async () => {
-  const first = await runBenchmark({ cases, registerPlanningTools, asOf: "2026-09-01" });
-  const second = await runBenchmark({ cases, registerPlanningTools, asOf: "2026-09-01" });
+  const first = await runBenchmark({ cases, registerPlanningTools, asOf: "2026-09-02" });
+  const second = await runBenchmark({ cases, registerPlanningTools, asOf: "2026-09-02" });
 
   assert.equal(JSON.stringify(first), JSON.stringify(second));
 });
 
 test("the inclusive freshness boundary changes only freshness and readiness", async () => {
-  const notYetVerified = await runBenchmark({ cases, registerPlanningTools, asOf: "2026-08-24" });
-  const fresh = await runBenchmark({ cases, registerPlanningTools, asOf: "2026-09-01" });
-  const due = await runBenchmark({ cases, registerPlanningTools, asOf: "2026-09-02" });
+  const notYetVerified = await runBenchmark({ cases, registerPlanningTools, asOf: "2026-09-01" });
+  const fresh = await runBenchmark({ cases, registerPlanningTools, asOf: "2026-09-02" });
+  const due = await runBenchmark({ cases, registerPlanningTools, asOf: "2026-09-08" });
   const withoutFreshness = (report) => {
     const copy = structuredClone(report);
     delete copy.freshness;
@@ -188,7 +188,7 @@ test("an altered filing status fails the independent release baseline", async ()
   const changed = structuredClone(cases);
   changed[1].filings[0].status = "Tabled";
 
-  const report = await runBenchmark({ cases: changed, registerPlanningTools, asOf: "2026-09-01" });
+  const report = await runBenchmark({ cases: changed, registerPlanningTools, asOf: "2026-09-02" });
 
   assert.equal(report.filing_status_checks_passed, 7);
   assert.equal(report.release_ready, false);
@@ -209,7 +209,7 @@ test("approval and construction assertions fail the copy guard", async (t) => {
       const changed = structuredClone(cases);
       changed[0].summary = phrase;
 
-      const report = await runBenchmark({ cases: changed, registerPlanningTools, asOf: "2026-09-01" });
+      const report = await runBenchmark({ cases: changed, registerPlanningTools, asOf: "2026-09-02" });
 
       assert.equal(report.approval_overclaims, 1);
       assert.equal(report.claim_copy_checks_passed, 4);
@@ -222,7 +222,7 @@ test("procedural recommendation wording is not an approval overclaim", async () 
   const changed = structuredClone(cases);
   changed[0].summary = "The Planning Commission recommended the case; City Council action remains required.";
 
-  const report = await runBenchmark({ cases: changed, registerPlanningTools, asOf: "2026-09-01" });
+  const report = await runBenchmark({ cases: changed, registerPlanningTools, asOf: "2026-09-02" });
 
   assert.equal(report.approval_overclaims, 0);
 });
@@ -231,7 +231,7 @@ test("a source outside the municipal-domain allowlist fails the release gate", a
   const changed = structuredClone(cases);
   changed[0].sources[0].url = "https://example.com/unrelated";
 
-  const report = await runBenchmark({ cases: changed, registerPlanningTools, asOf: "2026-09-01" });
+  const report = await runBenchmark({ cases: changed, registerPlanningTools, asOf: "2026-09-02" });
 
   assert.equal(report.records_with_official_sources, 4);
   assert.equal(report.release_ready, false);

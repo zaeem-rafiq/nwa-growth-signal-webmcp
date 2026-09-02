@@ -1,86 +1,80 @@
 # NWA Growth Signal
 
-> **Public submission verified August 30, 2026.** Devpost lists the project as New and embeds the current 2-minute-46-second public YouTube demo. The deployed application and reproducible public-repository evidence remain the 80-test release.
+> **Facts verified September 2, 2026.** The September 2 snapshot is merged on `main`; production deployment and the live ChatGPT-browser check are the remaining release steps before this text goes to Devpost. The public demo runs the 80-test release. The video was recorded against the August 25 snapshot, so its on-screen statuses predate the September 1 hearings.
 
 ## One-line Summary
 
-A source-backed municipal planning desk where people and browser agents share filing-level truth—and every brief stays human-reviewed.
+A source-backed municipal planning desk where people and browser agents share filing-level evidence, with human review before anything leaves the page.
 
 ## Inspiration
 
-Municipal planning information is public, but procedural truth is fragmented across agendas, legal notices, hearing pages, and permit portals. A single parcel can have multiple filings with different statuses. A scheduled hearing is not an approval; a recommendation is not adoption; a planning action is not permission to build.
+An agenda-wording-only heuristic could determine just 3 of 23 real planning outcomes, and 2 of those 3 were wrong: the wording implied approval for requests that were actually tabled. This week, Rogers changed an existing `8/18/26` outcome row in place from `Tabled to 9/1` to `Recommended to City Council`, with no separate September 1 row. That is the kind of quiet procedural change that can burn land and development teams, lenders and title professionals, local journalists, and public-interest planners in Northwest Arkansas.
 
-NWA Growth Signal started with a practical question: can an agent help someone research local development without flattening those distinctions or hiding the evidence? The first editorial sample covers Bentonville and Rogers, Arkansas, for real-estate professionals, land and development teams, local journalists, and others who need a defensible view of planning activity.
+Municipal records are public, but the procedural truth is scattered across agendas, minutes, outcome tables, hearing pages, and companion filings. One parcel can have several filings with different statuses. NWA Growth Signal gives a person and a browser agent a dated, filing-level planning evidence desk for Bentonville and Rogers, Arkansas.
 
-## What changed during the challenge
-
-NWA Growth Signal was created during the submission period. The repository begins with commit `85c27f7` on August 26, 2026. The project includes the public WebMCP application, three native page-defined tools, the shared agent-human staging workflow, filing-level status safeguards, dependency-free tests, a deterministic release benchmark, responsive and accessible interface states, a public repository, and the Cloudflare deployment.
+Adjacent products serve related jobs. CivicPlus provides agenda and meeting management. Regrid provides a parcel and property map. PermitFlow provides permitting workflow. NWA Growth Signal focuses on the evidence handoff between a researcher and an agent as official planning records change.
 
 ## What it does
 
-NWA Growth Signal gives a person and their browser agent one shared planning desk. The page exposes three native WebMCP tools:
+### Why is this a strong fit for WebMCP?
 
-1. `search_planning_cases` filters five verified records by municipality, procedural status, residential relevance, and pending government action.
-2. `inspect_case_record` returns one record with separate filing-level statuses, plain-English context, explicit non-claims, and official municipal sources.
-3. `stage_source_backed_brief` places one to five records into the visible briefing workspace for human review.
+The research task has three distinct steps, each with a clear contract. `search_planning_cases` filters 5 verified records by municipality, procedural status, residential relevance, and pending government action. `inspect_case_record` returns one filing-level record with its context and official sources. `stage_source_backed_brief` places 1 to 5 selected records into the visible briefing workspace. The agent receives typed results from the same dated data the person sees instead of inferring status from page wording or clicking by coordinates.
 
-Each real handler call also writes a bounded session receipt to the page, so a person can see search, inspect, and stage start and succeed or fail in order. The receipt is separate from the brief lifecycle: only the human control can record review.
+### How does it create a better experience?
 
-The decisive example is a Rogers parcel with two different filings: `VAR26-0397` is **Withdrawn**, while `RZ26-00511` is **Scheduled**. The agent preserves both rather than collapsing the parcel into one misleading status. A single request can then search the dataset, inspect that evidence, and stage a three-record brief. Nothing is published, sent, or saved externally; the page visibly requires human review.
+One prompt can drive the whole flow: “Find residential Bentonville and Rogers cases still awaiting procedural action. Inspect their official evidence and stage a three-item brief without representing any recommendation as final approval.” The fixed demo script takes 8 direct human control activations or 3 agent tool calls. Each real handler call adds an on-page receipt, so the person can see search, inspect, and stage start and then succeed or fail in order.
 
-## Why WebMCP makes the experience better
+### What can people and agents now do together?
 
-This is a strong WebMCP fit because the agent should not guess its way through interface controls or infer legal status from loose page text. The website defines typed, bounded actions and returns structured results from the same data shown to the person. Deterministic handlers—not the model—own filtering, validation, exact status attribution, source boundaries, and the human-review gate.
+The person states the research intent and keeps editorial judgment. The agent searches, inspects the filing-level evidence, and stages the brief. The person can check every selected filing and source before using it. The staging tool cannot publish, send, or persist a brief, and only a human control can record review.
 
-That creates a better user experience in two ways. First, one natural-language request compresses repeated filtering, record inspection, and brief assembly into three accountable actions. Second, every agent action remains visible on the page with the same sources, procedural next steps, and review state the person sees.
+### How did we implement WebMCP?
 
-For the fixed primary script, the executable report records eight direct human control activations or three browser-agent tool invocations under the same atomic counting rule. That is scripted interface evidence, not observed time savings or a general productivity claim.
+The page registers all 3 tools atomically with `document.modelContext.registerTool` and supports `AbortSignal`. Handler inputs are validated. The 2 read tools carry `readOnlyHint` annotations. Search, inspection, staging, the ordinary browser interface, and the receipt row all use the same deterministic record operations, so the agent and person work from one application state.
 
-What was difficult before becomes a genuine collaboration: the person states the research intent and retains editorial judgment; the agent searches, checks filing-level evidence, and stages the working brief; the person reviews the result before anything can leave the page. It is not a separate chatbot, a hidden automation, or a brittle script clicking through an interface.
+## What changed during the challenge
+
+The project was created during the challenge. Its first commit was `85c27f7` on August 26, 2026. In the 8 days since the first snapshot, the official record moved 4 times across just 5 tracked records:
+
+1. Rogers `RZ26-00511`, Poplar Street Paired Homes at 408 E. Poplar, moved from Scheduled to a `9/1/26` outcome of `Recommended to City Council`. Its companion filing on the same parcel, `VAR26-0397`, still reads `Withdrawn by applicant`. The split-filing result is now Withdrawn plus Recommended, and council action is still pending.
+2. Rogers `RZ26-00419`, 209 W. Locust, changed inside the same `8/18/26` row. On August 25 it read `Tabled to 9/1`; on September 2 it reads `Recommended to City Council`. The table publishes no separate September 1 row.
+3. Bentonville `FP26-0005`, Brier Hill Phase II final plat, appeared on the September 1 agenda published August 25 as CivicClerk file `9108`. The city reissued that agenda as file `9133` without the filing. No reason, outcome, or new date is published, so the product keeps the filing visible with its last published status and states what changed.
+4. Rogers `RZ26-00345`, 6253 S. Mt Hebron Rd, disappeared from the outcome table. No City Council action appears in the official sources reviewed, so the product retains the last recorded status, Recommended, and says the row is gone.
+
+Bentonville `RZ26-0041`, `FP26-0003`, and `FP26-0004` were heard September 1 according to the agenda. Minutes are not yet published, so the product represents no outcome for them.
+
+We also tested the approach on a held-out historical study: 23 real Rogers requests, 26 procedural events, 6 meetings in 2025, and 12 official agenda and minutes documents. NWA Growth Signal preserved 26/26 exact statuses through both inspection and staging. Expected source pairs were present in 26/26 record-wide outputs. All 23/23 same-meeting agenda and minutes pairs were present, and 3 multi-meeting lifecycles stayed intact. The request wording left 20 of 23 outcomes unknowable; as the opening example shows, it also gave the wrong answer for 2 of the 3 outcomes it appeared to reveal.
 
 ## How we built it
 
-The application is a dependency-free static HTML, CSS, and JavaScript site deployed on Cloudflare Pages. `site/cases.json` contains the dated editorial sample. `site/core.js` owns deterministic record operations. `site/webmcp.js` registers the three tools with `document.modelContext.registerTool`. `site/app.js` keeps manual and agent-driven state synchronized in the visible interface.
+NWA Growth Signal is a dependency-free static HTML, CSS, and JavaScript site deployed on Cloudflare Pages. A dated JSON snapshot holds the editorial sample. Shared JavaScript owns deterministic filtering, record inspection, brief staging, freshness checks, and receipts. The WebMCP adapter and the ordinary browser interface call those same operations.
 
-The ordinary-browser fallback preserves the complete human interface when WebMCP is unavailable. There is no database, authentication layer, external write path, or hidden publishing service. Codex supported implementation, review, testing, browser dogfooding, evidence checks, UI/UX audit work, and submission preparation. Hyperagent supported municipal research and editorial work during the challenge, and Google Gemini generated the participant-approved two-speaker demo narration.
+The release has 80 passing dependency-free tests, a deterministic benchmark, and a fail-closed freshness gate. The team used Codex and Claude Code for implementation, review, testing, and submission work; Hyperagent for municipal research and editorial work; and Google Gemini for the approved demo narration.
 
 ## Challenges we ran into
 
-The hardest problem was preserving truth at the filing level. Parcel-level summaries are tempting, but they can turn one withdrawn variance and one scheduled rezoning into a false combined status. We kept each filing explicit throughout the data, tools, interface, tests, and demo.
+The hardest part was preserving truth at the filing level while the official record kept moving. A parcel summary would hide the difference between a withdrawn variance and a rezoning recommended to City Council. We carried each filing, status, source, and date through the data, tools, interface, benchmark, and demo.
 
-The second challenge was making the agent useful without giving it an unsafe side effect. The staging tool can assemble a brief, but it cannot publish, send, or persist one. The third was proving quality without overstating impact: the release benchmark measures handler behavior and task compression, not customer adoption, revenue, or unverified time savings.
-
-## Impact validation
-
-To test whether that problem appears in real municipal work—not only in our five-record demo—we assembled a held-out cohort of 23 Rogers planning requests from six 2025 Planning Commission and Board of Adjustment meetings. The study pairs every request with its official agenda and published minutes, covering 26 procedural events and three requests whose status changed across meetings.
-
-NWA Growth Signal preserved 26/26 exact status events through both record inspection and brief staging; every event's expected source pair remained present in 26/26 record-wide outputs; 23/23 requests had same-meeting official agenda/minutes pairs; and all three multi-meeting lifecycles remained intact. A transparent agenda-only request-verb probe could determine only three of 23 eventual outcomes; one matched, while two approval-oriented agenda items were actually tabled. The remaining 20 outcomes were unknown from the request wording alone.
-
-That is the practitioner risk the product addresses: a researcher who treats agenda language or one meeting as the result can miss tabling, withdrawal, denial, or a later status change. This is a real-record source-risk validation—not a user study, automated-ingestion result, or claim of time, revenue, adoption, or changed decisions.
+The other hard boundary was useful agent action without an unsafe side effect. Staging had to be visible and valuable while leaving review and any later use of the brief with the person.
 
 ## Accomplishments that we're proud of
 
-- Three native WebMCP tools running on the public deployment.
-- One browser-verified request driving search, inspection, and visible brief staging end to end.
-- Three succeeded page receipts reading `5 verified records matched`, `RZ26-00511 · Scheduled`, and `3 filings staged · human review required` in one live browser session.
-- Eight of eight filing-status checks preserved across five source-backed records.
-- Five of five records constrained to official municipal-source domains.
-- Eighty passing tests, all three tools exercised, zero approval overclaims in the deterministic release benchmark, and a passing 23-request held-out historical study.
-- Exact core-to-adapter equality across a primary and counter-scenario, including filing/status pairs, sources, audience, freshness, standing note, and review requirement.
-- A live, bounded execution receipt that remains distinct from the human-only review action.
-- A fail-closed September 2 re-verification boundary that preserves last-verified statuses while blocking release readiness.
-- A keyboard-accessible, responsive interface with loading, empty, error, retry, disabled, focus, and copy-recovery states.
-- A clear human-control boundary: three records staged, review required, nothing published.
+- A complete public planning desk with 3 native WebMCP tools over 5 verified records.
+- One browser request that searches, inspects, and stages a source-backed brief, with a live receipt for every handler call.
+- 80 passing tests, all 3 tools exercised, input validation, atomic registration, cancellation support, and a fail-closed freshness gate.
+- Exact preservation of 26/26 historical status events, 26/26 expected source pairs, 23/23 same-meeting source pairs, and 3 multi-meeting lifecycles.
+- A visible human-review boundary with no publish, send, or persistence path in the staging tool.
+- Loading, empty, error, retry, disabled, focus, copy-recovery, responsive, and keyboard-accessible interface states.
 
 ## What we learned
 
-Agent-native design is less about adding chat and more about defining trustworthy actions between human intent and application state. The model is valuable for choosing and sequencing tools; exact municipal status, validation, source boundaries, and irreversible actions belong in deterministic code.
+Agent-native design starts with trustworthy actions, not a chat box. The model is good at choosing and sequencing tools. Exact municipal status, source boundaries, validation, freshness, and irreversible actions belong in deterministic application code.
 
-We also learned that human review works best when it is part of the shared product surface rather than a disclaimer after the fact. A person should be able to see what the agent selected, inspect why, and understand what has—and has not—happened.
+We also learned that a source link is not enough. A useful evidence desk must preserve which filing the source supports, when the status was verified, what changed, and where the record is still silent.
 
 ## What's next for NWA Growth Signal
 
-The immediate release requirement is to re-verify the official records when the snapshot reaches its inclusive September 2 boundary. From there, the project could add repeatable ingestion from official municipal records, status-change diffs, and coverage for more Northwest Arkansas cities while preserving the same filing-level evidence and human-review contract. Any future publishing or alerting workflow would remain explicitly user-approved.
+Next we want repeatable ingestion from official municipal records, status-change diffs, and coverage for more Northwest Arkansas cities. We would keep the same filing-level evidence model, freshness gate, visible receipts, and human-review boundary. Any future alerting or publishing action would require explicit user approval.
 
 ## Testing Instructions
 
@@ -89,27 +83,27 @@ Live judge flow:
 1. Open https://nwa-growth-signal-webmcp.pages.dev/ in a browser host with WebMCP support.
 2. Confirm that the page reports `WebMCP ready · 3 tools exposed`.
 3. Ask: “Find residential Bentonville and Rogers cases still awaiting procedural action. Inspect their official evidence and stage a three-item brief without representing any recommendation as final approval.” Keep the host prompt and page visible through all three calls.
-4. Inspect `RZ26-00511`; verify that `VAR26-0397` remains `Withdrawn` while `RZ26-00511` is `Scheduled` in the August 25 snapshot.
+4. Inspect `RZ26-00511`; verify that it reads `Recommended to City Council` while companion filing `VAR26-0397` reads `Withdrawn by applicant` on the same parcel. Do not treat the recommendation as final council action.
 5. Stage `RZ26-0041`, `RZ26-00419`, and `RZ26-00511`; verify three succeeded receipt rows, the exact three filings, human review required, and nothing published.
-6. Confirm the freshness summary is current for the release date. If it is due, stop and re-verify the official records.
-7. Open the CivicPlus, Regrid, and PermitFlow links in the comparison ledger and confirm that the copy uses affirmative job descriptions rather than capability-absence claims.
+6. Confirm the freshness output says `verified_at: 2026-09-02` and re-verification is due `2026-09-08`.
+7. Open the CivicPlus, Regrid, and PermitFlow links in the comparison ledger and confirm that the copy uses affirmative job descriptions.
 
 Local reproduction from the repository root:
 
 ```sh
 python3 -m http.server 8000 --directory site
 node --test tests/*.test.js
-node scripts/benchmark.js 2026-09-01
+node scripts/benchmark.js 2026-09-02
 node scripts/historical-impact-benchmark.js
 ```
 
-The expected automated result is 80 passing tests; a fresh release benchmark with `release_ready: true`, 2/2 exact parity scenarios, 8/8 filing-status checks, 5/5 municipal-source records, 3/3 tools exercised, zero approval overclaims, and the raw eight-control/three-tool traces; and a historical study with 23 requests, 26/26 exact statuses through both product paths, expected-source presence in 26/26 record-wide outputs, 23/23 same-meeting official source pairs, three preserved multi-meeting lifecycles, and zero challenge-period leakage. `node scripts/benchmark.js 2026-09-02` is expected to exit non-zero with `reverification_due` until the official snapshot is refreshed.
+The expected automated result is 80 passing tests; a release benchmark with `verified_at: 2026-09-02`, re-verification due `2026-09-08`, `release_ready: true`, 2/2 exact parity scenarios, 8/8 filing-status checks, 5/5 municipal-source records, 3/3 tools exercised, zero approval overclaims, and the raw eight-control/three-tool traces; and a historical study with 23 requests, 26/26 exact statuses through both product paths, expected-source presence in 26/26 record-wide outputs, 23/23 same-meeting official source pairs, 3 preserved multi-meeting lifecycles, and zero challenge-period leakage. `node scripts/benchmark.js 2026-09-08` is expected to exit non-zero with `reverification_due` as the due-date example.
 
 ## Public Demo Link
 
 https://nwa-growth-signal-webmcp.pages.dev/
 
-The production deployment was verified August 29, 2026. One native WebMCP session returned all three succeeded receipt rows, the current freshness state, the exact three-filing brief, and `review_required: true` with no console errors.
+The snapshot described in this draft was verified September 2, 2026. Confirm production serves it (search, inspect, and stage returning `verified_at: 2026-09-02`) before publishing this text.
 
 ## Public Repository Link
 
@@ -124,40 +118,28 @@ The repository is public and includes an MIT license.
 - Narration: Google Gemini Kore host and Iapetus expert; participant-approved August 30, 2026
 - Public YouTube URL: https://youtu.be/N1ykmBzcf4Y
 
-The public demo identifies the fragmented-record problem and the Northwest Arkansas land-analyst user in its first 16.2 seconds. It then shows search, inspection, and staging as three action-state-payoff sequences, including the split-filing Poplar record and the separate human-review boundary.
+The demo shows search, inspection, and staging as three action-state-payoff sequences, including the split-filing Poplar record and the human-review boundary.
 
 ## Submission Readiness Notes
 
-- Live application: ready; the deployed search, inspect, stage, freshness, and human-review workflow was browser-verified August 29, 2026 with three succeeded receipt rows and no console errors.
-- Public repository and visible license: ready.
-- Automated checks and deterministic benchmark: ready.
-- Current demo content, technical QA, and participant listening approval: ready.
-- Current public YouTube video: published and browser-verified August 30, 2026 at https://youtu.be/N1ykmBzcf4Y.
-- YouTube captions: the 31-cue English (United States) track and timestamped transcript are public; the player caption control remained inconsistent during the latest check.
-- Country-of-residence form answer: United States, confirmed by the participant August 28, 2026.
-- September 1 scheduled and tabled records: require a final source-status check before the entry is locked.
-- Devpost submission: completed and browser-verified August 30, 2026 at https://devpost.com/software/nwa-growth-signal with video ID `N1ykmBzcf4Y` embedded.
-- Public “About the project” story: browser-verified August 30, 2026 with created-during-submission provenance and the 80-test public-release evidence.
-- Receipt/parity/freshness/comparison release: live and browser-verified on the public deployment, Devpost page, and revised YouTube demo.
-
-## Sourced Adjacent-Workflow Context
-
-Official pages checked August 28, 2026 describe [CivicPlus](https://www.civicplus.com/agenda-meeting-management/) as agenda and meeting management, [Regrid](https://regrid.com/property-app) as a parcel and property-map application, and [PermitFlow](https://www.permitflow.com/) as permitting workflow software. NWA Growth Signal's specific job is a dated, filing-level planning evidence desk shared by people and browser agents. This is an affirmative comparison, not a claim that another product lacks a capability.
+- Live application: September 2 snapshot merged; production deployment and live tool check pending.
+- Public repository, MIT license, automated checks, and deterministic benchmark: ready.
+- Public video and narration approval: verified August 30, 2026.
+- Devpost entry: browser-verified August 30, 2026 at https://devpost.com/software/nwa-growth-signal.
+- Next source re-verification: September 8, 2026.
 
 ## Known Limitations
 
-- The dataset is a five-record editorial snapshot verified August 25, 2026, not a live municipal database.
-- Scheduled and tabled records require re-verification after the September 1 meetings.
-- The release benchmark proves handler behavior, pinned release-data fidelity, and municipal-domain boundaries. The historical benchmark proves status preservation after manual structuring; it does not prove automated extraction accuracy, customer adoption, revenue, time saved, or changed practitioner decisions.
-- The eight-control versus three-tool result applies only to the declared script and is not observed user-effect evidence.
-- YouTube exposes the timestamped transcript, but the public-player caption control remained inconsistent during the latest check.
-- Source relevance and factual support remain manually verified.
-- The downloadable PDF is a visual sample and is not tagged for assistive technology.
+- The product contains 5 manually structured and verified records, not a live municipal database or automated ingestion pipeline. Official changes between refreshes require another source review.
+- `Recommended to City Council` means council action is pending. The current sources support no claim that these recommendations were approved, adopted, or denied.
+- Published gaps remain visible: Bentonville minutes are pending, `FP26-0005` vanished between agenda versions, and the Rogers `RZ26-00345` outcome row is gone.
+- The benchmarks measure deterministic handler behavior and status preservation after manual structuring. They do not measure automated extraction accuracy, adoption, revenue, time saved, or changed decisions.
+- The downloadable PDF is not tagged for assistive technology, and the YouTube player's public caption control was inconsistent during the latest check even though the timestamped transcript is public.
 - Agent-side recovery after an initial record-load failure would require a public tool-contract change and is not included.
 
 ## TODO Official Form Fields
 
-Official fields last verified August 30, 2026:
+Official fields last verified September 2, 2026:
 
 - **Submitter Type (28249):** Individual
 - **Country of residence (28250):** United States
@@ -168,7 +150,7 @@ Official fields last verified August 30, 2026:
 - **Testing instructions (28255):** Use the live judge flow under “Testing Instructions” above. No credentials are required.
 - **Public code repository (28256):** https://github.com/zaeem-rafiq/nwa-growth-signal-webmcp
 - **Tested agents or clients (28257):** Codex in-app browser with native WebMCP support. The ordinary-browser fallback is covered separately by the automated interface tests.
-- **AI tools used (28258):** Codex, Hyperagent, and Google Gemini neural speech generation.
+- **AI tools used (28258):** Codex, Claude Code, Hyperagent, and Google Gemini neural speech generation.
 - **Learning level (28259):** Significant
 - **Career AI value (28260):** Yes
 - **Required public video:** https://youtu.be/N1ykmBzcf4Y
