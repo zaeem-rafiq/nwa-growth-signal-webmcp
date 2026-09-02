@@ -123,9 +123,9 @@
   }
 
   function recordActivity(event) {
-    const tools = ["search_planning_cases", "inspect_case_record", "stage_source_backed_brief"];
+    const tools = ["search_planning_cases", "inspect_case_record", "stage_source_backed_brief", "list_status_changes"];
     const statuses = ["started", "succeeded", "failed"];
-    const codes = ["CALL_STARTED", "SEARCH_COMPLETE", "RECORD_FOUND", "BRIEF_STAGED", "VALIDATION_FAILED", "CALLBACK_FAILED", "TOOL_FAILED"];
+    const codes = ["CALL_STARTED", "SEARCH_COMPLETE", "RECORD_FOUND", "BRIEF_STAGED", "CHANGES_LISTED", "VALIDATION_FAILED", "CALLBACK_FAILED", "TOOL_FAILED"];
     if (!Number.isSafeInteger(event?.id) || event.id < 1 || !tools.includes(event.tool) ||
         !statuses.includes(event.status) || !codes.includes(event.code) || typeof event.summary !== "string") return;
     const call = {
@@ -423,7 +423,7 @@
 
   async function registerWebMCP() {
     if (!document.modelContext?.registerTool) {
-      setWebMCPState("unsupported", "WebMCP not exposed in this browser", "The human interface remains fully usable; open in ChatGPT’s browser or supported Chrome to expose three agent tools.");
+      setWebMCPState("unsupported", "WebMCP not exposed in this browser", "The human interface remains fully usable; open in ChatGPT’s browser or supported Chrome to expose four agent tools.");
       return;
     }
 
@@ -442,7 +442,7 @@
           renderBrief(brief, "agent");
         },
       });
-      setWebMCPState("ready", "WebMCP ready · 3 tools exposed", "Your agent can search, inspect evidence, and stage a local brief in this shared interface.");
+      setWebMCPState("ready", "WebMCP ready · 4 tools exposed", "Your agent can search, inspect evidence, list verified status changes, and stage a local brief in this shared interface.");
     } catch (error) {
       console.error(error);
       setWebMCPState("error", "WebMCP registration failed", "The human interface remains usable. Reload in a supported secure browser context to try again.");

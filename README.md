@@ -1,6 +1,6 @@
 # NWA Growth Signal — WebMCP
 
-An agent-native municipal planning desk for Bentonville and Rogers, Arkansas. The same five source-backed signals are available to people through the interface and to browser agents through native WebMCP tools, with each filing bound to its own procedural status.
+An agent-native municipal planning desk for Bentonville and Rogers, Arkansas. The same five source-backed signals are available to people through the interface and to browser agents through four native WebMCP tools, with each filing bound to its own procedural status.
 
 **Current public demo:** https://nwa-growth-signal-webmcp.pages.dev/
 
@@ -11,6 +11,7 @@ The public release includes a handler-originated execution receipt, explicit sna
 - `search_planning_cases` — filter grouped signals by city, procedural status, residential relevance, and pending action; status-filtered results identify the matching filings
 - `inspect_case_record` — retrieve exact status labels, the requested filing, each filing's verified status history (the August 25 and September 2 statuses with the official source for each), plain-English context, explicit non-claims, and official municipal URLs
 - `stage_source_backed_brief` — stage one to five records in the visible page for human review; nothing is published or sent
+- `list_status_changes` — list the filings whose verified status moved between the previous check (August 25) and the current one (September 2), each with the official source consulted on both dates; set `changed_only` to false to include the unchanged filings and their notes, and filter by city
 
 Each real tool call writes a bounded session receipt into the page. Receipt state is observational; the staged workspace still requires a person to record review.
 
@@ -28,7 +29,7 @@ Open `http://localhost:8000`. The human interface works in ordinary browsers. We
 node --test tests/*.test.js
 ```
 
-The 82-test suite covers exact filing selection, snapshot freshness, handler-side input validation, atomic tool registration, bounded execution receipts, browser fallback states, two-scenario workflow parity, official-source boundaries, historical benchmark integrity, and injection-safe rendering.
+The 93-test suite covers exact filing selection, snapshot freshness, handler-side input validation, atomic tool registration, bounded execution receipts, browser fallback states, two-scenario workflow parity, the status-change listing, official-source boundaries, historical benchmark integrity, and injection-safe rendering.
 
 ## Reproduce the hackathon evidence
 
@@ -37,7 +38,7 @@ node scripts/benchmark.js 2026-09-02
 node scripts/historical-impact-benchmark.js
 ```
 
-The fresh-fixture run compares the direct core and registered WebMCP paths across two fixed scripts. It requires exact equality for filing IDs, filing/status pairs, audience, official URLs, the standing note, freshness, and `review_required`. The primary script records eight direct human control activations and three browser-agent tool invocations under a published atomic counting rule; this is scripted interface evidence, not observed time savings or general productivity evidence.
+The fresh-fixture run compares the direct core and registered WebMCP paths across two fixed scripts. It requires exact equality for filing IDs, filing/status pairs, audience, official URLs, the standing note, freshness, and `review_required`. The primary script records eight direct human control activations and three browser-agent tool invocations under a published atomic counting rule; this is scripted interface evidence, not observed time savings or general productivity evidence. Both scripts also call `list_status_changes` (the primary script with its default filters, the counter-script for Rogers with unchanged filings included) and require the same exact equality for the previous verification date and every status-change entry; the report lists the two filings that changed, `RZ26-00419` and `RZ26-00511`.
 
 The snapshot boundary is inclusive. This command is expected to exit non-zero with `reverification_due` and `release_ready: false` while preserving every procedural status:
 

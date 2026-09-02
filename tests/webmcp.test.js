@@ -4,7 +4,7 @@ const assert = require("node:assert/strict");
 const { registerPlanningTools } = require("../site/webmcp.js");
 const cases = require("../site/cases.json");
 
-test("the page exposes the three planning workflow tools to an agent", async () => {
+test("the page exposes the four planning workflow tools to an agent", async () => {
   const registered = [];
   const modelContext = {
     registerTool(tool) {
@@ -19,6 +19,7 @@ test("the page exposes the three planning workflow tools to an agent", async () 
     "search_planning_cases",
     "inspect_case_record",
     "stage_source_backed_brief",
+    "list_status_changes",
   ]);
 });
 
@@ -219,8 +220,10 @@ test("every tool output carries the same exact freshness context", async () => {
       case_ids: ["RZ26-00511"],
       audience: "Land and development",
     }),
+    tools.list_status_changes.execute({}),
   ]);
 
+  assert.equal(outputs.length, 4);
   outputs.forEach((output) => assert.deepEqual(output.freshness, {
     state: "reverification_due",
     as_of: "2026-09-08",
@@ -321,6 +324,7 @@ test("registered tools reject inputs outside their advertised schemas", async ()
     case_ids: ["RZ26-0041"],
     audience: "Land and development",
   });
+  await tools.list_status_changes.execute({ city: "Rogers", changed_only: false });
   const stagedSentinel = stagedBrief;
 
   const invalidSearches = await Promise.allSettled([
@@ -356,11 +360,21 @@ test("registered tools reject inputs outside their advertised schemas", async ()
     { case_ids: ["RZ26-0041"], audience: "Everyone" },
     { case_ids: ["RZ26-0041"], audience: "Land and development", extra: true },
   ].map((input) => tools.stage_source_backed_brief.execute(input)));
+  const invalidChanges = await Promise.allSettled([
+    null,
+    [],
+    { extra: true },
+    { city: "Fayetteville" },
+    { changed_only: "yes" },
+    { include_unchanged: true },
+    { since: "2026-08-25" },
+  ].map((input) => tools.list_status_changes.execute(input)));
 
   for (const [results, message] of [
     [invalidSearches, /Invalid search filters/],
     [invalidInspections, /Invalid case inspection input/],
     [invalidStages, /Invalid brief input|A brief requires|Unsupported brief audience/],
+    [invalidChanges, /Invalid status change filters/],
   ]) {
     for (const result of results) {
       assert.equal(result.status, "rejected");
@@ -368,4 +382,88 @@ test("registered tools reject inputs outside their advertised schemas", async ()
     }
   }
   assert.strictEqual(stagedBrief, stagedSentinel);
+});
+
+test("a failed fourth-tool registration aborts the three tools registered before it", async () => {
+  const exposed = new Set();
+  const modelContext = {
+    async registerTool(tool, { signal }) {
+      if (tool.name === "list_status_changes") throw new Error("registration failed");
+      exposed.add(tool.name);
+      signal.addEventListener("abort", () => exposed.delete(tool.name), { once: true });
+    },
+  };
+
+  await assert.rejects(
+    () => registerPlanningTools({ modelContext, cases, onBrief: () => {} }),
+    /registration failed/
+  );
+  assert.deepEqual([...exposed], []);
+});
+
+test("the status change tool returns the two moved filings with dated official sources and a receipt", async () => {
+  const registered = [];
+  const events = [];
+  await registerPlanningTools({
+    modelContext: { registerTool: async (tool) => registered.push(tool) },
+    cases,
+    onBrief: () => {},
+    onActivity: (event) => events.push(event),
+    asOf: "2026-09-02",
+  });
+  const changes = registered.find(({ name }) => name === "list_status_changes");
+  const filing = (caseId) => cases.flatMap(({ filings }) => filings).find(({ case_id: id }) => id === caseId);
+
+  assert.deepEqual(changes.annotations, { readOnlyHint: true, untrustedContentHint: false });
+  assert.deepEqual(Object.keys(changes.inputSchema.properties), ["city", "changed_only"]);
+  assert.equal(changes.inputSchema.additionalProperties, false);
+
+  const result = await changes.execute({});
+
+  assert.deepEqual(result, {
+    verified_at: "2026-09-02",
+    previous_verified_at: "2026-08-25",
+    freshness: { state: "current", as_of: "2026-09-02", reverify_on: "2026-09-08" },
+    changes: [
+      {
+        record_id: "signal-3",
+        title: "209 W. Locust Street",
+        city: "Rogers",
+        case_id: "RZ26-00419",
+        from: filing("RZ26-00419").status_history[0],
+        to: filing("RZ26-00419").status_history[1],
+        changed: true,
+      },
+      {
+        record_id: "signal-4",
+        title: "408 E. Poplar Street",
+        city: "Rogers",
+        case_id: "RZ26-00511",
+        from: filing("RZ26-00511").status_history[0],
+        to: filing("RZ26-00511").status_history[1],
+        changed: true,
+      },
+    ],
+  });
+  assert.deepEqual(result.changes.map(({ from, to }) => [from.status, to.status]), [
+    ["Tabled", "Recommended"],
+    ["Scheduled", "Recommended"],
+  ]);
+  assert.ok(result.changes.every(({ from, to }) => /^https:\/\/www\.rogersar\.gov\//.test(from.source) && from.source === to.source));
+  assert.doesNotMatch(JSON.stringify(result), /\b(?:approved|adopted|denied)\b/i);
+  assert.deepEqual(events, [
+    { id: 1, tool: "list_status_changes", status: "started", code: "CALL_STARTED", summary: "Call started." },
+    { id: 1, tool: "list_status_changes", status: "succeeded", code: "CHANGES_LISTED", summary: "2 filings changed since 2026-08-25." },
+  ]);
+
+  const bentonville = await changes.execute({ city: "Bentonville", changed_only: false });
+
+  assert.deepEqual(bentonville.changes.map(({ case_id: caseId, changed }) => [caseId, changed]), [
+    ["RZ26-0041", false],
+    ["FP26-0003", false],
+    ["FP26-0004", false],
+    ["FP26-0005", false],
+  ]);
+  assert.match(bentonville.changes[3].to.note, /Absent from the reissued September 1 agenda/);
+  assert.equal(events.at(-1).summary, "0 filings changed since 2026-08-25.");
 });

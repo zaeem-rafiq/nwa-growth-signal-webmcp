@@ -1,6 +1,6 @@
 # NWA Growth Signal
 
-> **Facts and production snapshot verified September 2, 2026.** Production serves the September 2 release (all six site files match `main` commit `c579912`); the native three-tool run in the ChatGPT desktop browser was completed against it on September 2. The public demo runs the 82-test release. The video was recorded against the August 25 snapshot, so its on-screen statuses predate the September 1 hearings.
+> **Facts and production snapshot verified September 2, 2026.** Production serves the September 2 release (all six site files match `main` commit `c579912`); the native three-tool run in the ChatGPT desktop browser was completed against it on September 2. The four-tool, 93-test release is the September 3 candidate; its production verification and native `list_status_changes` run are recorded in the repository evidence once deployed. The video was recorded against the August 25 snapshot, so its on-screen statuses predate the September 1 hearings and show three tools.
 
 ## One-line Summary
 
@@ -30,9 +30,11 @@ The person states the research intent and keeps editorial judgment. The agent se
 
 ### How did we implement WebMCP?
 
-The page registers all 3 tools atomically with `document.modelContext.registerTool` and supports `AbortSignal`. Handler inputs are validated. The 2 read tools carry `readOnlyHint` annotations. Search, inspection, staging, the ordinary browser interface, and the receipt row all use the same deterministic record operations, so the agent and person work from one application state.
+The page registers all 4 tools atomically with `document.modelContext.registerTool` after the record set loads and supports `AbortSignal`. Handler inputs are validated. The 3 read tools carry `readOnlyHint` annotations. Search, inspection, staging, the ordinary browser interface, and the receipt row all use the same deterministic record operations, so the agent and person work from one application state.
 
 Every filing also carries a `status_history`: its August 25 and September 2 statuses, the official source checked on each date, and a note where the record moved or went silent. The tools return it through their existing outputs, and the page shows the same line beside each filing, so an agent inspecting `RZ26-00419` sees Tabled on August 25 and Recommended on September 2 with the same outcome-table URL for both, not a single current label.
+
+A fourth tool, `list_status_changes`, landed after the video was recorded. It reads that same `status_history` and returns the filings whose verified status moved between the previous check and the current one: `RZ26-00419` (Tabled to Recommended) and `RZ26-00511` (Scheduled to Recommended), each with the official source checked on both dates. With `changed_only` set to false it also lists the six unchanged filings and their notes, such as `FP26-0005` absent from the reissued agenda. It is read-only, registered atomically with the other three, and writes the same on-page receipt: `2 filings changed since 2026-08-25.`
 
 ## What changed during the challenge
 
@@ -51,7 +53,7 @@ We also tested the approach on a held-out historical study: 23 real Rogers reque
 
 NWA Growth Signal is a dependency-free static HTML, CSS, and JavaScript site deployed on Cloudflare Pages. A dated JSON snapshot holds the editorial sample. Shared JavaScript owns deterministic filtering, record inspection, brief staging, freshness checks, and receipts. The WebMCP adapter and the ordinary browser interface call those same operations.
 
-The release has 82 passing dependency-free tests, a deterministic benchmark, and a fail-closed freshness gate. The team used Codex and Claude Code for implementation, review, testing, and submission work; Hyperagent for municipal research and editorial work; and Google Gemini for the approved demo narration.
+The release has 93 passing dependency-free tests, a deterministic benchmark, and a fail-closed freshness gate. The team used Codex and Claude Code for implementation, review, testing, and submission work; Hyperagent for municipal research and editorial work; and Google Gemini for the approved demo narration.
 
 ## Challenges we ran into
 
@@ -61,9 +63,9 @@ The other hard boundary was useful agent action without an unsafe side effect. S
 
 ## Accomplishments that we're proud of
 
-- A complete public planning desk with 3 native WebMCP tools over 5 verified records.
+- A complete public planning desk with 4 native WebMCP tools over 5 verified records.
 - One browser request that searches, inspects, and stages a source-backed brief, with a live receipt for every handler call.
-- 82 passing tests, all 3 tools exercised, input validation, atomic registration, cancellation support, and a fail-closed freshness gate.
+- 93 passing tests, all 4 tools exercised, input validation, atomic registration, cancellation support, and a fail-closed freshness gate.
 - Exact preservation of 26/26 historical status events, 26/26 expected source pairs, 23/23 same-meeting source pairs, and 3 multi-meeting lifecycles.
 - A visible human-review boundary with no publish, send, or persistence path in the staging tool.
 - Loading, empty, error, retry, disabled, focus, copy-recovery, responsive, and keyboard-accessible interface states.
@@ -76,19 +78,20 @@ We also learned that a source link is not enough. A useful evidence desk must pr
 
 ## What's next for NWA Growth Signal
 
-Next we want repeatable ingestion from official municipal records, status-change diffs, and coverage for more Northwest Arkansas cities. We would keep the same filing-level evidence model, freshness gate, visible receipts, and human-review boundary. Any future alerting or publishing action would require explicit user approval.
+Next we want repeatable ingestion from official municipal records, status-change diffs across more than two verification dates, and coverage for more Northwest Arkansas cities. We would keep the same filing-level evidence model, freshness gate, visible receipts, and human-review boundary. Any future alerting or publishing action would require explicit user approval.
 
 ## Testing Instructions
 
 Live judge flow:
 
 1. Open https://nwa-growth-signal-webmcp.pages.dev/ in a browser host with WebMCP support.
-2. Confirm that the page reports `WebMCP ready · 3 tools exposed`.
+2. Confirm that the page reports `WebMCP ready · 4 tools exposed`.
 3. Ask: “Find residential Bentonville and Rogers cases still awaiting procedural action. Inspect their official evidence and stage a three-item brief without representing any recommendation as final approval.” Keep the host prompt and page visible through all three calls.
 4. Inspect `RZ26-00511`; verify that it reads `Recommended to City Council` while companion filing `VAR26-0397` reads `Withdrawn by applicant` on the same parcel. Do not treat the recommendation as final council action.
 5. Stage `RZ26-0041`, `RZ26-00419`, and `RZ26-00511`; verify three succeeded receipt rows, the exact three filings, human review required, and nothing published.
 6. Confirm the freshness output says `verified_at: 2026-09-02` and re-verification is due `2026-09-08`.
-7. Open the CivicPlus, Regrid, and PermitFlow links in the comparison ledger and confirm that the copy uses affirmative job descriptions.
+7. Ask: “Which filings changed status since the previous verification?” Verify that `list_status_changes` returns exactly `RZ26-00419` (Tabled to Recommended) and `RZ26-00511` (Scheduled to Recommended), each with the Rogers outcome-table URL for both dates, and that the receipt row reads `2 filings changed since 2026-08-25.`
+8. Open the CivicPlus, Regrid, and PermitFlow links in the comparison ledger and confirm that the copy uses affirmative job descriptions.
 
 Local reproduction from the repository root:
 
@@ -99,7 +102,7 @@ node scripts/benchmark.js 2026-09-02
 node scripts/historical-impact-benchmark.js
 ```
 
-The expected automated result is 82 passing tests; a release benchmark with `verified_at: 2026-09-02`, re-verification due `2026-09-08`, `release_ready: true`, 2/2 exact parity scenarios, 8/8 filing-status checks, 5/5 municipal-source records, 3/3 tools exercised, zero approval overclaims, and the raw eight-control/three-tool traces; and a historical study with 23 requests, 26/26 exact statuses through both product paths, expected-source presence in 26/26 record-wide outputs, 23/23 same-meeting official source pairs, 3 preserved multi-meeting lifecycles, and zero challenge-period leakage. `node scripts/benchmark.js 2026-09-08` is expected to exit non-zero with `reverification_due` as the due-date example.
+The expected automated result is 93 passing tests; a release benchmark with `verified_at: 2026-09-02`, re-verification due `2026-09-08`, `release_ready: true`, 2/2 exact parity scenarios that each include the status-change listing, the two changed filings `RZ26-00419` and `RZ26-00511`, 8/8 filing-status checks, 5/5 municipal-source records, 4/4 tools exercised, zero approval overclaims, and the raw eight-control/three-tool traces; and a historical study with 23 requests, 26/26 exact statuses through both product paths, expected-source presence in 26/26 record-wide outputs, 23/23 same-meeting official source pairs, 3 preserved multi-meeting lifecycles, and zero challenge-period leakage. `node scripts/benchmark.js 2026-09-08` is expected to exit non-zero with `reverification_due` as the due-date example.
 
 ## Public Demo Link
 

@@ -33,11 +33,13 @@ test("the release benchmark proves two fixed core-to-adapter scenarios and their
       "search_planning_cases",
       "inspect_case_record",
       "stage_source_backed_brief",
+      "list_status_changes",
     ],
     search_results: 5,
     staged_records: 3,
     staged_brief_callbacks: 2,
     review_required: true,
+    changed_filings: ["RZ26-00419", "RZ26-00511"],
     scenario_fields_compared: [
       "filing IDs",
       "filing/status pairs",
@@ -45,19 +47,21 @@ test("the release benchmark proves two fixed core-to-adapter scenarios and their
       "official URLs",
       "standing note",
       "stage response",
+      "previous verification date",
+      "status-change entries",
       "freshness",
       "review_required",
     ],
     scenarios: {
       primary: {
         parity: true,
-        core_sha256: "5c181c4987b2a0a4aee6ae22fdae87e2e3e1f68c3c820c655381089f5e3e7dfe",
-        tool_sha256: "5c181c4987b2a0a4aee6ae22fdae87e2e3e1f68c3c820c655381089f5e3e7dfe",
+        core_sha256: "7ac9bf756e103b9e8c1c8027689f66cedf8ff2f7c35323d1d2d186b6d3fa86ef",
+        tool_sha256: "7ac9bf756e103b9e8c1c8027689f66cedf8ff2f7c35323d1d2d186b6d3fa86ef",
       },
       counter: {
         parity: true,
-        core_sha256: "d70cd73d425dfe70a7a0510a38826aa94a4284653715316f1d08d89708ef34ad",
-        tool_sha256: "d70cd73d425dfe70a7a0510a38826aa94a4284653715316f1d08d89708ef34ad",
+        core_sha256: "81bd1ef06c3b4504cebeea019db1aeb96e74afe4e50b48d882489f6594cfd506",
+        tool_sha256: "81bd1ef06c3b4504cebeea019db1aeb96e74afe4e50b48d882489f6594cfd506",
       },
     },
     interaction_evidence: {
@@ -149,6 +153,38 @@ test("a corrupted staging response fails parity and the release gate", async () 
 
   assert.equal(report.scenarios.primary.parity, false);
   assert.equal(report.scenarios.counter.parity, false);
+  assert.equal(report.release_ready, false);
+});
+
+test("a status-change listing that drops a moved filing fails parity and the release gate", async () => {
+  async function registerFaultyTools(options) {
+    return registerPlanningTools({
+      ...options,
+      modelContext: {
+        registerTool(tool, registrationOptions) {
+          return options.modelContext.registerTool({
+            ...tool,
+            execute: tool.name === "list_status_changes"
+              ? async (input) => {
+                const result = await tool.execute(input);
+                return { ...result, changes: result.changes.filter(({ case_id: caseId }) => caseId !== "RZ26-00419") };
+              }
+              : tool.execute,
+          }, registrationOptions);
+        },
+      },
+    });
+  }
+
+  const report = await runBenchmark({
+    cases,
+    registerPlanningTools: registerFaultyTools,
+    asOf: "2026-09-02",
+  });
+
+  assert.equal(report.scenarios.primary.parity, false);
+  assert.equal(report.scenarios.counter.parity, false);
+  assert.deepEqual(report.changed_filings, ["RZ26-00511"]);
   assert.equal(report.release_ready, false);
 });
 

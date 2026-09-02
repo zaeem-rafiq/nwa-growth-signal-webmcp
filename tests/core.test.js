@@ -2,7 +2,7 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 
 const core = require("../site/core.js");
-const { inspectCaseRecord, searchPlanningCases, stageSourceBackedBrief } = core;
+const { inspectCaseRecord, listStatusChanges, searchPlanningCases, stageSourceBackedBrief } = core;
 
 test("snapshot freshness becomes due on the shared re-verification date", () => {
   assert.deepEqual(core.evaluateSnapshotFreshness?.({
@@ -177,4 +177,99 @@ test("a staged brief rejects inputs outside its public contract", () => {
     () => stageSourceBackedBrief([], { case_ids: ["A"], audience: "Everyone" }),
     /Unsupported brief audience/
   );
+});
+
+const ROGERS_TABLE = "https://www.rogersar.gov/1181/Public-Hearing-Items";
+const twoCheckHistory = (from, to, note) => [
+  { verified_at: "2026-08-25", status: from, source: ROGERS_TABLE },
+  { verified_at: "2026-09-02", status: to, source: ROGERS_TABLE, note },
+];
+
+test("status changes list only the filings whose verified status moved, with both dated sources", () => {
+  const cases = [{
+    id: "signal-4",
+    item_number: "04",
+    title: "408 E. Poplar Street",
+    city: "Rogers",
+    filings: [
+      { case_id: "VAR26-0397", status: "Withdrawn", status_history: twoCheckHistory("Withdrawn", "Withdrawn", "Still withdrawn.") },
+      { case_id: "RZ26-00511", status: "Recommended", status_history: twoCheckHistory("Scheduled", "Recommended", "New 9/1/26 row.") },
+    ],
+  }];
+
+  assert.deepEqual(listStatusChanges(cases), {
+    previous_verified_at: "2026-08-25",
+    changes: [{
+      record_id: "signal-4",
+      title: "408 E. Poplar Street",
+      city: "Rogers",
+      case_id: "RZ26-00511",
+      from: { verified_at: "2026-08-25", status: "Scheduled", source: ROGERS_TABLE },
+      to: { verified_at: "2026-09-02", status: "Recommended", source: ROGERS_TABLE, note: "New 9/1/26 row." },
+      changed: true,
+    }],
+  });
+});
+
+test("status changes can include unchanged filings, honor the city filter, and follow item order", () => {
+  const cases = [
+    { id: "B", item_number: "02", title: "Locust", city: "Rogers", filings: [
+      { case_id: "RZ26-00419", status: "Recommended", status_history: twoCheckHistory("Tabled", "Recommended", "Row changed in place.") },
+    ] },
+    { id: "A", item_number: "01", title: "Brier Hill", city: "Bentonville", filings: [
+      { case_id: "FP26-0005", status: "Scheduled", status_history: twoCheckHistory("Scheduled", "Scheduled", "Absent from the reissued agenda.") },
+    ] },
+    { id: "C", item_number: "03", title: "No history", city: "Rogers", filings: [{ case_id: "OLD-1", status: "Tabled" }] },
+    { id: "D", item_number: "04", title: "No filings", city: "Rogers", status: "Recommended" },
+  ];
+
+  const everything = listStatusChanges(cases, { changed_only: false });
+  const bentonville = listStatusChanges(cases, { city: "Bentonville" });
+  const bentonvilleAll = listStatusChanges(cases, { city: "Bentonville", changed_only: false });
+
+  assert.deepEqual(everything.changes.map(({ case_id: caseId, changed }) => [caseId, changed]), [
+    ["FP26-0005", false],
+    ["RZ26-00419", true],
+  ]);
+  assert.equal(everything.changes[0].to.note, "Absent from the reissued agenda.");
+  assert.deepEqual(bentonville, { previous_verified_at: "2026-08-25", changes: [] });
+  assert.deepEqual(bentonvilleAll.changes.map(({ case_id: caseId }) => caseId), ["FP26-0005"]);
+});
+
+test("status changes compare each filing's two most recent verifications", () => {
+  const cases = [{
+    id: "signal-3",
+    item_number: "03",
+    title: "209 W. Locust Street",
+    city: "Rogers",
+    filings: [{ case_id: "RZ26-00419", status: "Recommended", status_history: [
+      { verified_at: "2026-08-18", status: "Scheduled", source: ROGERS_TABLE },
+      { verified_at: "2026-08-25", status: "Tabled", source: ROGERS_TABLE },
+      { verified_at: "2026-09-02", status: "Recommended", source: ROGERS_TABLE },
+    ] }],
+  }];
+
+  const result = listStatusChanges(cases);
+
+  assert.equal(result.previous_verified_at, "2026-08-25");
+  assert.deepEqual([result.changes[0].from.status, result.changes[0].to.status], ["Tabled", "Recommended"]);
+});
+
+test("status changes report no previous verification when no filing carries a comparable history", () => {
+  assert.deepEqual(listStatusChanges([{ id: "minimal", case_ids: ["MIN-1"] }]), {
+    previous_verified_at: null,
+    changes: [],
+  });
+});
+
+test("status changes refuse filings whose previous verifications fall on different dates", () => {
+  const cases = [
+    { id: "A", item_number: "01", city: "Rogers", filings: [{ case_id: "A-1", status: "Tabled", status_history: twoCheckHistory("Tabled", "Tabled") }] },
+    { id: "B", item_number: "02", city: "Rogers", filings: [{ case_id: "B-1", status: "Tabled", status_history: [
+      { verified_at: "2026-08-18", status: "Scheduled", source: ROGERS_TABLE },
+      { verified_at: "2026-09-02", status: "Tabled", source: ROGERS_TABLE },
+    ] }] },
+  ];
+
+  assert.throws(() => listStatusChanges(cases), /different dates: 2026-08-25, 2026-08-18/);
 });
