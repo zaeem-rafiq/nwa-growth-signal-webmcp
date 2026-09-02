@@ -1,6 +1,6 @@
 # NWA Growth Signal
 
-> **Facts and production snapshot verified September 2, 2026.** Production serves the September 2 release (all six site files match `main` commit `c579912`); the native three-tool run in the ChatGPT desktop browser was completed against it on September 2. The four-tool, 94-test release is the September 3 candidate and, as of this commit, is not yet on production; the live judge flow below describes that candidate. The video was re-recorded September 2 against the four-tool release, so its on-screen statuses match the September 2 snapshot.
+> **Facts and production snapshot verified September 2, 2026.** Production serves the four-tool release (all six site files match `main` commit `420a127`); native runs in the ChatGPT desktop browser on September 2 completed the three-tool demo task against the previous release and all four tools against this one. The video was re-recorded September 2 against the four-tool release, so its on-screen statuses match the September 2 snapshot.
 
 ## One-line Summary
 
@@ -127,10 +127,10 @@ The demo shows search, the status-change listing, inspection, and staging as fou
 
 ## Submission Readiness Notes
 
-- Live application: September 2 snapshot deployed to production and verified, including the native three-tool run in the ChatGPT desktop browser on September 2.
+- Live application: four-tool September 2 release deployed to production and verified, including native runs in the ChatGPT desktop browser on September 2 that exercised all four tools.
 - Public repository, MIT license, automated checks, and deterministic benchmark: ready.
 - Public video and narration approval: four-call cut approved and published September 2, 2026.
-- Devpost entry: browser-verified August 30, 2026 at https://devpost.com/software/nwa-growth-signal.
+- Devpost entry: story edited in place three times on September 2, 2026 at https://devpost.com/software/nwa-growth-signal (fourth tool, corrected judge steps, then the four-call video and prompt); the public page was re-read after each edit and only the named sentences changed.
 - Next source re-verification: September 8, 2026.
 
 ## Known Limitations
