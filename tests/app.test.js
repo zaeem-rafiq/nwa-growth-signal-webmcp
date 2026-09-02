@@ -497,3 +497,19 @@ test("a due snapshot requests official re-verification without changing procedur
   await elements.get("#stage-brief").dispatch("click");
   assert.match(elements.get("#brief-preview").querySelector(".brief-freshness").textContent, /statuses are shown as last verified\. Confirm current status with the city/);
 });
+
+test("a source outside the municipal allowlist is rendered as text, never as a link", async () => {
+  const tampered = structuredClone(cases);
+  tampered[0].sources[0].url = "javascript:alert(1)";
+  const document = await runApp({
+    fetchResponse: { ok: true, json: async () => tampered },
+    registerPlanningTools: async () => {},
+  });
+  await document.elements.get("#record-list").querySelector('[data-record-id="signal-1"]').dispatch("click");
+  const list = document.elements.get("#record-detail").querySelector(".source-list");
+
+  const [first, second] = list.children;
+  assert.equal(first.querySelector("a"), null);
+  assert.match(first.querySelector(".source-unverified").textContent, /link withheld: not an official municipal URL/);
+  assert.match(second.querySelector("a").href, /^https:\/\/bentonvillear\.portal\.civicclerk\.com\//);
+});

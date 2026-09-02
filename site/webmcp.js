@@ -48,7 +48,7 @@
       throw typedError("VALIDATION_FAILED", "A brief requires one to five unique case IDs.");
     }
     if (!AUDIENCES.includes(input.audience)) {
-      throw typedError("VALIDATION_FAILED", `Unsupported brief audience: ${input.audience}`);
+      throw typedError("VALIDATION_FAILED", "Unsupported brief audience.");
     }
   }
 
@@ -101,17 +101,13 @@
         emitActivity({ id, tool, status: "succeeded", ...successEvent(tool, result) });
         return result;
       } catch (error) {
-        const validationFailed = error?.code === "VALIDATION_FAILED";
-        const callbackFailed = error?.code === "CALLBACK_FAILED";
-        emitActivity({
-          id,
-          tool,
-          status: "failed",
-          code: validationFailed ? "VALIDATION_FAILED" : callbackFailed ? "CALLBACK_FAILED" : "TOOL_FAILED",
-          summary: validationFailed
-            ? "Call rejected: invalid input."
-            : callbackFailed ? "Visible brief update failed." : "Call failed safely.",
-        });
+        const receipts = {
+          VALIDATION_FAILED: "Call rejected: invalid input.",
+          NOT_FOUND: "Call rejected: unknown record.",
+          CALLBACK_FAILED: "Visible brief update failed.",
+        };
+        const code = Object.hasOwn(receipts, error?.code) ? error.code : "TOOL_FAILED";
+        emitActivity({ id, tool, status: "failed", code, summary: receipts[code] || "Call failed safely." });
         throw error;
       }
     };
@@ -155,7 +151,7 @@
           validateInspectInput(input);
           const { case_id } = input;
           const record = core.inspectCaseRecord(cases, case_id);
-          if (!record) throw new Error(`Unknown planning record: ${case_id}`);
+          if (!record) throw typedError("NOT_FOUND", "Unknown planning record.");
           return { ...record, freshness };
         }),
       },
@@ -184,7 +180,13 @@
         annotations: { readOnlyHint: false, untrustedContentHint: false },
         execute: withActivity("stage_source_backed_brief", async (input) => {
           validateStageInput(input);
-          const brief = core.stageSourceBackedBrief(cases, input);
+          let brief;
+          try {
+            brief = core.stageSourceBackedBrief(cases, input);
+          } catch (error) {
+            if (/^Unknown planning record/.test(error?.message || "")) throw typedError("NOT_FOUND", "Unknown planning record.");
+            throw error;
+          }
           try {
             await onBrief(brief);
           } catch {

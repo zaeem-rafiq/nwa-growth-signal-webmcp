@@ -6,6 +6,7 @@
   const ACTION_STATUSES = new Set(["Scheduled", "Tabled", "Recommended"]);
   const BRIEF_AUDIENCES = new Set(["Land and development", "Lending and title", "Public-interest planning"]);
   const SNAPSHOT = Object.freeze({ verified_at: "2026-09-02", reverify_on: "2026-09-08" });
+  const OFFICIAL_SOURCE = /^https:\/\/(?:www\.)?(?:bentonvillear\.portal\.civicclerk\.com|bentonville\.ar\.gov|rogersar\.gov|permitting\.rogersar\.gov)\//;
 
   function isIsoCivilDate(value) {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(value || "")) return false;
@@ -84,7 +85,7 @@
       throw new Error("A brief requires one to five unique case IDs.");
     }
     if (!BRIEF_AUDIENCES.has(input.audience)) {
-      throw new Error(`Unsupported brief audience: ${input.audience}`);
+      throw new Error("Unsupported brief audience.");
     }
 
     const itemsById = new Map();
@@ -151,6 +152,7 @@
   }
 
   return {
+    OFFICIAL_SOURCE,
     SNAPSHOT,
     evaluateSnapshotFreshness,
     inspectCaseRecord,
