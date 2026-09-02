@@ -33,6 +33,7 @@ test("the release benchmark proves two fixed core-to-adapter scenarios and their
       "search_planning_cases",
       "inspect_case_record",
       "stage_source_backed_brief",
+      "list_status_changes",
     ],
     search_results: 5,
     staged_records: 3,
@@ -59,6 +60,16 @@ test("the release benchmark proves two fixed core-to-adapter scenarios and their
         core_sha256: "d70cd73d425dfe70a7a0510a38826aa94a4284653715316f1d08d89708ef34ad",
         tool_sha256: "d70cd73d425dfe70a7a0510a38826aa94a4284653715316f1d08d89708ef34ad",
       },
+    },
+    status_changes: {
+      compared_from: "2026-08-25",
+      compared_to: "2026-09-02",
+      changed_filing_ids: ["RZ26-00419", "RZ26-00511"],
+      unchanged_filing_ids: ["RZ26-0041", "FP26-0003", "FP26-0004", "FP26-0005", "VAR26-0397", "RZ26-00345"],
+      baseline_match: true,
+      parity: true,
+      core_sha256: "e8fc916b9587e9b07566e0045713df564ae0c483d2010f205bfa460ba5595bf3",
+      tool_sha256: "e8fc916b9587e9b07566e0045713df564ae0c483d2010f205bfa460ba5595bf3",
     },
     interaction_evidence: {
       label: "Fixed-script interface-action evidence; not observed time savings or general productivity evidence.",
@@ -152,6 +163,40 @@ test("a corrupted staging response fails parity and the release gate", async () 
   assert.equal(report.release_ready, false);
 });
 
+test("a status-change listing that drifts from the core or the pinned baseline fails the release gate", async () => {
+  async function registerFaultyTools(options) {
+    return registerPlanningTools({
+      ...options,
+      modelContext: {
+        registerTool(tool, registrationOptions) {
+          return options.modelContext.registerTool({
+            ...tool,
+            execute: tool.name === "list_status_changes"
+              ? async (input) => {
+                const result = await tool.execute(input);
+                return { ...result, changes: result.changes.slice(0, 1), changed_count: 1 };
+              }
+              : tool.execute,
+          }, registrationOptions);
+        },
+      },
+    });
+  }
+  const faulty = await runBenchmark({ cases, registerPlanningTools: registerFaultyTools, asOf: "2026-09-02" });
+  assert.equal(faulty.status_changes.parity, false);
+  assert.equal(faulty.status_changes.baseline_match, false);
+  assert.equal(faulty.scenarios.primary.parity, true);
+  assert.equal(faulty.release_ready, false);
+
+  const rewritten = structuredClone(cases);
+  rewritten[2].filings[0].status_history[0].status = "Recommended";
+  const drifted = await runBenchmark({ cases: rewritten, registerPlanningTools, asOf: "2026-09-02" });
+  assert.equal(drifted.status_changes.parity, true);
+  assert.deepEqual(drifted.status_changes.changed_filing_ids, ["RZ26-00511"]);
+  assert.equal(drifted.status_changes.baseline_match, false);
+  assert.equal(drifted.release_ready, false);
+});
+
 test("the benchmark is byte-deterministic for the same fixture date", async () => {
   const first = await runBenchmark({ cases, registerPlanningTools, asOf: "2026-09-02" });
   const second = await runBenchmark({ cases, registerPlanningTools, asOf: "2026-09-02" });
@@ -172,6 +217,8 @@ test("the inclusive freshness boundary changes only freshness and readiness", as
       delete scenario.tool_sha256;
       delete scenario.outcome.freshness;
     }
+    delete copy.status_changes.core_sha256;
+    delete copy.status_changes.tool_sha256;
     return copy;
   };
 

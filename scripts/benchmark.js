@@ -14,6 +14,11 @@ const EXPECTED_STATUSES = {
   "RZ26-00511": "Recommended",
   "RZ26-00345": "Recommended",
 };
+// Filings whose verified status label moved between the August 25 and September 2 checks.
+const EXPECTED_STATUS_CHANGES = {
+  "RZ26-00419": ["Tabled", "Recommended"],
+  "RZ26-00511": ["Scheduled", "Recommended"],
+};
 const EXPECTED_CLAIM_HASHES = {
   "signal-1": "68da7d0ed49b31130360a42b1bec2715f74a52d7da9ac7d3cebf2a7f5cc6ecec",
   "signal-2": "9b9c002a839f091b360580f83da7944474354cfd001bb0c31172db7979dcb01d",
@@ -103,6 +108,19 @@ function canonicalOutcome({ searchResults, inspected, brief, stage, freshness })
   };
 }
 
+function changesOutcome(result, freshness) {
+  return {
+    compared_from: result.compared_from,
+    compared_to: result.compared_to,
+    changed_count: result.changed_count,
+    unchanged_count: result.unchanged_count,
+    changes: result.changes,
+    unchanged: result.unchanged,
+    standing_note: result.standing_note,
+    freshness,
+  };
+}
+
 function outcomeHash(outcome) {
   return createHash("sha256").update(JSON.stringify(outcome)).digest("hex");
 }
@@ -176,6 +194,23 @@ async function runBenchmark({
     };
   }
 
+  const coreChanges = changesOutcome(core.listStatusChanges(cases, { include_unchanged: true }), freshness);
+  const toolResult = await tools.list_status_changes.execute({ include_unchanged: true });
+  const toolChanges = changesOutcome(toolResult, toolResult.freshness);
+  const coreChangesHash = outcomeHash(coreChanges);
+  const toolChangesHash = outcomeHash(toolChanges);
+  const observedChanges = Object.fromEntries(toolChanges.changes.map(({ case_id: caseId, previous_status: from, current_status: to }) => [caseId, [from, to]]));
+  const statusChanges = {
+    compared_from: toolChanges.compared_from,
+    compared_to: toolChanges.compared_to,
+    changed_filing_ids: toolChanges.changes.map(({ case_id: caseId }) => caseId),
+    unchanged_filing_ids: toolChanges.unchanged.map(({ case_id: caseId }) => caseId),
+    baseline_match: JSON.stringify(observedChanges) === JSON.stringify(EXPECTED_STATUS_CHANGES),
+    parity: coreChangesHash === toolChangesHash,
+    core_sha256: coreChangesHash,
+    tool_sha256: toolChangesHash,
+  };
+
   const statusChecks = cases.flatMap((record) => record.filings.map((filing) => {
     const inspected = core.inspectCaseRecord(cases, filing.case_id);
     return filing.status === EXPECTED_STATUSES[filing.case_id]
@@ -218,6 +253,7 @@ async function runBenchmark({
       "review_required",
     ],
     scenarios: scenarioReports,
+    status_changes: statusChanges,
     interaction_evidence: {
       label: "Fixed-script interface-action evidence; not observed time savings or general productivity evidence.",
       counting_rule: "One direct human control activation or one browser-agent tool invocation equals one action.",
@@ -231,7 +267,9 @@ async function runBenchmark({
     && report.records_with_official_sources === 5
     && report.claim_copy_checks_passed === 5
     && report.approval_overclaims === 0
-    && report.tools_exercised.length === 3
+    && report.tools_exercised.length === 4
+    && statusChanges.parity
+    && statusChanges.baseline_match
     && report.search_results === 5
     && report.staged_records === 3
     && report.staged_brief_callbacks === 2

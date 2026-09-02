@@ -9,6 +9,8 @@ test("the page presents the agent workflow as a visible human-review workspace",
   const html = fs.readFileSync(path.join(site, "index.html"), "utf8");
   assert.match(html, /id="desk"/);
   assert.match(html, /stage_source_backed_brief/);
+  assert.match(html, /<li><span>04<\/span><code>list_status_changes<\/code><\/li>/);
+  assert.match(html, /four registered tool handlers/);
   assert.match(html, /Mark as reviewed/);
   assert.doesNotMatch(html, /checkout|payment/i);
 });

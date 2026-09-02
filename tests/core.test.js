@@ -2,7 +2,7 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 
 const core = require("../site/core.js");
-const { inspectCaseRecord, searchPlanningCases, stageSourceBackedBrief } = core;
+const { inspectCaseRecord, listStatusChanges, searchPlanningCases, stageSourceBackedBrief } = core;
 
 test("snapshot freshness becomes due on the shared re-verification date", () => {
   assert.deepEqual(core.evaluateSnapshotFreshness?.({
@@ -177,4 +177,78 @@ test("a staged brief rejects inputs outside its public contract", () => {
     () => stageSourceBackedBrief([], { case_ids: ["A"], audience: "Everyone" }),
     /Unsupported brief audience/
   );
+});
+
+test("status changes list only filings whose verified label moved, with both dated sources", () => {
+  const cases = [{
+    id: "signal-4",
+    title: "408 E. Poplar Street",
+    city: "Rogers",
+    next_step: "Awaiting separate Rogers City Council action.",
+    filings: [
+      { case_id: "VAR26-0397", status: "Withdrawn", status_history: [
+        { verified_at: "2026-08-25", status: "Withdrawn", source: "https://www.rogersar.gov/1181/Public-Hearing-Items" },
+        { verified_at: "2026-09-02", status: "Withdrawn", source: "https://www.rogersar.gov/1181/Public-Hearing-Items", note: "Still withdrawn." },
+      ] },
+      { case_id: "RZ26-00511", status: "Recommended", status_history: [
+        { verified_at: "2026-08-25", status: "Scheduled", source: "https://www.rogersar.gov/1181/Public-Hearing-Items" },
+        { verified_at: "2026-09-02", status: "Recommended", source: "https://www.rogersar.gov/1181/Public-Hearing-Items", note: "New 9/1/26 row." },
+      ] },
+    ],
+  }];
+
+  const result = listStatusChanges(cases);
+
+  assert.deepEqual(result, {
+    compared_from: "2026-08-25",
+    compared_to: "2026-09-02",
+    changed_count: 1,
+    unchanged_count: 1,
+    changes: [{
+      record_id: "signal-4",
+      case_id: "RZ26-00511",
+      title: "408 E. Poplar Street",
+      city: "Rogers",
+      previous_status: "Scheduled",
+      current_status: "Recommended",
+      status_history: cases[0].filings[1].status_history,
+      next_step: "Awaiting separate Rogers City Council action.",
+    }],
+    standing_note: "Each status is reproduced from the official source cited for that date. A changed label states no reason for the change, and recommendation is not adoption.",
+  });
+  assert.equal("unchanged" in result, false);
+});
+
+test("status changes can include unchanged filings with their notes and honor the city filter", () => {
+  const history = (from, to, note) => [
+    { verified_at: "2026-08-25", status: from, source: "https://www.rogersar.gov/1181/Public-Hearing-Items" },
+    { verified_at: "2026-09-02", status: to, source: "https://www.rogersar.gov/1181/Public-Hearing-Items", note },
+  ];
+  const cases = [
+    { id: "A", city: "Bentonville", filings: [{ case_id: "FP26-0005", status: "Scheduled", status_history: history("Scheduled", "Scheduled", "Absent from the reissued agenda.") }] },
+    { id: "B", city: "Rogers", filings: [{ case_id: "RZ26-00419", status: "Recommended", status_history: history("Tabled", "Recommended", "Row changed in place.") }] },
+    { id: "C", city: "Rogers", filings: [{ case_id: "OLD-1", status: "Tabled" }] },
+    { id: "D", city: "Rogers", status: "Recommended" },
+  ];
+
+  const everything = listStatusChanges(cases, { include_unchanged: true });
+  const bentonville = listStatusChanges(cases, { city: "Bentonville", include_unchanged: true });
+
+  assert.deepEqual(everything.changes.map(({ case_id: caseId }) => caseId), ["RZ26-00419"]);
+  assert.deepEqual(everything.unchanged.map(({ case_id: caseId }) => caseId), ["FP26-0005"]);
+  assert.equal(everything.unchanged[0].status_history[1].note, "Absent from the reissued agenda.");
+  assert.deepEqual(bentonville.changes, []);
+  assert.equal(bentonville.unchanged_count, 1);
+  assert.equal(bentonville.changed_count, 0);
+});
+
+test("status changes report no comparison window when no filing carries a history", () => {
+  assert.deepEqual(listStatusChanges([{ id: "minimal", case_ids: ["MIN-1"] }]), {
+    compared_from: null,
+    compared_to: null,
+    changed_count: 0,
+    unchanged_count: 0,
+    changes: [],
+    standing_note: "Each status is reproduced from the official source cited for that date. A changed label states no reason for the change, and recommendation is not adoption.",
+  });
 });

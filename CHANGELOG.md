@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-09-02 (candidate)
+
+- Added `list_status_changes`, a fourth read-only WebMCP tool that lists each filing whose verified status label moved between the August 25 and September 2 checks with the official source consulted on each date, an optional unchanged listing with notes, and a city filter.
+- Extended the release benchmark with core-to-adapter parity for the status-change listing and a pinned changed-filing baseline; the gate now requires all four tools.
+- Added the fourth tool to the live receipt allowlist, the page's tool list, and the readiness copy.
+
 ## 2026-08-29
 
 - Added a held-out historical benchmark covering 23 real Rogers planning requests, 26 procedural events, 12 official agenda/minutes documents, and three multi-meeting lifecycles.

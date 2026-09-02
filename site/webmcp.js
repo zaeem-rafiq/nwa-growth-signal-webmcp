@@ -52,6 +52,14 @@
     }
   }
 
+  function validateChangesInput(input) {
+    if (!hasOnlyKeys(input, ["city", "include_unchanged"]) ||
+        (input.city !== undefined && !CITIES.includes(input.city)) ||
+        (input.include_unchanged !== undefined && typeof input.include_unchanged !== "boolean")) {
+      throw typedError("VALIDATION_FAILED", "Invalid status change filters.");
+    }
+  }
+
   async function registerPlanningTools({ modelContext, cases, onBrief, onActivity, asOf = core.northwestArkansasCivilDate() }) {
     const freshness = core.evaluateSnapshotFreshness(core.SNAPSHOT, asOf);
     let nextCallId = 0;
@@ -72,6 +80,14 @@
           ? filing.case_id : "Verified filing";
         const safeStatus = STATUSES.includes(filing?.status) ? filing.status : "recorded status";
         return { code: "RECORD_FOUND", summary: `${safeId} · ${safeStatus}.` };
+      }
+      if (tool === "list_status_changes") {
+        const changed = Number.isSafeInteger(result?.changed_count) ? result.changed_count : 0;
+        const unchanged = Number.isSafeInteger(result?.unchanged_count) ? result.unchanged_count : 0;
+        return {
+          code: "CHANGES_LISTED",
+          summary: `${changed} filing ${changed === 1 ? "status" : "statuses"} changed · ${unchanged} unchanged.`,
+        };
       }
       return {
         code: "BRIEF_STAGED",
@@ -186,6 +202,28 @@
             filing_ids: filingIds,
             freshness,
             message: "The brief is staged in the page for human review. Nothing was published or sent.",
+          };
+        }),
+      },
+      {
+        name: "list_status_changes",
+        title: "List verified status changes",
+        description: "List each verified filing whose procedural status label changed between the August 25 and September 2, 2026 verifications, with the official source checked on each date. Optionally include unchanged filings and their notes. Nothing is inferred about why a status changed.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            city: { type: "string", enum: CITIES },
+            include_unchanged: { type: "boolean" },
+          },
+          additionalProperties: false,
+        },
+        annotations: { readOnlyHint: true, untrustedContentHint: false },
+        execute: withActivity("list_status_changes", async (input) => {
+          validateChangesInput(input);
+          return {
+            verified_at: core.SNAPSHOT.verified_at,
+            freshness,
+            ...core.listStatusChanges(cases, input),
           };
         }),
       },

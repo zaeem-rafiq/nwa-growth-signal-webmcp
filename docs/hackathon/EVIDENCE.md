@@ -4,11 +4,12 @@ This document separates executable proof from claims that still need external co
 
 ## Central loop
 
-One agent request drives three native WebMCP actions in the same interface:
+One agent request drives three native WebMCP actions in the same interface, and a fourth read-only tool answers what moved between verifications:
 
 1. `search_planning_cases` finds bounded Bentonville and Rogers records.
 2. `inspect_case_record` returns filing-level status, non-claims, and official municipal URLs.
 3. `stage_source_backed_brief` updates the visible brief workspace and requires human review.
+4. `list_status_changes` lists each filing whose verified status label changed between August 25 and September 2, 2026 with the official source checked on each date, and can include the unchanged filings with their notes.
 
 Each handler emits a bounded, session-local receipt row as it starts and succeeds or fails. The receipt proves handler execution order; it does not own the brief lifecycle. The staging tool does not publish, send, or persist a brief externally, and no tool can record final review.
 
@@ -31,8 +32,9 @@ Observed fresh-fixture result for the dataset re-verified September 2, 2026:
 | Records whose source URLs stay within the municipal-domain allowlist | 5/5 |
 | Records matching the pinned affirmative-copy baseline | 5/5 |
 | Approval/adoption/construction overclaims in affirmative record copy | 0 |
-| WebMCP tools exercised | 3/3 |
+| WebMCP tools exercised | 4/4 |
 | Fixed core-to-adapter scenarios with exact canonical parity | 2/2 |
+| Status-change listing parity and pinned changed-filing baseline | Pass (2 changed, 6 unchanged) |
 | Primary script interface actions | 8 human controls / 3 agent tools |
 | Primary / counter brief size | 3 / 2 filings |
 | Human review required | Yes |
@@ -40,6 +42,8 @@ Observed fresh-fixture result for the dataset re-verified September 2, 2026:
 | Release gate | Pass |
 
 The primary script searches residential records requiring action, inspects `RZ26-00511`, and stages `RZ26-0041`, `RZ26-00419`, and `RZ26-00511` for `Land and development`. The counter-script searches withdrawn residential records in Rogers, inspects `VAR26-0397`, and stages `VAR26-0397` with `RZ26-00345` for `Public-interest planning`. Both compare exact filing IDs, filing/status pairs, audience, official URLs, the standing note, freshness, and `review_required` between the direct core and the registered WebMCP adapter.
+
+The status-change check runs `list_status_changes` with `include_unchanged: true` through both paths, hashes the canonical result including freshness, and requires the listed changes to equal the pinned baseline: `RZ26-00419` Tabled to Recommended and `RZ26-00511` Scheduled to Recommended. A handler that drops a change, or data whose history no longer matches the baseline, fails the release gate. The fixed primary and counter scripts are unchanged, so their hashes and the eight-versus-three trace are the same as the September 2 release.
 
 The action evidence uses one published atomic rule: one direct human control activation or one browser-agent tool invocation equals one action. Its raw primary traces are included in the JSON report. Eight versus three is evidence for this fixed script only; it is not a user study, observed elapsed-time saving, adoption signal, or general productivity claim.
 
@@ -71,7 +75,7 @@ The study demonstrates a real source-risk and verifies the product's determinist
 
 The August 25 snapshot reached its inclusive boundary on September 2, 2026. Every filing was re-checked against the same official sources on that date. Four of the five records had moved in the official record within eight days; the changes and their sources are listed in the README re-verification log and reproduced in `site/cases.json`. No record was given a status that the official record does not state: Rogers recommendations remain recommendations, the Bentonville hearings carry no outcome until minutes are published, and the two entries that disappeared from official listings keep their last published status with the removal stated. The snapshot's next boundary is September 8, 2026, the next City Council date in both cities.
 
-Each filing now carries a `status_history`: its August 25 and September 2 statuses, the official source checked on each date, and a note where the record moved or went silent. The three tools return it unchanged from the same data the page renders beside each filing, so an agent inspecting `RZ26-00419` sees `Tabled` on August 25 and `Recommended` on September 2 with the same outcome-table URL for both, rather than a single current label.
+Each filing now carries a `status_history`: its August 25 and September 2 statuses, the official source checked on each date, and a note where the record moved or went silent. The tools return it unchanged from the same data the page renders beside each filing, so an agent inspecting `RZ26-00419` sees `Tabled` on August 25 and `Recommended` on September 2 with the same outcome-table URL for both, rather than a single current label. `list_status_changes` reads the same history and returns only the filings whose label moved, so the diff an agent receives is the diff the page shows.
 
 ### Production verification, September 2, 2026
 
@@ -91,19 +95,19 @@ The official [WebMCP Challenge criteria](https://webmcp.devpost.com/) are mapped
 
 ### WebMCP Leverage
 
-- **Claim:** Three page-defined tools form one non-trivial, human-reviewed municipal-planning workflow, and their adapter results match the deterministic core across two distinct scripts.
+- **Claim:** Four page-defined tools form one non-trivial, human-reviewed municipal-planning workflow, and their adapter results match the deterministic core across two distinct scripts and the status-change listing.
 - **Artifact:** `site/webmcp.js`, the on-page live execution receipt, `scripts/benchmark.js`, and `tests/webmcp.test.js`.
 - **Reproduce:** Run `node scripts/benchmark.js 2026-09-02`, then perform search, inspect, and stage in one continuous supported-browser session.
 - **Falsifier:** A tool is missing, a receipt row is not produced by its real handler, a tool result differs from the canonical core outcome, or a tool can review or write externally.
-- **Observed result:** All three tools were exercised in the supported candidate browser and produced three succeeded receipt rows. Both fixed benchmark scenarios had identical core and adapter hashes in the fresh-fixture report.
+- **Observed result:** The first three tools were exercised in the supported candidate browser and produced three succeeded receipt rows. Both fixed benchmark scenarios and the status-change listing had identical core and adapter hashes in the fresh-fixture report. A native browser run of `list_status_changes` is pending.
 
 ### Execution
 
 - **Claim:** The candidate is a coherent static product for human and agent use, with exact filing selection, explicit failure and fallback states, freshness disclosure, and a human-only review boundary.
-- **Artifact:** `site/`, the 82 dependency-free tests, the release benchmark, the held-out historical benchmark, and candidate viewport/browser evidence.
+- **Artifact:** `site/`, the 89 dependency-free tests, the release benchmark, the held-out historical benchmark, and candidate viewport/browser evidence.
 - **Reproduce:** Run `node --test tests/*.test.js`, serve `site/`, and exercise the ordinary-browser and supported-WebMCP paths.
 - **Falsifier:** Any test fails; exact filing selection reintroduces a sibling filing; the due state changes procedural status; or a browser path reaches a dead end or obscures review state.
-- **Observed result:** The current automated suite passes 82/82. The candidate passed browser verification at 375, 768, and 1440 pixels with no horizontal overflow or console warnings and errors.
+- **Observed result:** The current automated suite passes 89/89. The candidate passed browser verification at 375, 768, and 1440 pixels with no horizontal overflow or console warnings and errors.
 
 ### Potential Impact
 
@@ -232,3 +236,4 @@ The candidate describes NWA Growth Signal affirmatively as a dated, filing-speci
 - The repository candidate is not proof that the public deployment, Devpost story, or YouTube video contains the new receipt, freshness, parity, or comparison evidence.
 - The PDF is a visual sample; PDF tagging remains a separate accessibility limitation.
 - Agent-side recovery after an initial record-load failure would require a public WebMCP contract change and is not included.
+- `list_status_changes` compares only the two verified dates carried in each filing's `status_history`; it does not watch official sources or detect changes between verifications.

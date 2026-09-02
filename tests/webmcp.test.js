@@ -4,7 +4,7 @@ const assert = require("node:assert/strict");
 const { registerPlanningTools } = require("../site/webmcp.js");
 const cases = require("../site/cases.json");
 
-test("the page exposes the three planning workflow tools to an agent", async () => {
+test("the page exposes the four planning workflow tools to an agent", async () => {
   const registered = [];
   const modelContext = {
     registerTool(tool) {
@@ -19,6 +19,7 @@ test("the page exposes the three planning workflow tools to an agent", async () 
     "search_planning_cases",
     "inspect_case_record",
     "stage_source_backed_brief",
+    "list_status_changes",
   ]);
 });
 
@@ -219,6 +220,7 @@ test("every tool output carries the same exact freshness context", async () => {
       case_ids: ["RZ26-00511"],
       audience: "Land and development",
     }),
+    tools.list_status_changes.execute({}),
   ]);
 
   outputs.forEach((output) => assert.deepEqual(output.freshness, {
@@ -321,6 +323,7 @@ test("registered tools reject inputs outside their advertised schemas", async ()
     case_ids: ["RZ26-0041"],
     audience: "Land and development",
   });
+  await tools.list_status_changes.execute({ city: "Rogers", include_unchanged: false });
   const stagedSentinel = stagedBrief;
 
   const invalidSearches = await Promise.allSettled([
@@ -356,11 +359,20 @@ test("registered tools reject inputs outside their advertised schemas", async ()
     { case_ids: ["RZ26-0041"], audience: "Everyone" },
     { case_ids: ["RZ26-0041"], audience: "Land and development", extra: true },
   ].map((input) => tools.stage_source_backed_brief.execute(input)));
+  const invalidChanges = await Promise.allSettled([
+    null,
+    [],
+    { extra: true },
+    { city: "Fayetteville" },
+    { include_unchanged: "yes" },
+    { since: "2026-08-25" },
+  ].map((input) => tools.list_status_changes.execute(input)));
 
   for (const [results, message] of [
     [invalidSearches, /Invalid search filters/],
     [invalidInspections, /Invalid case inspection input/],
     [invalidStages, /Invalid brief input|A brief requires|Unsupported brief audience/],
+    [invalidChanges, /Invalid status change filters/],
   ]) {
     for (const result of results) {
       assert.equal(result.status, "rejected");
@@ -368,4 +380,46 @@ test("registered tools reject inputs outside their advertised schemas", async ()
     }
   }
   assert.strictEqual(stagedBrief, stagedSentinel);
+});
+
+test("the status change tool returns the two moved filings with dated official sources and a receipt", async () => {
+  const registered = [];
+  const events = [];
+  await registerPlanningTools({
+    modelContext: { registerTool: async (tool) => registered.push(tool) },
+    cases,
+    onBrief: () => {},
+    onActivity: (event) => events.push(event),
+    asOf: "2026-09-02",
+  });
+  const changes = registered.find(({ name }) => name === "list_status_changes");
+
+  assert.deepEqual(changes.annotations, { readOnlyHint: true, untrustedContentHint: false });
+  assert.equal(changes.inputSchema.additionalProperties, false);
+  const result = await changes.execute({});
+
+  assert.equal(result.verified_at, "2026-09-02");
+  assert.deepEqual(result.freshness, { state: "current", as_of: "2026-09-02", reverify_on: "2026-09-08" });
+  assert.deepEqual({ from: result.compared_from, to: result.compared_to }, { from: "2026-08-25", to: "2026-09-02" });
+  assert.deepEqual(result.changes.map(({ case_id: caseId, previous_status: from, current_status: to }) => [caseId, from, to]), [
+    ["RZ26-00419", "Tabled", "Recommended"],
+    ["RZ26-00511", "Scheduled", "Recommended"],
+  ]);
+  assert.ok(result.changes.every(({ status_history }) =>
+    status_history.length === 2 && status_history.every(({ source }) => /^https:\/\/www\.rogersar\.gov\//.test(source))
+  ));
+  assert.equal(result.changed_count, 2);
+  assert.equal(result.unchanged_count, 6);
+  assert.equal("unchanged" in result, false);
+  assert.doesNotMatch(JSON.stringify(result), /\b(?:approved|adopted)\b/i);
+  assert.deepEqual(events, [
+    { id: 1, tool: "list_status_changes", status: "started", code: "CALL_STARTED", summary: "Call started." },
+    { id: 1, tool: "list_status_changes", status: "succeeded", code: "CHANGES_LISTED", summary: "2 filing statuses changed · 6 unchanged." },
+  ]);
+
+  const bentonville = await changes.execute({ city: "Bentonville", include_unchanged: true });
+  assert.deepEqual(bentonville.changes, []);
+  assert.deepEqual(bentonville.unchanged.map(({ case_id: caseId }) => caseId), ["RZ26-0041", "FP26-0003", "FP26-0004", "FP26-0005"]);
+  assert.match(bentonville.unchanged[3].status_history[1].note, /Absent from the reissued September 1 agenda/);
+  assert.equal(events.at(-1).summary, "0 filing statuses changed · 4 unchanged.");
 });

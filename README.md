@@ -1,6 +1,6 @@
 # NWA Growth Signal — WebMCP
 
-An agent-native municipal planning desk for Bentonville and Rogers, Arkansas. The same five source-backed signals are available to people through the interface and to browser agents through native WebMCP tools, with each filing bound to its own procedural status.
+An agent-native municipal planning desk for Bentonville and Rogers, Arkansas. The same five source-backed signals are available to people through the interface and to browser agents through four native WebMCP tools, with each filing bound to its own procedural status.
 
 **Current public demo:** https://nwa-growth-signal-webmcp.pages.dev/
 
@@ -11,6 +11,7 @@ The public release includes a handler-originated execution receipt, explicit sna
 - `search_planning_cases` — filter grouped signals by city, procedural status, residential relevance, and pending action; status-filtered results identify the matching filings
 - `inspect_case_record` — retrieve exact status labels, the requested filing, each filing's verified status history (the August 25 and September 2 statuses with the official source for each), plain-English context, explicit non-claims, and official municipal URLs
 - `stage_source_backed_brief` — stage one to five records in the visible page for human review; nothing is published or sent
+- `list_status_changes` — list each filing whose verified status label moved between the August 25 and September 2 checks, with the official source consulted on each date; optionally include the unchanged filings and their notes, filtered by city
 
 Each real tool call writes a bounded session receipt into the page. Receipt state is observational; the staged workspace still requires a person to record review.
 
@@ -28,7 +29,7 @@ Open `http://localhost:8000`. The human interface works in ordinary browsers. We
 node --test tests/*.test.js
 ```
 
-The 82-test suite covers exact filing selection, snapshot freshness, handler-side input validation, atomic tool registration, bounded execution receipts, browser fallback states, two-scenario workflow parity, official-source boundaries, historical benchmark integrity, and injection-safe rendering.
+The 89-test suite covers exact filing selection, snapshot freshness, handler-side input validation, atomic tool registration, bounded execution receipts, browser fallback states, two-scenario workflow parity, status-change listing parity against a pinned baseline, official-source boundaries, historical benchmark integrity, and injection-safe rendering.
 
 ## Reproduce the hackathon evidence
 
@@ -37,7 +38,7 @@ node scripts/benchmark.js 2026-09-02
 node scripts/historical-impact-benchmark.js
 ```
 
-The fresh-fixture run compares the direct core and registered WebMCP paths across two fixed scripts. It requires exact equality for filing IDs, filing/status pairs, audience, official URLs, the standing note, freshness, and `review_required`. The primary script records eight direct human control activations and three browser-agent tool invocations under a published atomic counting rule; this is scripted interface evidence, not observed time savings or general productivity evidence.
+The fresh-fixture run compares the direct core and registered WebMCP paths across two fixed scripts. It requires exact equality for filing IDs, filing/status pairs, audience, official URLs, the standing note, freshness, and `review_required`. The primary script records eight direct human control activations and three browser-agent tool invocations under a published atomic counting rule; this is scripted interface evidence, not observed time savings or general productivity evidence. The same run also compares the direct core and the registered `list_status_changes` handler and requires the listed changes to match the pinned baseline: `RZ26-00419` Tabled to Recommended and `RZ26-00511` Scheduled to Recommended, with the other six filings unchanged.
 
 The snapshot boundary is inclusive. This command is expected to exit non-zero with `reverification_due` and `release_ready: false` while preserving every procedural status:
 

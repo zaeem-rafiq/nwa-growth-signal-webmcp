@@ -119,6 +119,20 @@ test("the app exposes an unsupported-browser fallback without losing the human i
 
   assert.equal(state.dataset.state, "unsupported");
   assert.equal(state.querySelector("strong").textContent, "WebMCP not exposed in this browser");
+  assert.match(state.querySelector(".state-detail").textContent, /expose four agent tools/);
+});
+
+test("a supported browser reports all four registered tools", async () => {
+  const document = await runApp({
+    modelContext: { registerTool() {} },
+    fetchResponse: { ok: true, json: async () => cases },
+    registerPlanningTools: async () => {},
+  });
+  const state = document.elements.get("#webmcp-state");
+
+  assert.equal(state.dataset.state, "ready");
+  assert.equal(state.querySelector("strong").textContent, "WebMCP ready · 4 tools exposed");
+  assert.match(state.querySelector(".state-detail").textContent, /list verified status changes/);
 });
 
 test("the live receipt replaces calls by ID, keeps the latest eight, and discloses truncation", async () => {
@@ -144,6 +158,26 @@ test("the live receipt replaces calls by ID, keeps the latest eight, and disclos
   assert.equal(rows.children.some((row) => row.querySelector(".receipt-state").textContent === "started"), false);
   assert.equal(elements.get("#receipt-empty").hidden, true);
   assert.equal(elements.get("#receipt-disclosure").hidden, false);
+});
+
+test("the live receipt accepts the status change tool and rejects unknown tools or codes", async () => {
+  let onActivity;
+  const document = await runApp({
+    modelContext: { registerTool() {} },
+    fetchResponse: { ok: true, json: async () => cases },
+    registerPlanningTools: async (options) => { onActivity = options.onActivity; },
+  });
+  const rows = document.elements.get("#receipt-rows");
+
+  onActivity({ id: 1, tool: "list_status_changes", status: "started", code: "CALL_STARTED", summary: "Call started." });
+  onActivity({ id: 1, tool: "list_status_changes", status: "succeeded", code: "CHANGES_LISTED", summary: "2 filing statuses changed · 6 unchanged." });
+  onActivity({ id: 2, tool: "publish_brief", status: "succeeded", code: "CHANGES_LISTED", summary: "ignored" });
+  onActivity({ id: 3, tool: "list_status_changes", status: "succeeded", code: "PUBLISHED", summary: "ignored" });
+
+  assert.equal(rows.children.length, 1);
+  assert.equal(rows.children[0].querySelector("code").textContent, "list_status_changes");
+  assert.equal(rows.children[0].querySelector(".receipt-state").textContent, "succeeded");
+  assert.equal(rows.children[0].querySelector(".receipt-summary").textContent, "2 filing statuses changed · 6 unchanged.");
 });
 
 test("agent receipts stay separate from the human-owned workspace review lifecycle", async () => {

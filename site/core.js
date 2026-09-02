@@ -115,10 +115,46 @@
     };
   }
 
+  function listStatusChanges(cases, filters = {}) {
+    const entries = cases.flatMap((record) => {
+      if (filters.city && record.city !== filters.city) return [];
+      return filingsFor(record).flatMap((filing) => {
+        const history = filing.status_history || [];
+        if (history.length < 2) return [];
+        const previous = history[0];
+        const current = history[history.length - 1];
+        return [{
+          record_id: record.id,
+          case_id: filing.case_id,
+          title: record.title,
+          city: record.city,
+          previous_status: previous.status,
+          current_status: current.status,
+          status_history: history,
+          next_step: record.next_step,
+        }];
+      });
+    });
+    const changes = entries.filter(({ previous_status: from, current_status: to }) => from !== to);
+    const unchanged = entries.filter(({ previous_status: from, current_status: to }) => from === to);
+    const verifiedFrom = entries.map(({ status_history: history }) => history[0].verified_at).sort();
+    const verifiedTo = entries.map(({ status_history: history }) => history[history.length - 1].verified_at).sort();
+    return {
+      compared_from: verifiedFrom[0] || null,
+      compared_to: verifiedTo[verifiedTo.length - 1] || null,
+      changed_count: changes.length,
+      unchanged_count: unchanged.length,
+      changes,
+      ...(filters.include_unchanged ? { unchanged } : {}),
+      standing_note: "Each status is reproduced from the official source cited for that date. A changed label states no reason for the change, and recommendation is not adoption.",
+    };
+  }
+
   return {
     SNAPSHOT,
     evaluateSnapshotFreshness,
     inspectCaseRecord,
+    listStatusChanges,
     northwestArkansasCivilDate,
     searchPlanningCases,
     stageSourceBackedBrief,
