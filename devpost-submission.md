@@ -18,11 +18,11 @@ Adjacent products serve related jobs. CivicPlus provides agenda and meeting mana
 
 ### Why is this a strong fit for WebMCP?
 
-The research task has three distinct steps, each with a clear contract. `search_planning_cases` filters 5 verified records by municipality, procedural status, residential relevance, and pending government action. `inspect_case_record` returns one filing-level record with its context and official sources. `stage_source_backed_brief` places 1 to 5 selected records into the visible briefing workspace. The agent receives typed results from the same dated data the person sees instead of inferring status from page wording or clicking by coordinates.
+The research task has four distinct steps, each with a clear contract. `search_planning_cases` filters 5 verified records by municipality, procedural status, residential relevance, and pending government action. `list_status_changes` returns the filings whose verified status moved since the previous check, with the official source on both dates. `inspect_case_record` returns one filing-level record with its context and official sources. `stage_source_backed_brief` places 1 to 5 selected records into the visible briefing workspace. The agent receives typed results from the same dated data the person sees instead of inferring status from page wording or clicking by coordinates.
 
 ### How does it create a better experience?
 
-One prompt can drive the whole flow: “Find residential Bentonville and Rogers cases still awaiting procedural action. Inspect their official evidence and stage a three-item brief without representing any recommendation as final approval.” The fixed demo script takes 8 direct human control activations or 3 agent tool calls. Each real handler call adds an on-page receipt, so the person can see search, inspect, and stage start and then succeed or fail in order.
+One prompt can drive the whole flow: “Find residential Bentonville and Rogers cases still awaiting procedural action. List which filings changed status since the previous verification, inspect their official evidence, and stage a three-item brief without representing any recommendation as final approval.” The fixed demo script takes 10 direct human control activations or 4 agent tool calls. Each real handler call adds an on-page receipt, so the person can see search, list changes, inspect, and stage start and then succeed or fail in order.
 
 ### What can people and agents now do together?
 
@@ -86,11 +86,11 @@ Live judge flow:
 
 1. Open https://nwa-growth-signal-webmcp.pages.dev/ in a browser host with WebMCP support.
 2. Confirm that the page reports `WebMCP ready · 4 tools exposed`.
-3. Ask: “Find residential Bentonville and Rogers cases still awaiting procedural action. Inspect their official evidence and stage a three-item brief without representing any recommendation as final approval.” Keep the host prompt and page visible through all three calls.
+3. Ask: “Find residential Bentonville and Rogers cases still awaiting procedural action. List which filings changed status since the previous verification, inspect their official evidence, and stage a three-item brief without representing any recommendation as final approval.” Keep the host prompt and page visible through all four calls.
 4. Inspect `RZ26-00511`; verify that it reads `Recommended to City Council` while companion filing `VAR26-0397` reads `Withdrawn by applicant` on the same parcel. Do not treat the recommendation as final council action.
-5. Stage `RZ26-0041`, `RZ26-00419`, and `RZ26-00511`; verify three succeeded receipt rows, the exact three filings, human review required, and nothing published.
+5. Stage `RZ26-0041`, `RZ26-00419`, and `RZ26-00511`; verify four succeeded receipt rows, the exact three filings, human review required, and nothing published.
 6. Confirm the freshness output says `verified_at: 2026-09-02` and re-verification is due `2026-09-08`.
-7. Ask: “Which filings changed status since the previous verification?” Verify that `list_status_changes` returns exactly `RZ26-00419` (Tabled to Recommended) and `RZ26-00511` (Scheduled to Recommended), each with the Rogers outcome-table URL for both dates, and that the receipt row reads `2 filings changed since 2026-08-25.`
+7. Confirm that `list_status_changes` returned exactly `RZ26-00419` (Tabled to Recommended) and `RZ26-00511` (Scheduled to Recommended), each with the Rogers outcome-table URL for both dates, and that the receipt row reads `2 filings changed since 2026-08-25.`
 8. Open the CivicPlus, Regrid, and PermitFlow links in the comparison ledger and confirm that the copy uses affirmative job descriptions.
 
 Local reproduction from the repository root:
@@ -102,7 +102,7 @@ node scripts/benchmark.js 2026-09-02
 node scripts/historical-impact-benchmark.js
 ```
 
-The expected automated result is 94 passing tests; a release benchmark with `verified_at: 2026-09-02`, re-verification due `2026-09-08`, `release_ready: true`, 2/2 exact parity scenarios that each include the status-change listing, the two changed filings `RZ26-00419` and `RZ26-00511`, 8/8 filing-status checks, 5/5 municipal-source records, 4/4 tools exercised, zero approval overclaims, and the raw eight-control/three-tool traces; and a historical study with 23 requests, 26/26 exact statuses through both product paths, expected-source presence in 26/26 record-wide outputs, 23/23 same-meeting official source pairs, 3 preserved multi-meeting lifecycles, and zero challenge-period leakage. `node scripts/benchmark.js 2026-09-08` is expected to exit non-zero with `reverification_due` as the due-date example.
+The expected automated result is 94 passing tests; a release benchmark with `verified_at: 2026-09-02`, re-verification due `2026-09-08`, `release_ready: true`, 2/2 exact parity scenarios that each include the status-change listing, the two changed filings `RZ26-00419` and `RZ26-00511`, 8/8 filing-status checks, 5/5 municipal-source records, 4/4 tools exercised, zero approval overclaims, and the raw ten-control/four-tool traces; and a historical study with 23 requests, 26/26 exact statuses through both product paths, expected-source presence in 26/26 record-wide outputs, 23/23 same-meeting official source pairs, 3 preserved multi-meeting lifecycles, and zero challenge-period leakage. `node scripts/benchmark.js 2026-09-08` is expected to exit non-zero with `reverification_due` as the due-date example.
 
 ## Public Demo Link
 
@@ -123,7 +123,7 @@ The repository is public and includes an MIT license.
 - Narration: Google Gemini Kore host and Iapetus expert; participant-approved August 30, 2026
 - Public YouTube URL: https://youtu.be/N1ykmBzcf4Y
 
-The demo shows search, inspection, and staging as three action-state-payoff sequences, including the split-filing Poplar record and the human-review boundary.
+The demo shows search, the status-change listing, inspection, and staging as four action-state-payoff sequences, including the split-filing Poplar record and the human-review boundary.
 
 ## Submission Readiness Notes
 

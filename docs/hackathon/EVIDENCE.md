@@ -4,7 +4,7 @@ This document separates executable proof from claims that still need external co
 
 ## Central loop
 
-One agent request drives three native WebMCP actions in the same interface, and a fourth read-only tool answers what moved between verifications:
+One agent request drives four native WebMCP actions in the same interface:
 
 1. `search_planning_cases` finds bounded Bentonville and Rogers records.
 2. `inspect_case_record` returns filing-level status, non-claims, and official municipal URLs.
@@ -35,17 +35,17 @@ Observed fresh-fixture result for the dataset re-verified September 2, 2026:
 | WebMCP tools exercised | 4/4 |
 | Fixed core-to-adapter scenarios with exact canonical parity | 2/2 |
 | Filings changed since August 25 per `list_status_changes` | 2: `RZ26-00419`, `RZ26-00511` |
-| Primary script interface actions | 8 human controls / 3 agent tools |
+| Primary script interface actions | 10 human controls / 4 agent tools |
 | Primary / counter brief size | 3 / 2 filings |
 | Human review required | Yes |
 | Visible brief callbacks across both scenarios | 2 |
 | Release gate | Pass |
 
-The primary script searches residential records requiring action, inspects `RZ26-00511`, and stages `RZ26-0041`, `RZ26-00419`, and `RZ26-00511` for `Land and development`. The counter-script searches withdrawn residential records in Rogers, inspects `VAR26-0397`, and stages `VAR26-0397` with `RZ26-00345` for `Public-interest planning`. Both compare exact filing IDs, filing/status pairs, audience, official URLs, the standing note, freshness, and `review_required` between the direct core and the registered WebMCP adapter.
+The primary script searches residential records requiring action, lists the status changes, inspects `RZ26-00511`, and stages `RZ26-0041`, `RZ26-00419`, and `RZ26-00511` for `Land and development`. The counter-script searches withdrawn residential records in Rogers, inspects `VAR26-0397`, and stages `VAR26-0397` with `RZ26-00345` for `Public-interest planning`. Both compare exact filing IDs, filing/status pairs, audience, official URLs, the standing note, freshness, and `review_required` between the direct core and the registered WebMCP adapter.
 
 Each script also calls `list_status_changes`: the primary script with its default filters (changed filings only) and the counter-script for Rogers with `changed_only: false`. The comparison adds the previous verification date and every status-change entry (record, filing, dated from and to status with source and note, and the changed flag) to the canonical outcome, so both scenario hashes changed when the step was added on September 2. The release gate also requires the listed changes to be exactly `RZ26-00419` and `RZ26-00511`.
 
-The action evidence uses one published atomic rule: one direct human control activation or one browser-agent tool invocation equals one action. Its raw primary traces are included in the JSON report. Eight versus three is evidence for this fixed script only; it is not a user study, observed elapsed-time saving, adoption signal, or general productivity claim.
+The action evidence uses one published atomic rule: one direct human control activation or one browser-agent tool invocation equals one action. Its raw primary traces are included in the JSON report. Ten versus four is evidence for this fixed script only; it is not a user study, observed elapsed-time saving, adoption signal, or general productivity claim.
 
 The freshness gate is fail-closed. This boundary run is expected to exit non-zero:
 
@@ -117,7 +117,7 @@ The official [WebMCP Challenge criteria](https://webmcp.devpost.com/) are mapped
 - **Artifact:** `benchmark/historical-cases.json`, `scripts/historical-impact-benchmark.js`, the two release-benchmark scenarios, and the staged workspace.
 - **Reproduce:** Run `node scripts/historical-impact-benchmark.js`; inspect the 26 exact status checks, three multi-meeting lifecycles, and agenda-only baseline. Then run the fresh release benchmark and compare the same primary outcome through the visible human controls.
 - **Falsifier:** Any historical event changes or disappears through inspection or staging; any request lacks its official agenda and minutes pair; the historical cohort leaks into the challenge period; or the copy presents the study as automated ingestion or observed user impact.
-- **Observed result:** The held-out study preserved 26/26 status events through both product paths; every event's expected source pair remained present in 26/26 record-wide outputs; and all three changing lifecycles remained intact. The agenda-only probe left 20/23 outcomes unknown and made two false-finality overclaims among three determinate predictions. Separately, both fixed release tasks reached equal canonical outcomes, with eight human control activations or three agent tool invocations under the stated rule. No adoption, revenue, elapsed-time, or changed-decision claim is made.
+- **Observed result:** The held-out study preserved 26/26 status events through both product paths; every event's expected source pair remained present in 26/26 record-wide outputs; and all three changing lifecycles remained intact. The agenda-only probe left 20/23 outcomes unknown and made two false-finality overclaims among three determinate predictions. Separately, both fixed release tasks reached equal canonical outcomes, with ten human control activations or four agent tool invocations under the stated rule. No adoption, revenue, elapsed-time, or changed-decision claim is made.
 
 ### Creativity & Ambition
 
@@ -234,7 +234,7 @@ The candidate describes NWA Growth Signal affirmatively as a dated, filing-speci
 - The deployed dataset is a five-record editorial sample, not a live municipal database; the separate 23-request historical cohort is an offline validation asset, not additional live coverage.
 - Bentonville's September 1 minutes were not published as of September 2, so the three Bentonville records carry no September 1 outcome; the two Rogers recommendations await separate City Council action.
 - The release benchmark proves handler behavior, pinned release-data fidelity, and the municipal-domain boundary. The historical benchmark proves status preservation after manual structuring, not automated extraction accuracy. Source relevance and factual support remain manually verified.
-- The eight-control versus three-tool result belongs only to the declared interface script; no observed user-time, adoption, revenue, or general productivity evidence exists.
+- The ten-control versus four-tool result belongs only to the declared interface script; the two extra human controls are the record opens needed to read status history by hand; no observed user-time, adoption, revenue, or general productivity evidence exists.
 - The repository candidate is not proof that the public deployment, Devpost story, or YouTube video contains the new receipt, freshness, parity, or comparison evidence.
 - The PDF is a visual sample; PDF tagging remains a separate accessibility limitation.
 - Agent-side recovery after an initial record-load failure would require a public WebMCP contract change and is not included.

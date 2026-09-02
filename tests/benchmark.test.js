@@ -68,22 +68,25 @@ test("the release benchmark proves two fixed core-to-adapter scenarios and their
       label: "Fixed-script interface-action evidence; not observed time savings or general productivity evidence.",
       counting_rule: "One direct human control activation or one browser-agent tool invocation equals one action.",
       human: {
-        actions: 8,
+        actions: 10,
         raw_trace: [
           "Set Action needed to Yes",
           "Open RZ26-0041",
           "Add RZ26-0041",
+          "Open FP26-0003",
           "Open RZ26-00419",
           "Add RZ26-00419",
           "Open RZ26-00511",
           "Add RZ26-00511",
+          "Open RZ26-00345",
           "Stage brief",
         ],
       },
       browser_agent: {
-        actions: 3,
+        actions: 4,
         raw_trace: [
           "Invoke search_planning_cases",
+          "Invoke list_status_changes",
           "Invoke inspect_case_record",
           "Invoke stage_source_backed_brief",
         ],

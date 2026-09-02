@@ -38,7 +38,7 @@ node scripts/benchmark.js 2026-09-02
 node scripts/historical-impact-benchmark.js
 ```
 
-The fresh-fixture run compares the direct core and registered WebMCP paths across two fixed scripts. It requires exact equality for filing IDs, filing/status pairs, audience, official URLs, the standing note, freshness, and `review_required`. The primary script records eight direct human control activations and three browser-agent tool invocations under a published atomic counting rule; this is scripted interface evidence, not observed time savings or general productivity evidence. Both scripts also call `list_status_changes` (the primary script with its default filters, the counter-script for Rogers with unchanged filings included) and require the same exact equality for the previous verification date and every status-change entry; the report lists the two filings that changed, `RZ26-00419` and `RZ26-00511`.
+The fresh-fixture run compares the direct core and registered WebMCP paths across two fixed scripts. It requires exact equality for filing IDs, filing/status pairs, audience, official URLs, the standing note, freshness, and `review_required`. The primary script records ten direct human control activations and four browser-agent tool invocations under a published atomic counting rule; this is scripted interface evidence, not observed time savings or general productivity evidence. Both scripts call `list_status_changes` (the primary script with its default filters, the counter-script for Rogers with unchanged filings included) and require the same exact equality for the previous verification date and every status-change entry; the report lists the two filings that changed, `RZ26-00419` and `RZ26-00511`.
 
 The snapshot boundary is inclusive. This command is expected to exit non-zero with `reverification_due` and `release_ready: false` while preserving every procedural status:
 
@@ -52,7 +52,7 @@ See [`docs/hackathon/EVIDENCE.md`](docs/hackathon/EVIDENCE.md) for the proof con
 
 ## Demo prompt
 
-> Find residential Bentonville and Rogers cases still awaiting procedural action. Inspect their official evidence and stage a three-item brief without representing any recommendation as final approval.
+> Find residential Bentonville and Rogers cases still awaiting procedural action. List which filings changed status since the previous verification, inspect their official evidence, and stage a three-item brief without representing any recommendation as final approval.
 
 ## Evidence boundary
 

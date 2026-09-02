@@ -43,18 +43,23 @@ const SCENARIOS = Object.freeze({
   }),
 });
 
+// The human path to "which filings changed" is opening every record and reading its status-history
+// line, so the two records that are not staged are opened once each and never added.
 const PRIMARY_HUMAN_TRACE = Object.freeze([
   "Set Action needed to Yes",
   "Open RZ26-0041",
   "Add RZ26-0041",
+  "Open FP26-0003",
   "Open RZ26-00419",
   "Add RZ26-00419",
   "Open RZ26-00511",
   "Add RZ26-00511",
+  "Open RZ26-00345",
   "Stage brief",
 ]);
 const PRIMARY_TOOL_TRACE = Object.freeze([
   "Invoke search_planning_cases",
+  "Invoke list_status_changes",
   "Invoke inspect_case_record",
   "Invoke stage_source_backed_brief",
 ]);
