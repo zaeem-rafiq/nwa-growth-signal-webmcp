@@ -3,7 +3,7 @@
     "id": "signal-1",
     "item_number": "01",
     "case_ids": ["RZ26-0041"],
-    "filings": [{ "case_id": "RZ26-0041", "status": "Scheduled" }],
+    "filings": [{ "case_id": "RZ26-0041", "status": "Scheduled", "status_history": [{"verified_at":"2026-08-25","status":"Scheduled","source":"https://bentonvillear.portal.civicclerk.com/event/2060/files/agenda/9108"},{"verified_at":"2026-09-02","status":"Scheduled","source":"https://bentonvillear.portal.civicclerk.com/event/2060/files/agenda/9133","note":"Heard September 1 per the reissued agenda; minutes not published as of September 2."}] }],
     "title": "405 NW 5th Street",
     "city": "Bentonville",
     "address": "405 NW 5th Street",
@@ -27,9 +27,9 @@
     "item_number": "02",
     "case_ids": ["FP26-0003", "FP26-0004", "FP26-0005"],
     "filings": [
-      { "case_id": "FP26-0003", "status": "Scheduled" },
-      { "case_id": "FP26-0004", "status": "Scheduled" },
-      { "case_id": "FP26-0005", "status": "Scheduled" }
+      { "case_id": "FP26-0003", "status": "Scheduled", "status_history": [{"verified_at":"2026-08-25","status":"Scheduled","source":"https://bentonvillear.portal.civicclerk.com/event/2060/files/agenda/9108"},{"verified_at":"2026-09-02","status":"Scheduled","source":"https://bentonvillear.portal.civicclerk.com/event/2060/files/agenda/9133","note":"On the September 1 consent agenda; minutes not published as of September 2."}] },
+      { "case_id": "FP26-0004", "status": "Scheduled", "status_history": [{"verified_at":"2026-08-25","status":"Scheduled","source":"https://bentonvillear.portal.civicclerk.com/event/2060/files/agenda/9108"},{"verified_at":"2026-09-02","status":"Scheduled","source":"https://bentonvillear.portal.civicclerk.com/event/2060/files/agenda/9133","note":"On the September 1 consent agenda; minutes not published as of September 2."}] },
+      { "case_id": "FP26-0005", "status": "Scheduled", "status_history": [{"verified_at":"2026-08-25","status":"Scheduled","source":"https://bentonvillear.portal.civicclerk.com/event/2060/files/agenda/9108"},{"verified_at":"2026-09-02","status":"Scheduled","source":"https://bentonvillear.portal.civicclerk.com/event/2060/files/agenda/9133","note":"Absent from the reissued September 1 agenda; no reason, outcome, or new date published."}] }
     ],
     "title": "Three final plats",
     "city": "Bentonville",
@@ -53,7 +53,7 @@
     "id": "signal-3",
     "item_number": "03",
     "case_ids": ["RZ26-00419"],
-    "filings": [{ "case_id": "RZ26-00419", "status": "Recommended" }],
+    "filings": [{ "case_id": "RZ26-00419", "status": "Recommended", "status_history": [{"verified_at":"2026-08-25","status":"Tabled","source":"https://www.rogersar.gov/1181/Public-Hearing-Items","note":"Outcome table row dated 8/18/26 read ‘Tabled to 9/1.’"},{"verified_at":"2026-09-02","status":"Recommended","source":"https://www.rogersar.gov/1181/Public-Hearing-Items","note":"The same 8/18/26 row now reads ‘Recommended to City Council’; no separate September 1 row."}] }],
     "title": "209 W. Locust Street",
     "city": "Rogers",
     "address": "209 W. Locust Street",
@@ -77,8 +77,8 @@
     "item_number": "04",
     "case_ids": ["VAR26-0397", "RZ26-00511"],
     "filings": [
-      { "case_id": "VAR26-0397", "status": "Withdrawn" },
-      { "case_id": "RZ26-00511", "status": "Recommended" }
+      { "case_id": "VAR26-0397", "status": "Withdrawn", "status_history": [{"verified_at":"2026-08-25","status":"Withdrawn","source":"https://www.rogersar.gov/1181/Public-Hearing-Items"},{"verified_at":"2026-09-02","status":"Withdrawn","source":"https://www.rogersar.gov/1181/Public-Hearing-Items","note":"Still ‘Withdrawn by applicant.’"}] },
+      { "case_id": "RZ26-00511", "status": "Recommended", "status_history": [{"verified_at":"2026-08-25","status":"Scheduled","source":"https://www.rogersar.gov/1181/Public-Hearing-Items","note":"Advertised for the September 1 Planning Commission hearing."},{"verified_at":"2026-09-02","status":"Recommended","source":"https://www.rogersar.gov/1181/Public-Hearing-Items","note":"New 9/1/26 row reads ‘Recommended to City Council.’"}] }
     ],
     "title": "408 E. Poplar Street",
     "city": "Rogers",
@@ -103,7 +103,7 @@
     "id": "signal-5",
     "item_number": "05",
     "case_ids": ["RZ26-00345"],
-    "filings": [{ "case_id": "RZ26-00345", "status": "Recommended" }],
+    "filings": [{ "case_id": "RZ26-00345", "status": "Recommended", "status_history": [{"verified_at":"2026-08-25","status":"Recommended","source":"https://www.rogersar.gov/1181/Public-Hearing-Items"},{"verified_at":"2026-09-02","status":"Recommended","source":"https://www.rogersar.gov/1181/Public-Hearing-Items","note":"No longer listed on the outcome table; no July–September council agenda lists it. Last recorded status retained."}] }],
     "title": "6253 S. Mt Hebron Road",
     "city": "Rogers",
     "address": "6253 S. Mt Hebron Road",

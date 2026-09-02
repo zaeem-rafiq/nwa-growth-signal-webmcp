@@ -87,6 +87,17 @@
     elements.freshnessDetail.textContent = copy.detail;
   }
 
+  function filingHistory(filing) {
+    const history = filing.status_history || [];
+    if (history.length < 2) return null;
+    const first = history[0];
+    const last = history[history.length - 1];
+    const movement = first.status === last.status
+      ? `Unchanged since ${first.verified_at}: ${last.status}.`
+      : `${first.verified_at}: ${first.status} → ${last.verified_at}: ${last.status}.`;
+    return node("p", { className: "filing-history", text: last.note ? `${movement} ${last.note}` : movement });
+  }
+
   function freshnessLine(className = "freshness-line") {
     return node("p", { className, text: freshnessCopy(state.freshness).detail });
   }
@@ -234,6 +245,8 @@
       select.setAttribute("aria-label", `${state.selectedFilingIds.has(filing.case_id) ? "Remove" : "Add"} ${filing.case_id} from the brief`);
       select.addEventListener("click", () => toggleSelection(filing.case_id, "detail"));
       row.append(node("strong", { text: filing.case_id }), statusBadge(filing.status), select);
+      const history = filingHistory(filing);
+      if (history) row.append(history);
       filings.append(row);
     });
 
@@ -340,6 +353,8 @@
       (record.selected_filings || record.filings || []).forEach((filing) => {
         const row = node("div", { className: "filing-row" });
         row.append(node("strong", { text: filing.case_id }), statusBadge(filing.status));
+        const history = filingHistory(filing);
+        if (history) row.append(history);
         filings.append(row);
       });
       const sources = node("ol", { className: "brief-sources" });

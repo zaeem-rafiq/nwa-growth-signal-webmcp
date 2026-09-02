@@ -128,7 +128,7 @@
       {
         name: "inspect_case_record",
         title: "Inspect a planning record",
-        description: "Return one verified planning record with its exact procedural labels, plain-English significance, explicit non-claims, and official municipal source links.",
+        description: "Return one verified planning record with its exact procedural labels, each filing's verified status history (August 25 and September 2, 2026 with the official source for each), plain-English significance, explicit non-claims, and official municipal source links.",
         inputSchema: {
           type: "object",
           properties: { case_id: { type: "string", minLength: 1, maxLength: 32 } },

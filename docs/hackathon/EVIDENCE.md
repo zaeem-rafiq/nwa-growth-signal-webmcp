@@ -71,6 +71,8 @@ The study demonstrates a real source-risk and verifies the product's determinist
 
 The August 25 snapshot reached its inclusive boundary on September 2, 2026. Every filing was re-checked against the same official sources on that date. Four of the five records had moved in the official record within eight days; the changes and their sources are listed in the README re-verification log and reproduced in `site/cases.json`. No record was given a status that the official record does not state: Rogers recommendations remain recommendations, the Bentonville hearings carry no outcome until minutes are published, and the two entries that disappeared from official listings keep their last published status with the removal stated. The snapshot's next boundary is September 8, 2026, the next City Council date in both cities.
 
+Each filing now carries a `status_history`: its August 25 and September 2 statuses, the official source checked on each date, and a note where the record moved or went silent. The three tools return it unchanged from the same data the page renders beside each filing, so an agent inspecting `RZ26-00419` sees `Tabled` on August 25 and `Recommended` on September 2 with the same outcome-table URL for both, rather than a single current label.
+
 ### Production verification, September 2, 2026
 
 After PR #6 merged as `c579912` and `site/` was deployed to the production branch, https://nwa-growth-signal-webmcp.pages.dev/ was checked directly:

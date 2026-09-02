@@ -9,7 +9,7 @@ The public release includes a handler-originated execution receipt, explicit sna
 ## What agents can do
 
 - `search_planning_cases` — filter grouped signals by city, procedural status, residential relevance, and pending action; status-filtered results identify the matching filings
-- `inspect_case_record` — retrieve exact status labels, the requested filing, plain-English context, explicit non-claims, and official municipal URLs
+- `inspect_case_record` — retrieve exact status labels, the requested filing, each filing's verified status history (the August 25 and September 2 statuses with the official source for each), plain-English context, explicit non-claims, and official municipal URLs
 - `stage_source_backed_brief` — stage one to five records in the visible page for human review; nothing is published or sent
 
 Each real tool call writes a bounded session receipt into the page. Receipt state is observational; the staged workspace still requires a person to record review.
