@@ -101,7 +101,7 @@ The official [WebMCP Challenge criteria](https://webmcp.devpost.com/) are mapped
 - **Artifact:** `site/webmcp.js`, the on-page live execution receipt, `scripts/benchmark.js`, and `tests/webmcp.test.js`.
 - **Reproduce:** Run `node scripts/benchmark.js 2026-09-02`, then perform search, inspect, stage, and the status-change listing in one continuous supported-browser session.
 - **Falsifier:** A tool is missing, a receipt row is not produced by its real handler, a tool result differs from the canonical core outcome, or a tool can review or write externally.
-- **Observed result:** The first three tools were exercised in the supported candidate browser and produced three succeeded receipt rows. Both fixed benchmark scenarios, each now including the status-change step, had identical core and adapter hashes in the fresh-fixture report. The native browser run of `list_status_changes` against production is recorded in the September 2 production verification once this release is deployed.
+- **Observed result:** The first three tools were exercised in the supported candidate browser and produced three succeeded receipt rows. Both fixed benchmark scenarios, each now including the status-change step, had identical core and adapter hashes in the fresh-fixture report. As of this commit production still serves the three-tool release, and `list_status_changes` has not yet been run in a native browser; that run is recorded here only after it happens.
 
 ### Execution
 

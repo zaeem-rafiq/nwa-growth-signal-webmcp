@@ -207,7 +207,7 @@
       {
         name: "list_status_changes",
         title: "List verified status changes",
-        description: "List the verified filings whose procedural status changed between the previous verification (August 25, 2026) and the current one (September 2, 2026), with the official source checked on each date and any note about a record that moved or went silent. Set changed_only to false to include the unchanged filings. Nothing is inferred about why a status changed.",
+        description: "List the verified filings whose procedural status changed between the previous verification and the current one. Each entry carries both verification dates, the official source checked on each date, and any note about a record that moved or went silent. Set changed_only to false to include the unchanged filings. Nothing is inferred about why a status changed.",
         inputSchema: {
           type: "object",
           properties: {

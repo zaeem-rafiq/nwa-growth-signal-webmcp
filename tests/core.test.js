@@ -236,6 +236,20 @@ test("status changes can include unchanged filings, honor the city filter, and f
   assert.deepEqual(bentonvilleAll.changes.map(({ case_id: caseId }) => caseId), ["FP26-0005"]);
 });
 
+test("status changes order records numerically by item number and keep unnumbered records last", () => {
+  const filing = (caseId) => ({ case_id: caseId, status: "Tabled", status_history: twoCheckHistory("Scheduled", "Tabled") });
+  const cases = [
+    { id: "none", city: "Rogers", filings: [filing("N-1")] },
+    { id: "ten", item_number: "10", city: "Rogers", filings: [filing("T-1")] },
+    { id: "two", item_number: "02", city: "Rogers", filings: [filing("A-1"), filing("A-2")] },
+    { id: "nine", item_number: "09", city: "Rogers", filings: [filing("B-1")] },
+  ];
+
+  const result = listStatusChanges(cases);
+
+  assert.deepEqual(result.changes.map(({ case_id: caseId }) => caseId), ["A-1", "A-2", "B-1", "T-1", "N-1"]);
+});
+
 test("status changes compare each filing's two most recent verifications", () => {
   const cases = [{
     id: "signal-3",

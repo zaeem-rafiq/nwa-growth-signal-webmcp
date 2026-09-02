@@ -1,6 +1,6 @@
 # NWA Growth Signal
 
-> **Facts and production snapshot verified September 2, 2026.** Production serves the September 2 release (all six site files match `main` commit `c579912`); the native three-tool run in the ChatGPT desktop browser was completed against it on September 2. The four-tool, 93-test release is the September 3 candidate; its production verification and native `list_status_changes` run are recorded in the repository evidence once deployed. The video was recorded against the August 25 snapshot, so its on-screen statuses predate the September 1 hearings and show three tools.
+> **Facts and production snapshot verified September 2, 2026.** Production serves the September 2 release (all six site files match `main` commit `c579912`); the native three-tool run in the ChatGPT desktop browser was completed against it on September 2. The four-tool, 93-test release is the September 3 candidate and, as of this commit, is not yet on production; the live judge flow below describes that candidate. The video was recorded against the August 25 snapshot, so its on-screen statuses predate the September 1 hearings and show three tools.
 
 ## One-line Summary
 

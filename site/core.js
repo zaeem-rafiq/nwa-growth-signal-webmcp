@@ -115,10 +115,13 @@
     };
   }
 
+  function itemOrder(record) {
+    const number = Number.parseInt(record.item_number, 10);
+    return Number.isNaN(number) ? Number.MAX_SAFE_INTEGER : number;
+  }
+
   function listStatusChanges(cases, filters = {}) {
-    const ordered = [...cases].sort((a, b) =>
-      String(a.item_number ?? "").localeCompare(String(b.item_number ?? ""))
-    );
+    const ordered = [...cases].sort((a, b) => itemOrder(a) - itemOrder(b));
     const entries = ordered.flatMap((record) => filingsFor(record).flatMap((filing) => {
       const history = Array.isArray(filing.status_history) ? filing.status_history : [];
       if (history.length < 2) return [];
