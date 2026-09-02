@@ -29,7 +29,7 @@ Open `http://localhost:8000`. The human interface works in ordinary browsers. We
 node --test tests/*.test.js
 ```
 
-The 97-test suite covers exact filing selection, snapshot freshness, handler-side input validation, atomic tool registration, bounded execution receipts, browser fallback states, two-scenario workflow parity, the status-change listing, official-source boundaries, historical benchmark integrity, and injection-safe rendering.
+The 99-test suite covers exact filing selection, snapshot freshness, handler-side input validation, atomic tool registration, bounded execution receipts, browser fallback states, two-scenario workflow parity, the status-change listing, official-source boundaries, historical benchmark integrity, and injection-safe rendering.
 
 ## Reproduce the hackathon evidence
 

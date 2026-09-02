@@ -184,7 +184,7 @@
           try {
             brief = core.stageSourceBackedBrief(cases, input);
           } catch (error) {
-            if (/^Unknown planning record/.test(error?.message || "")) throw typedError("NOT_FOUND", "Unknown planning record.");
+            if (error?.code === "NOT_FOUND") throw typedError("NOT_FOUND", "Unknown planning record.");
             throw error;
           }
           try {

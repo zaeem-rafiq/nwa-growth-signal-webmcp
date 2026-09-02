@@ -1,3 +1,10 @@
+/* A source whose URL is not on the official municipal allowlist renders as text, not a link. */
+.source-unverified {
+  display: block;
+  padding: 12px 0;
+  color: #5f5b54;
+}
+
 @font-face {
   font-family: "Archivo Black";
   src: url("assets/ArchivoBlack-Regular.ttf") format("truetype");

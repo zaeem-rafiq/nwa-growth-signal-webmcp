@@ -513,3 +513,20 @@ test("a source outside the municipal allowlist is rendered as text, never as a l
   assert.match(first.querySelector(".source-unverified").textContent, /link withheld: not an official municipal URL/);
   assert.match(second.querySelector("a").href, /^https:\/\/bentonvillear\.portal\.civicclerk\.com\//);
 });
+
+test("a not-found failure reaches the visible receipt as a rejected row", async () => {
+  let onActivity;
+  const document = await runApp({
+    modelContext: { registerTool() {} },
+    fetchResponse: { ok: true, json: async () => cases },
+    registerPlanningTools: async (options) => { onActivity = options.onActivity; },
+  });
+  const rows = document.elements.get("#receipt-rows");
+
+  onActivity({ id: 1, tool: "inspect_case_record", status: "started", code: "CALL_STARTED", summary: "Call started." });
+  onActivity({ id: 1, tool: "inspect_case_record", status: "failed", code: "NOT_FOUND", summary: "Call rejected: unknown record." });
+
+  assert.equal(rows.children.length, 1);
+  assert.equal(rows.children[0].querySelector(".receipt-state").textContent, "failed");
+  assert.equal(rows.children[0].querySelector(".receipt-summary").textContent, "Call rejected: unknown record.");
+});

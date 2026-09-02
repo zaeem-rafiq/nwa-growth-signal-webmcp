@@ -53,7 +53,7 @@ We also tested the approach on a held-out historical study: 23 real Rogers reque
 
 NWA Growth Signal is a dependency-free static HTML, CSS, and JavaScript site deployed on Cloudflare Pages. A dated JSON snapshot holds the editorial sample. Shared JavaScript owns deterministic filtering, record inspection, brief staging, freshness checks, and receipts. The WebMCP adapter and the ordinary browser interface call those same operations.
 
-The release has 97 passing dependency-free tests, a deterministic benchmark, and a fail-closed freshness gate. The team used Codex and Claude Code for implementation, review, testing, and submission work; Hyperagent for municipal research and editorial work; and Google Gemini for the approved demo narration.
+The release has 99 passing dependency-free tests, a deterministic benchmark, and a fail-closed freshness gate. The team used Codex and Claude Code for implementation, review, testing, and submission work; Hyperagent for municipal research and editorial work; and Google Gemini for the approved demo narration.
 
 ## Challenges we ran into
 
@@ -65,7 +65,7 @@ The other hard boundary was useful agent action without an unsafe side effect. S
 
 - A complete public planning desk with 4 native WebMCP tools over 5 verified records.
 - One browser request that searches, inspects, and stages a source-backed brief, with a live receipt for every handler call.
-- 97 passing tests, all 4 tools exercised, input validation, atomic registration, cancellation support, and a fail-closed freshness gate.
+- 99 passing tests, all 4 tools exercised, input validation, atomic registration, cancellation support, and a fail-closed freshness gate.
 - Exact preservation of 26/26 historical status events, 26/26 expected source pairs, 23/23 same-meeting source pairs, and 3 multi-meeting lifecycles.
 - A visible human-review boundary with no publish, send, or persistence path in the staging tool.
 - Loading, empty, error, retry, disabled, focus, copy-recovery, responsive, and keyboard-accessible interface states.
@@ -102,7 +102,7 @@ node scripts/benchmark.js 2026-09-02
 node scripts/historical-impact-benchmark.js
 ```
 
-The expected automated result is 97 passing tests; a release benchmark with `verified_at: 2026-09-02`, re-verification due `2026-09-08`, `release_ready: true`, 2/2 exact parity scenarios that each include the status-change listing, the two changed filings `RZ26-00419` and `RZ26-00511`, 8/8 filing-status checks, 5/5 municipal-source records, 4/4 tools exercised, zero approval overclaims, and the raw ten-control/four-tool traces; and a historical study with 23 requests, 26/26 exact statuses through both product paths, expected-source presence in 26/26 record-wide outputs, 23/23 same-meeting official source pairs, 3 preserved multi-meeting lifecycles, and zero challenge-period leakage. `node scripts/benchmark.js 2026-09-08` is expected to exit non-zero with `reverification_due` as the due-date example.
+The expected automated result is 99 passing tests; a release benchmark with `verified_at: 2026-09-02`, re-verification due `2026-09-08`, `release_ready: true`, 2/2 exact parity scenarios that each include the status-change listing, the two changed filings `RZ26-00419` and `RZ26-00511`, 8/8 filing-status checks, 5/5 municipal-source records, 4/4 tools exercised, zero approval overclaims, and the raw ten-control/four-tool traces; and a historical study with 23 requests, 26/26 exact statuses through both product paths, expected-source presence in 26/26 record-wide outputs, 23/23 same-meeting official source pairs, 3 preserved multi-meeting lifecycles, and zero challenge-period leakage. `node scripts/benchmark.js 2026-09-08` is expected to exit non-zero with `reverification_due` as the due-date example.
 
 ## Public Demo Link
 

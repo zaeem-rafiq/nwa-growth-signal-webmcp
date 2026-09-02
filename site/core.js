@@ -91,7 +91,7 @@
     const itemsById = new Map();
     input.case_ids.forEach((caseId) => {
       const record = inspectCaseRecord(cases, caseId);
-      if (!record) throw new Error(`Unknown planning record: ${caseId}`);
+      if (!record) throw Object.assign(new Error("Unknown planning record."), { code: "NOT_FOUND" });
       const { requested_filing: requestedFiling, matching_filings: _matchingFilings, ...baseRecord } = record;
       const selectedFilings = requestedFiling
         ? [requestedFiling]

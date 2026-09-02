@@ -144,7 +144,7 @@ test("a staged brief preserves recommendation language instead of calling it app
 test("a staged brief rejects case identifiers outside the verified record", () => {
   assert.throws(
     () => stageSourceBackedBrief([], { case_ids: ["UNKNOWN"], audience: "Lending and title" }),
-    /Unknown planning record: UNKNOWN/
+    (error) => error.code === "NOT_FOUND" && error.message === "Unknown planning record."
   );
 });
 
@@ -286,4 +286,26 @@ test("status changes refuse filings whose previous verifications fall on differe
   ];
 
   assert.throws(() => listStatusChanges(cases), /different dates: 2026-08-25, 2026-08-18/);
+});
+
+test("the official-source allowlist accepts only https URLs on the four municipal hosts", () => {
+  for (const url of [
+    "https://www.rogersar.gov/1181/Public-Hearing-Items",
+    "https://rogersar.gov/1181/Public-Hearing-Items",
+    "https://permitting.rogersar.gov/publicportal/PermitInfo/Index?caObjectId=473976",
+    "https://bentonvillear.portal.civicclerk.com/event/2060/files/agenda/9133",
+    "https://www.bentonville.ar.gov/DocumentCenter/View/19883/Rezone-Checklist",
+    "https://bentonville.ar.gov/461/Planning-Commission",
+  ]) assert.ok(core.OFFICIAL_SOURCE.test(url), url);
+  for (const url of [
+    "http://www.rogersar.gov/1181/Public-Hearing-Items",
+    "https://www.rogersar.gov.evil.com/",
+    "https://www.rogersar.gov@evil.com/",
+    "https://evil.com/https://www.rogersar.gov/",
+    "https://www.rogersar.gov",
+    "HTTPS://WWW.ROGERSAR.GOV/",
+    "javascript:alert(1)",
+    "https://example.com/unrelated",
+    "",
+  ]) assert.equal(core.OFFICIAL_SOURCE.test(url), false, url || "(empty)");
 });
