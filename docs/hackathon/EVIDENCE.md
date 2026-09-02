@@ -239,3 +239,4 @@ The candidate describes NWA Growth Signal affirmatively as a dated, filing-speci
 - The PDF is a visual sample; PDF tagging remains a separate accessibility limitation.
 - Agent-side recovery after an initial record-load failure would require a public WebMCP contract change and is not included.
 - `list_status_changes` compares only the two verified dates carried in each filing's `status_history`; it does not watch official sources or detect changes between verifications.
+- The v7 demo video is a scripted local screencast with a page-injected tool host, labeled as such on screen; the native ChatGPT desktop runs are recorded separately above.

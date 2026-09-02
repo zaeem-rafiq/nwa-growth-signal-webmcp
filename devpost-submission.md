@@ -1,6 +1,6 @@
 # NWA Growth Signal
 
-> **Facts and production snapshot verified September 2, 2026.** Production serves the September 2 release (all six site files match `main` commit `c579912`); the native three-tool run in the ChatGPT desktop browser was completed against it on September 2. The four-tool, 94-test release is the September 3 candidate and, as of this commit, is not yet on production; the live judge flow below describes that candidate. The video was recorded against the August 25 snapshot, so its on-screen statuses predate the September 1 hearings and show three tools.
+> **Facts and production snapshot verified September 2, 2026.** Production serves the September 2 release (all six site files match `main` commit `c579912`); the native three-tool run in the ChatGPT desktop browser was completed against it on September 2. The four-tool, 94-test release is the September 3 candidate and, as of this commit, is not yet on production; the live judge flow below describes that candidate. The video was re-recorded September 2 against the four-tool release, so its on-screen statuses match the September 2 snapshot.
 
 ## One-line Summary
 
@@ -118,10 +118,10 @@ The repository is public and includes an MIT license.
 
 ## Demo Video
 
-- Runtime: 2 minutes 46 seconds
-- Format: 1280×720 H.264/AAC with a published 31-cue English (United States) track
-- Narration: Google Gemini Kore host and Iapetus expert; participant-approved August 30, 2026
-- Public YouTube URL: https://youtu.be/N1ykmBzcf4Y
+- Runtime: 2 minutes 51 seconds
+- Format: 1280×720 H.264/AAC with a published 34-cue English (United States) track
+- Narration: Google Gemini Kore host and Iapetus expert; participant-approved September 2, 2026
+- Public YouTube URL: https://youtu.be/Bj0qcwkuwas (replaces the three-tool cut at https://youtu.be/N1ykmBzcf4Y)
 
 The demo shows search, the status-change listing, inspection, and staging as four action-state-payoff sequences, including the split-filing Poplar record and the human-review boundary.
 
@@ -129,7 +129,7 @@ The demo shows search, the status-change listing, inspection, and staging as fou
 
 - Live application: September 2 snapshot deployed to production and verified, including the native three-tool run in the ChatGPT desktop browser on September 2.
 - Public repository, MIT license, automated checks, and deterministic benchmark: ready.
-- Public video and narration approval: verified August 30, 2026.
+- Public video and narration approval: four-call cut approved and published September 2, 2026.
 - Devpost entry: browser-verified August 30, 2026 at https://devpost.com/software/nwa-growth-signal.
 - Next source re-verification: September 8, 2026.
 
@@ -158,4 +158,4 @@ Official fields last verified August 30, 2026:
 - **AI tools used (28258):** Codex, Claude Code, Hyperagent, and Google Gemini neural speech generation.
 - **Learning level (28259):** Significant
 - **Career AI value (28260):** Yes
-- **Required public video:** https://youtu.be/N1ykmBzcf4Y
+- **Required public video:** https://youtu.be/Bj0qcwkuwas

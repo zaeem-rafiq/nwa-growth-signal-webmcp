@@ -1,6 +1,15 @@
 # Demo Recording Package
 
-Published baseline: `demo/output/NWA-Growth-Signal-WebMCP-Demo.mp4`
+Current public release: `demo/output/NWA-Growth-Signal-WebMCP-Demo-v7.mp4`
+
+- Runtime: 2 minutes 50.8 seconds; below the official three-minute limit.
+- Format: 1280×720 H.264/AAC; integrated loudness −16.2 LUFS, peak −1.9 dBFS; 34 sidecar caption cues.
+- Live evidence: one continuous local screencast of the four-tool release driving search, `list_status_changes`, inspect, and stage, the Locust Street in-row status change, the split-filing Poplar record now Recommended, and the human-review boundary.
+- Release proof: 94/94 tests, 2/2 parity scenarios that include the status-change listing, ten human control activations versus four agent tool calls for the fixed script, `release_ready: true`.
+- Narration: Google Gemini Kore host and Iapetus expert; four segments re-generated and level-matched; participant listening approval September 2, 2026.
+- Publication: public at https://youtu.be/Bj0qcwkuwas with the English (United States) caption track published from the upload flow on September 2, 2026.
+
+Earlier published baseline: `demo/output/NWA-Growth-Signal-WebMCP-Demo.mp4`
 
 - Runtime: 2 minutes 31.8 seconds; below the official three-minute limit.
 - Format: 1280×720 H.264/AAC with 30 sidecar caption cues.
