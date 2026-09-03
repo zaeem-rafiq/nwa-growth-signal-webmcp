@@ -464,7 +464,7 @@ test("the status change tool returns the two moved filings with dated official s
     ["FP26-0004", false],
     ["FP26-0005", false],
   ]);
-  assert.match(bentonville.changes[3].to.note, /Absent from the reissued September 1 agenda/);
+  assert.match(bentonville.changes[3].to.note, /Absent from the latest reissued September 1 agenda/);
   assert.equal(events.at(-1).summary, "0 filings changed since 2026-08-25.");
 });
 

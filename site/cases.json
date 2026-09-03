@@ -3,7 +3,7 @@
     "id": "signal-1",
     "item_number": "01",
     "case_ids": ["RZ26-0041"],
-    "filings": [{ "case_id": "RZ26-0041", "status": "Scheduled", "status_history": [{"verified_at":"2026-08-25","status":"Scheduled","source":"https://bentonvillear.portal.civicclerk.com/event/2060/files/agenda/9108"},{"verified_at":"2026-09-02","status":"Scheduled","source":"https://bentonvillear.portal.civicclerk.com/event/2060/files/agenda/9133","note":"Heard September 1 per the reissued agenda; minutes not published as of September 2."}] }],
+    "filings": [{ "case_id": "RZ26-0041", "status": "Scheduled", "status_history": [{"verified_at":"2026-08-25","status":"Scheduled","source":"https://bentonvillear.portal.civicclerk.com/event/2060/files/agenda/9108"},{"verified_at":"2026-09-02","status":"Scheduled","source":"https://bentonvillear.portal.civicclerk.com/event/2060/files/agenda/9143","note":"Heard September 1 per the latest reissued agenda; minutes not published as of September 2."}] }],
     "title": "405 NW 5th Street",
     "city": "Bentonville",
     "address": "405 NW 5th Street",
@@ -18,7 +18,7 @@
     "non_claims": ["Not approved", "No September 1 outcome inferred", "No construction status reviewed"],
     "sources": [
       { "title": "Bentonville Planning Commission agenda — August 18, 2026", "url": "https://bentonvillear.portal.civicclerk.com/event/2071/files/agenda/9086" },
-      { "title": "Bentonville Planning Commission agenda — September 1, 2026 (reissued file 9133)", "url": "https://bentonvillear.portal.civicclerk.com/event/2060/files/agenda/9133" },
+      { "title": "Bentonville Planning Commission agenda — September 1, 2026 (latest reissued file 9143)", "url": "https://bentonvillear.portal.civicclerk.com/event/2060/files/agenda/9143" },
       { "title": "City of Bentonville Rezone Checklist", "url": "https://www.bentonville.ar.gov/DocumentCenter/View/19883/Rezone-Checklist" }
     ]
   },
@@ -27,9 +27,9 @@
     "item_number": "02",
     "case_ids": ["FP26-0003", "FP26-0004", "FP26-0005"],
     "filings": [
-      { "case_id": "FP26-0003", "status": "Scheduled", "status_history": [{"verified_at":"2026-08-25","status":"Scheduled","source":"https://bentonvillear.portal.civicclerk.com/event/2060/files/agenda/9108"},{"verified_at":"2026-09-02","status":"Scheduled","source":"https://bentonvillear.portal.civicclerk.com/event/2060/files/agenda/9133","note":"On the September 1 consent agenda; minutes not published as of September 2."}] },
-      { "case_id": "FP26-0004", "status": "Scheduled", "status_history": [{"verified_at":"2026-08-25","status":"Scheduled","source":"https://bentonvillear.portal.civicclerk.com/event/2060/files/agenda/9108"},{"verified_at":"2026-09-02","status":"Scheduled","source":"https://bentonvillear.portal.civicclerk.com/event/2060/files/agenda/9133","note":"On the September 1 consent agenda; minutes not published as of September 2."}] },
-      { "case_id": "FP26-0005", "status": "Scheduled", "status_history": [{"verified_at":"2026-08-25","status":"Scheduled","source":"https://bentonvillear.portal.civicclerk.com/event/2060/files/agenda/9108"},{"verified_at":"2026-09-02","status":"Scheduled","source":"https://bentonvillear.portal.civicclerk.com/event/2060/files/agenda/9133","note":"Absent from the reissued September 1 agenda; no reason, outcome, or new date published."}] }
+      { "case_id": "FP26-0003", "status": "Scheduled", "status_history": [{"verified_at":"2026-08-25","status":"Scheduled","source":"https://bentonvillear.portal.civicclerk.com/event/2060/files/agenda/9108"},{"verified_at":"2026-09-02","status":"Scheduled","source":"https://bentonvillear.portal.civicclerk.com/event/2060/files/agenda/9143","note":"On the September 1 consent agenda; minutes not published as of September 2."}] },
+      { "case_id": "FP26-0004", "status": "Scheduled", "status_history": [{"verified_at":"2026-08-25","status":"Scheduled","source":"https://bentonvillear.portal.civicclerk.com/event/2060/files/agenda/9108"},{"verified_at":"2026-09-02","status":"Scheduled","source":"https://bentonvillear.portal.civicclerk.com/event/2060/files/agenda/9143","note":"On the September 1 consent agenda; minutes not published as of September 2."}] },
+      { "case_id": "FP26-0005", "status": "Scheduled", "status_history": [{"verified_at":"2026-08-25","status":"Scheduled","source":"https://bentonvillear.portal.civicclerk.com/event/2060/files/agenda/9108"},{"verified_at":"2026-09-02","status":"Scheduled","source":"https://bentonvillear.portal.civicclerk.com/event/2060/files/agenda/9143","note":"Absent from the latest reissued September 1 agenda; no reason, outcome, or new date published."}] }
     ],
     "title": "Three final plats",
     "city": "Bentonville",
@@ -45,7 +45,7 @@
     "non_claims": ["No street addresses inferred", "No construction status reviewed", "Lots are not represented as conveyable", "FP26-0005 is not represented as heard, withdrawn, or tabled"],
     "sources": [
       { "title": "Bentonville Planning Commission agenda — September 1, 2026, as published August 25 (file 9108, lists FP26-0005)", "url": "https://bentonvillear.portal.civicclerk.com/event/2060/files/agenda/9108" },
-      { "title": "Bentonville Planning Commission agenda — September 1, 2026, as reissued (file 9133, omits FP26-0005)", "url": "https://bentonvillear.portal.civicclerk.com/event/2060/files/agenda/9133" },
+      { "title": "Bentonville Planning Commission agenda — September 1, 2026, as latest reissued (file 9143, omits FP26-0005)", "url": "https://bentonvillear.portal.civicclerk.com/event/2060/files/agenda/9143" },
       { "title": "City of Bentonville Planning Commission", "url": "https://www.bentonville.ar.gov/461/Planning-Commission" }
     ]
   },
@@ -96,14 +96,15 @@
     "sources": [
       { "title": "City of Rogers Public Hearing Items and outcomes", "url": "https://www.rogersar.gov/1181/Public-Hearing-Items" },
       { "title": "City of Rogers Legal Notices", "url": "https://www.rogersar.gov/1552/Legal-Notices" },
-      { "title": "City of Rogers permit record — VAR26-0397", "url": "https://permitting.rogersar.gov/publicportal/PermitInfo/Index?caObjectId=473767" }
+      { "title": "City of Rogers permit record — VAR26-0397", "url": "https://permitting.rogersar.gov/publicportal/PermitInfo/Index?caObjectId=473767" },
+      { "title": "City of Rogers permit record — RZ26-00511", "url": "https://permitting.rogersar.gov/publicportal/PermitInfo/Index?caObjectId=475164" }
     ]
   },
   {
     "id": "signal-5",
     "item_number": "05",
     "case_ids": ["RZ26-00345"],
-    "filings": [{ "case_id": "RZ26-00345", "status": "Recommended", "status_history": [{"verified_at":"2026-08-25","status":"Recommended","source":"https://www.rogersar.gov/1181/Public-Hearing-Items"},{"verified_at":"2026-09-02","status":"Recommended","source":"https://www.rogersar.gov/1181/Public-Hearing-Items","note":"No longer listed on the outcome table; no July–September council agenda lists it. Last recorded status retained."}] }],
+    "filings": [{ "case_id": "RZ26-00345", "status": "Recommended", "status_history": [{"verified_at":"2026-08-25","status":"Recommended","source":"https://www.rogersar.gov/1181/Public-Hearing-Items"},{"verified_at":"2026-09-02","status":"Recommended","source":"https://rogersar.portal.civicclerk.com/event/1332/files/agenda/5558","note":"The outcome-table row is gone. The August 11 council agenda contains the matching GMD rezoning ordinance, but no published result establishes council action; the last recorded status is retained."}] }],
     "title": "6253 S. Mt Hebron Road",
     "city": "Rogers",
     "address": "6253 S. Mt Hebron Road",
@@ -111,14 +112,15 @@
     "status_labels": ["Recommended"],
     "meeting_date": null,
     "verified_at": "2026-09-02",
-    "summary": "On August 25 the city outcome table recorded the Planning Commission result as ‘Recommended to City Council.’ As of September 2 the table no longer lists this case, and no City Council agenda from July through September 2026 lists it.",
+    "summary": "On August 25 the city outcome table recorded the Planning Commission result as ‘Recommended to City Council.’ The row is now gone. The August 11 City Council agenda includes the matching GMD rezoning ordinance for 6253 S. Mt Hebron Road, but the published agenda does not establish whether Council acted.",
     "proposal": "T2 Rural to T4.1 Neighborhood Medium-Intensity and T4.2 Neighborhood High-Intensity; parcel 02-14174-230.",
     "significance": "The recommendation advances the request procedurally but does not adopt the rezoning.",
-    "next_step": "Awaiting separate Rogers City Council action. No council decision appears in the reviewed record; the last recorded status is retained because no later official entry replaces it.",
-    "non_claims": ["Not adopted by City Council", "Removal from the outcome table is not represented as a decision", "No construction status reviewed"],
+    "next_step": "No council result appears in the reviewed record; the last recorded status is retained until an official outcome replaces it.",
+    "non_claims": ["The council agenda is not represented as adoption", "Removal from the outcome table is not represented as a decision", "No construction status reviewed"],
     "sources": [
       { "title": "City of Rogers Public Hearing Items and outcomes", "url": "https://www.rogersar.gov/1181/Public-Hearing-Items" },
       { "title": "City of Rogers Legal Notices", "url": "https://www.rogersar.gov/1552/Legal-Notices" },
+      { "title": "Rogers City Council agenda — August 11, 2026", "url": "https://rogersar.portal.civicclerk.com/event/1332/files/agenda/5558" },
       { "title": "City of Rogers permit record — RZ26-00345", "url": "https://permitting.rogersar.gov/publicportal/PermitInfo/Index?caObjectId=473075" }
     ]
   }

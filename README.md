@@ -64,8 +64,8 @@ September 2, 2026, against the same official sources, after the September 1 hear
 
 - `RZ26-00511` (Rogers, 408 E. Poplar): the outcome table added a 9/1/26 row reading "Recommended to City Council". `VAR26-0397` on the same parcel still reads "Withdrawn by applicant".
 - `RZ26-00419` (Rogers, 209 W. Locust): the table's 8/18/26 row, which read "Tabled to 9/1" on August 25, now reads "Recommended to City Council" with no separate September 1 row.
-- `FP26-0005` (Bentonville, Brier Hill Phase II): listed on the September 1 agenda file published August 25 (CivicClerk file 9108); absent from the reissued agenda (file 9133). No reason, outcome, or new date is published, so the filing keeps its last published status and says so.
-- `RZ26-00345` (Rogers, Mt Hebron): no longer listed on the outcome table; no City Council agenda from July through September lists it. The last recorded status is retained and the removal is stated.
+- `FP26-0005` (Bentonville, Brier Hill Phase II): listed on the September 1 agenda file published August 25 (CivicClerk file 9108); absent from the latest reissued agenda (file 9143). No reason, outcome, or new date is published, so the filing keeps its last published status and says so.
+- `RZ26-00345` (Rogers, Mt Hebron): no longer listed on the outcome table. The August 11 City Council agenda includes the matching GMD rezoning ordinance for 6253 S. Mt Hebron Road, but no published result establishes council action, so the last recorded status is retained.
 - `RZ26-0041`, `FP26-0003`, `FP26-0004` (Bentonville): on the September 1 agenda; minutes not published as of September 2, so no outcome is represented.
 
 ## Adjacent workflow context
