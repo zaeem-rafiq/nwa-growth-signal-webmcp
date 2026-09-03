@@ -42,8 +42,8 @@ The project was created during the challenge. Its first commit was `85c27f7` on 
 
 1. Rogers `RZ26-00511`, Poplar Street Paired Homes at 408 E. Poplar, moved from Scheduled to a `9/1/26` outcome of `Recommended to City Council`. Its companion filing on the same parcel, `VAR26-0397`, still reads `Withdrawn by applicant`. The split-filing result is now Withdrawn plus Recommended, and council action is still pending.
 2. Rogers `RZ26-00419`, 209 W. Locust, changed inside the same `8/18/26` row. On August 25 it read `Tabled to 9/1`; on September 2 it reads `Recommended to City Council`. The table publishes no separate September 1 row.
-3. Bentonville `FP26-0005`, Brier Hill Phase II final plat, appeared on the September 1 agenda published August 25 as CivicClerk file `9108`. The city reissued that agenda as file `9133` without the filing. No reason, outcome, or new date is published, so the product keeps the filing visible with its last published status and states what changed.
-4. Rogers `RZ26-00345`, 6253 S. Mt Hebron Rd, disappeared from the outcome table. No City Council action appears in the official sources reviewed, so the product retains the last recorded status, Recommended, and says the row is gone.
+3. Bentonville `FP26-0005`, Brier Hill Phase II final plat, appeared on the September 1 agenda published August 25 as CivicClerk file `9108`. The city's latest reissued agenda is file `9143`, still without the filing. No reason, outcome, or new date is published, so the product keeps the filing visible with its last published status and states what changed.
+4. Rogers `RZ26-00345`, 6253 S. Mt Hebron Rd, disappeared from the outcome table. The August 11 City Council agenda contains the matching GMD rezoning ordinance, but the published agenda does not establish whether Council acted. The product therefore retains the last recorded status, Recommended, and exposes both official records.
 
 Bentonville `RZ26-0041`, `FP26-0003`, and `FP26-0004` were heard September 1 according to the agenda. Minutes are not yet published, so the product represents no outcome for them.
 

@@ -288,12 +288,13 @@ test("status changes refuse filings whose previous verifications fall on differe
   assert.throws(() => listStatusChanges(cases), /different dates: 2026-08-25, 2026-08-18/);
 });
 
-test("the official-source allowlist accepts only https URLs on the four municipal hosts", () => {
+test("the official-source allowlist accepts only https URLs on the municipal hosts", () => {
   for (const url of [
     "https://www.rogersar.gov/1181/Public-Hearing-Items",
     "https://rogersar.gov/1181/Public-Hearing-Items",
     "https://permitting.rogersar.gov/publicportal/PermitInfo/Index?caObjectId=473976",
-    "https://bentonvillear.portal.civicclerk.com/event/2060/files/agenda/9133",
+    "https://bentonvillear.portal.civicclerk.com/event/2060/files/agenda/9143",
+    "https://rogersar.portal.civicclerk.com/event/1332/files/agenda/5558",
     "https://www.bentonville.ar.gov/DocumentCenter/View/19883/Rezone-Checklist",
     "https://bentonville.ar.gov/461/Planning-Commission",
   ]) assert.ok(core.OFFICIAL_SOURCE.test(url), url);

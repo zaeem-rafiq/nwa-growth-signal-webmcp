@@ -19,7 +19,7 @@ const EXPECTED_CLAIM_HASHES = {
   "signal-2": "9b9c002a839f091b360580f83da7944474354cfd001bb0c31172db7979dcb01d",
   "signal-3": "ae703fab80e122815596c188963cc3f8ff3d8d8b216af29da1580f1899edd6b4",
   "signal-4": "359fa2e065c2992723704837bce54d43dc3c66732a0104193210f2c662882786",
-  "signal-5": "3abece6435a8a8635be8cb76e1abdfa36ee00a25997c16737e707e5c78327ccf",
+  "signal-5": "cf9ddcefb6c52f8103cdaa214585bb9b00cf9e7e2a369496962ab3649ba191b1",
 };
 
 const SCENARIOS = Object.freeze({

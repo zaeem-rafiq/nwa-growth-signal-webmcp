@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-09-03
+
+- Corrected the September 2 source record: Bentonville's latest reissued September 1 agenda is file 9143, and Rogers' August 11 City Council agenda contains the ordinance matching `RZ26-00345`; the agenda is not represented as adoption because no published result establishes council action.
+- Added the official Rogers permit link for `RZ26-00511` and allowed Rogers CivicClerk agenda URLs wherever official municipal sources are rendered or release-checked.
+
 ## 2026-09-02
 
 - Hardened the deployment after a read-only security audit: a `site/_headers` file sets a strict same-origin Content-Security-Policy, `frame-ancestors 'none'`, `X-Frame-Options: DENY`, and a permissions policy; handler errors no longer echo caller input (unknown records now return a typed `NOT_FOUND` with the receipt `Call rejected: unknown record.`); source links render only for URLs on the official municipal allowlist, now shared between the page, the benchmark, and the data test; CI actions are pinned to commit SHAs.

@@ -55,13 +55,13 @@ test("the release benchmark proves two fixed core-to-adapter scenarios and their
     scenarios: {
       primary: {
         parity: true,
-        core_sha256: "7ac9bf756e103b9e8c1c8027689f66cedf8ff2f7c35323d1d2d186b6d3fa86ef",
-        tool_sha256: "7ac9bf756e103b9e8c1c8027689f66cedf8ff2f7c35323d1d2d186b6d3fa86ef",
+        core_sha256: "cd812d0575f9c5eade902a1b7bc55434c09af9c83c99aa0c7d2e79f110061844",
+        tool_sha256: "cd812d0575f9c5eade902a1b7bc55434c09af9c83c99aa0c7d2e79f110061844",
       },
       counter: {
         parity: true,
-        core_sha256: "81bd1ef06c3b4504cebeea019db1aeb96e74afe4e50b48d882489f6594cfd506",
-        tool_sha256: "81bd1ef06c3b4504cebeea019db1aeb96e74afe4e50b48d882489f6594cfd506",
+        core_sha256: "eba45d23b82ec69f0daddfb11072ff2cf02398473cd0751669b89db3501e045b",
+        tool_sha256: "eba45d23b82ec69f0daddfb11072ff2cf02398473cd0751669b89db3501e045b",
       },
     },
     interaction_evidence: {
