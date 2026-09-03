@@ -4,3 +4,9 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    ignore:
+      # Judged deployment is frozen through judging. Remove this ignore on or after 2026-09-24,
+      # then take the pending major bumps (actions/checkout 7, actions/setup-node 7) and update
+      # the "# v4" pin check in tests/ci.test.js to match.
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
