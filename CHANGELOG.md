@@ -4,6 +4,7 @@
 
 - Corrected the September 2 source record: Bentonville's latest reissued September 1 agenda is file 9143, and Rogers' August 11 City Council agenda contains the ordinance matching `RZ26-00345`; the agenda is not represented as adoption because no published result establishes council action.
 - Added the official Rogers permit link for `RZ26-00511` and allowed Rogers CivicClerk agenda URLs wherever official municipal sources are rendered or release-checked.
+- Published the approved final demo with the 99-test proof at https://youtu.be/sC_EQQguBWQ, updated the submitted Devpost embed, and kept public-player caption availability explicitly unverified.
 
 ## 2026-09-02
 

@@ -5,3 +5,27 @@ node_modules/
 .env*
 !.env.example
 *.log
+
+# Local release evidence and generated media
+/.devpost-hackathon-state.json
+/benchmark/agent-tool-selection-evals.json
+/demo/**/__pycache__/
+/demo/assets/*.png
+/demo/audio/
+/demo/captures/
+/demo/clips/
+/demo/edit/assets/
+/demo/edit/audio/
+/demo/edit/candidate-v8.mp4
+/demo/edit/segments/
+/demo/edit/verify/
+/demo/output/
+/demo/qa/
+/demo/*.png
+/docs/hackathon/SUBMISSION-SNAPSHOT-2026-09-02.md
+/docs/ui-audit/before/new-*.png
+/docs/ui-audit/before/not-found-*.png
+/docs/ui-audit/before/run-detail-*.png
+/docs/ui-audit/before/spec-detail-*.png
+/docs/ui-audit/before/specs-*.png
+/tasks/lessons.md

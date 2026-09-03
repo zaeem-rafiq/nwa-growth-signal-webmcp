@@ -53,7 +53,7 @@ We also tested the approach on a held-out historical study: 23 real Rogers reque
 
 NWA Growth Signal is a dependency-free static HTML, CSS, and JavaScript site deployed on Cloudflare Pages. A dated JSON snapshot holds the editorial sample. Shared JavaScript owns deterministic filtering, record inspection, brief staging, freshness checks, and receipts. The WebMCP adapter and the ordinary browser interface call those same operations.
 
-The release has 99 passing dependency-free tests, a deterministic benchmark, and a fail-closed freshness gate. The team used Codex and Claude Code for implementation, review, testing, and submission work; Hyperagent for municipal research and editorial work; and Google Gemini for the approved demo narration.
+The release has 99 passing dependency-free tests, a deterministic benchmark, and a fail-closed freshness gate. The current video and public main both reflect the 99-test release. The team used Codex and Claude Code for implementation, review, testing, and submission work; Hyperagent for municipal research and editorial work; and Google Gemini for the approved demo narration.
 
 ## Challenges we ran into
 
@@ -119,9 +119,9 @@ The repository is public and includes an MIT license.
 ## Demo Video
 
 - Runtime: 2 minutes 51 seconds
-- Format: 1280×720 H.264/AAC with a published 34-cue English (United States) track
+- Format: 1280×720 H.264/AAC with a 34-cue English (United States) track published in Studio; public-player availability remains unverified
 - Narration: Google Gemini Kore host and Iapetus expert; participant-approved September 2, 2026
-- Public YouTube URL: https://youtu.be/Bj0qcwkuwas (replaces the three-tool cut at https://youtu.be/N1ykmBzcf4Y)
+- Public YouTube URL: https://youtu.be/sC_EQQguBWQ (replaces the earlier four-tool cut at https://youtu.be/Bj0qcwkuwas)
 
 The demo shows search, the status-change listing, inspection, and staging as four action-state-payoff sequences, including the split-filing Poplar record and the human-review boundary.
 
@@ -129,8 +129,8 @@ The demo shows search, the status-change listing, inspection, and staging as fou
 
 - Live application: four-tool September 2 release deployed to production and verified, including native runs in the ChatGPT desktop browser on September 2 that exercised all four tools.
 - Public repository, MIT license, automated checks, and deterministic benchmark: ready.
-- Public video and narration approval: four-call cut approved and published September 2, 2026.
-- Devpost entry: story edited in place three times on September 2, 2026 at https://devpost.com/software/nwa-growth-signal (fourth tool, corrected judge steps, then the four-call video and prompt); the public page was re-read after each edit and only the named sentences changed.
+- Public video and narration approval: final 99-test four-call cut approved and published September 2, 2026.
+- Devpost entry: story and judge instructions were synchronized with the four-tool release, then the final video embed and 99-test sentence were verified at https://devpost.com/software/nwa-growth-signal.
 - Next source re-verification: September 8, 2026.
 
 ## Known Limitations
@@ -144,7 +144,7 @@ The demo shows search, the status-change listing, inspection, and staging as fou
 
 ## TODO Official Form Fields
 
-Official fields last verified August 30, 2026:
+Official fields were last verified August 30, 2026; the required public video was replaced and re-verified September 2, 2026:
 
 - **Submitter Type (28249):** Individual
 - **Country of residence (28250):** United States
@@ -158,4 +158,4 @@ Official fields last verified August 30, 2026:
 - **AI tools used (28258):** Codex, Claude Code, Hyperagent, and Google Gemini neural speech generation.
 - **Learning level (28259):** Significant
 - **Career AI value (28260):** Yes
-- **Required public video:** https://youtu.be/Bj0qcwkuwas
+- **Required public video (re-verified September 2, 2026):** https://youtu.be/sC_EQQguBWQ
