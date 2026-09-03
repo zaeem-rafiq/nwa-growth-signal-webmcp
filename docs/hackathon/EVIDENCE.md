@@ -107,6 +107,13 @@ After PR #16 merged as `c259281` and `site/` was deployed to the production bran
 - `index.html` (fetched at `/`), `cases.json`, `core.js`, `webmcp.js`, `app.js`, and `styles.css` served by production have the same SHA-1 as the merged source.
 - Playwright with a stub `document.modelContext`: the page reported `WebMCP ready · 4 tools exposed`, the hero read "One prompt. Four accountable actions." above the four-call prompt, the hero list read search, `list_status_changes`, inspect, stage, all four tools registered, `list_status_changes` returned `RZ26-00419` (Tabled to Recommended) and `RZ26-00511` (Scheduled to Recommended) with the receipt `2 filings changed since 2026-08-25.`, the console had no errors or warnings, and the 375-pixel viewport had no horizontal overflow.
 
+### Final 99-test demo replacement, September 2, 2026
+
+- The participant approved the exact local `demo/edit/candidate-v8.mp4` artifact with SHA-256 `7e98f5d6ef3be0a96ccdeb39cf4c0e8f7126ed80817cd5eb1a6e21535914d95c` after technical QA and targeted listening of the repaired spoken “ninety-nine.”
+- V8 preserves the continuous v7 four-tool workflow while replacing the opening, proof card, proof-count narration, and captions. The verified artifact is 170.661 seconds, 1280×720 H.264/AAC at 30 fps, and contains 34 caption cues.
+- The public YouTube page at https://youtu.be/sC_EQQguBWQ was reopened on September 3 with the expected title, a 2:50 player duration, and a description containing `99 tests`. It did not expose public captions during that check, despite Studio reporting the track published.
+- The public Devpost page embeds `sC_EQQguBWQ` and displays `The current video and public main both reflect the 99-test release.` The replacement retained the existing submitted project; superseded videos were not deleted.
+
 ## Criterion evidence map
 
 The official [WebMCP Challenge criteria](https://webmcp.devpost.com/) are mapped below without assigning an internal score or predicting a judge's score.
@@ -269,4 +276,4 @@ After PR #18 merged as `2967d20` and `site/` was deployed to the production bran
 - The PDF is a visual sample; PDF tagging remains a separate accessibility limitation.
 - Agent-side recovery after an initial record-load failure would require a public WebMCP contract change and is not included.
 - `list_status_changes` compares only the two verified dates carried in each filing's `status_history`; it does not watch official sources or detect changes between verifications.
-- The v7 demo video is a scripted local screencast with a page-injected tool host, labeled as such on screen; the native ChatGPT desktop runs are recorded separately above.
+- The v8 demo preserves v7's scripted local screencast with a page-injected tool host, labeled as such on screen; the native ChatGPT desktop runs are recorded separately above.

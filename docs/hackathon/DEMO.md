@@ -1,6 +1,16 @@
 # Demo Recording Package
 
-Current public release: `demo/output/NWA-Growth-Signal-WebMCP-Demo-v7.mp4`
+Current public release: `demo/edit/candidate-v8.mp4` (local release artifact)
+
+- Runtime: 170.661 seconds; below the official three-minute limit.
+- Format: 1280×720 H.264/AAC at 30 fps with 34 sidecar caption cues.
+- Live evidence: preserves the v7 continuous four-tool screencast and replaces only the opening, proof card, proof-count narration, and captions.
+- Release proof: 99/99 tests, 2/2 parity scenarios that include the status-change listing, ten human control activations versus four agent tool calls for the fixed script, `release_ready: true`.
+- Candidate binding: SHA-256 `7e98f5d6ef3be0a96ccdeb39cf4c0e8f7126ed80817cd5eb1a6e21535914d95c`; participant listening approval covered this exact file.
+- Publication: public at https://youtu.be/sC_EQQguBWQ; the public description states 99 tests and the Devpost embed uses the same video ID.
+- Captions: Studio reported the 34-cue English (United States) track published; the public player still reported captions unavailable during the September 3 verification.
+
+Superseded four-call release: `demo/output/NWA-Growth-Signal-WebMCP-Demo-v7.mp4`
 
 - Runtime: 2 minutes 50.8 seconds; below the official three-minute limit.
 - Format: 1280×720 H.264/AAC; integrated loudness −16.2 LUFS, peak −1.9 dBFS; 34 sidecar caption cues.
@@ -8,6 +18,8 @@ Current public release: `demo/output/NWA-Growth-Signal-WebMCP-Demo-v7.mp4`
 - Release proof: 94/94 tests, 2/2 parity scenarios that include the status-change listing, ten human control activations versus four agent tool calls for the fixed script, `release_ready: true`.
 - Narration: Google Gemini Kore host and Iapetus expert; four segments re-generated and level-matched; participant listening approval September 2, 2026.
 - Publication: public at https://youtu.be/Bj0qcwkuwas with the English (United States) caption track published from the upload flow on September 2, 2026.
+
+The remaining shot lists and checklists are archival production notes for superseded cuts; their older proof counts are not current release instructions.
 
 Earlier published baseline: `demo/output/NWA-Growth-Signal-WebMCP-Demo.mp4`
 
@@ -169,7 +181,7 @@ Keep the host prompt visible, then show `search_planning_cases` returning the bo
 5. Exact three-filing brief with the review-required status and current freshness summary.
 6. Proof card with 2/2 parity, 4/4 tools, 10/4 controls versus tools, and 94 tests.
 
-## Recording setup
+## Archived three-tool recording setup
 
 - Record the public HTTPS deployment in ChatGPT's in-app browser or another supported WebMCP browser.
 - Use a clean 16:9 window at 1920x1080 or 1440x900 with browser zoom at 100%.
@@ -179,7 +191,7 @@ Keep the host prompt visible, then show `search_planning_cases` returning the bo
 - Start with the exact task visible in the agent host. Keep the host prompt, all three live page receipt rows, and the resulting brief in one continuous segment; do not use a prefilled or reconstructed receipt.
 - Show the page freshness summary. If it is `reverification_due`, stop the release and re-check the official municipal records rather than recording around it.
 
-## Final dialogue and shot list
+## Archived three-tool dialogue and shot list
 
 ### 0:00-0:12 - The problem
 
@@ -306,7 +318,7 @@ Keep the host prompt visible, then show `search_planning_cases` returning the bo
 5. Fresh benchmark output showing two parity scenarios, 74 tests, raw eight-versus-three traces, and `release_ready: true`.
 6. Sourced CivicPlus, Regrid, and PermitFlow comparison, with no negative capability claim.
 
-## Pre-publish checklist
+## Archived three-tool pre-publish checklist
 
 - [x] Production matches the candidate Git commit.
 - [x] The Issue 01 link opens the three-page hackathon sample.
