@@ -497,3 +497,36 @@ test("a due snapshot requests official re-verification without changing procedur
   await elements.get("#stage-brief").dispatch("click");
   assert.match(elements.get("#brief-preview").querySelector(".brief-freshness").textContent, /statuses are shown as last verified\. Confirm current status with the city/);
 });
+
+test("a source outside the municipal allowlist is rendered as text, never as a link", async () => {
+  const tampered = structuredClone(cases);
+  tampered[0].sources[0].url = "javascript:alert(1)";
+  const document = await runApp({
+    fetchResponse: { ok: true, json: async () => tampered },
+    registerPlanningTools: async () => {},
+  });
+  await document.elements.get("#record-list").querySelector('[data-record-id="signal-1"]').dispatch("click");
+  const list = document.elements.get("#record-detail").querySelector(".source-list");
+
+  const [first, second] = list.children;
+  assert.equal(first.querySelector("a"), null);
+  assert.match(first.querySelector(".source-unverified").textContent, /link withheld: not an official municipal URL/);
+  assert.match(second.querySelector("a").href, /^https:\/\/bentonvillear\.portal\.civicclerk\.com\//);
+});
+
+test("a not-found failure reaches the visible receipt as a rejected row", async () => {
+  let onActivity;
+  const document = await runApp({
+    modelContext: { registerTool() {} },
+    fetchResponse: { ok: true, json: async () => cases },
+    registerPlanningTools: async (options) => { onActivity = options.onActivity; },
+  });
+  const rows = document.elements.get("#receipt-rows");
+
+  onActivity({ id: 1, tool: "inspect_case_record", status: "started", code: "CALL_STARTED", summary: "Call started." });
+  onActivity({ id: 1, tool: "inspect_case_record", status: "failed", code: "NOT_FOUND", summary: "Call rejected: unknown record." });
+
+  assert.equal(rows.children.length, 1);
+  assert.equal(rows.children[0].querySelector(".receipt-state").textContent, "failed");
+  assert.equal(rows.children[0].querySelector(".receipt-summary").textContent, "Call rejected: unknown record.");
+});

@@ -2,6 +2,7 @@
 
 ## 2026-09-02
 
+- Hardened the deployment after a read-only security audit: a `site/_headers` file sets a strict same-origin Content-Security-Policy, `frame-ancestors 'none'`, `X-Frame-Options: DENY`, and a permissions policy; handler errors no longer echo caller input (unknown records now return a typed `NOT_FOUND` with the receipt `Call rejected: unknown record.`); source links render only for URLs on the official municipal allowlist, now shared between the page, the benchmark, and the data test; CI actions are pinned to commit SHAs.
 - Added `list_status_changes`, a fourth read-only WebMCP tool that lists the filings whose verified status moved between the previous check and the current one, with the official source consulted on each date, an optional unchanged listing with notes, and a city filter.
 - Registered the fourth tool in the same atomic post-load batch as the other three, added it to the live receipt allowlist, the page's tool list, and the readiness copy.
 - Added a status-change step to both release benchmark scenarios; the gate now requires four tools and the two expected changed filings.

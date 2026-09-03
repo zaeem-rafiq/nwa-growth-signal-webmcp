@@ -1,7 +1,7 @@
 const { createHash } = require("node:crypto");
 const core = require("../site/core.js");
 
-const OFFICIAL_SOURCE = /^https:\/\/(?:www\.)?(?:bentonvillear\.portal\.civicclerk\.com|bentonville\.ar\.gov|rogersar\.gov|permitting\.rogersar\.gov)\//;
+const OFFICIAL_SOURCE = core.OFFICIAL_SOURCE;
 const APPROVAL_OVERCLAIM = /\b(?:approved|approval|adopted|adoption|authorized|greenlit|under construction|construction (?:has |is |was )?(?:started|begun|starts|begins)|(?:rezoning|approval|adoption) (?:is|was) final)\b/i;
 // Update these release baselines only after re-verifying the official records and copy.
 const EXPECTED_STATUSES = {

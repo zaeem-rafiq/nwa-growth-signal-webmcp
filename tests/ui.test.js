@@ -181,3 +181,12 @@ test("the hero lists all four WebMCP tools and the receipt names four handlers",
   assert.match(html, /One prompt\. Four accountable actions\./);
   assert.match(html, /four registered tool handlers/);
 });
+
+test("the production headers file locks the page to same-origin scripts and forbids framing", () => {
+  const headers = fs.readFileSync(path.join(site, "_headers"), "utf8");
+  assert.match(headers, /^\/\*\n(?:  [A-Za-z-]+: .+\n)+$/);
+  assert.match(headers, /Content-Security-Policy: [^\n]*script-src 'self'/);
+  assert.match(headers, /frame-ancestors 'none'/);
+  assert.match(headers, /X-Frame-Options: DENY/);
+  assert.doesNotMatch(headers, /unsafe-inline|unsafe-eval/);
+});

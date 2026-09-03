@@ -125,7 +125,7 @@
   function recordActivity(event) {
     const tools = ["search_planning_cases", "inspect_case_record", "stage_source_backed_brief", "list_status_changes"];
     const statuses = ["started", "succeeded", "failed"];
-    const codes = ["CALL_STARTED", "SEARCH_COMPLETE", "RECORD_FOUND", "BRIEF_STAGED", "CHANGES_LISTED", "VALIDATION_FAILED", "CALLBACK_FAILED", "TOOL_FAILED"];
+    const codes = ["CALL_STARTED", "SEARCH_COMPLETE", "RECORD_FOUND", "BRIEF_STAGED", "CHANGES_LISTED", "VALIDATION_FAILED", "NOT_FOUND", "CALLBACK_FAILED", "TOOL_FAILED"];
     if (!Number.isSafeInteger(event?.id) || event.id < 1 || !tools.includes(event.tool) ||
         !statuses.includes(event.status) || !codes.includes(event.code) || typeof event.summary !== "string") return;
     const call = {
@@ -142,6 +142,18 @@
       state.receiptTruncated = true;
     }
     renderActivityReceipt();
+  }
+
+  function sourceNode(source) {
+    if (!window.NWASignal.OFFICIAL_SOURCE.test(String(source.url || ""))) {
+      return node("span", { className: "source-unverified", text: `${source.title} (link withheld: not an official municipal URL)` });
+    }
+    const link = node("a", { text: source.title });
+    link.href = source.url;
+    link.target = "_blank";
+    link.rel = "noopener";
+    link.append(node("span", { className: "visually-hidden", text: ", opens in a new tab" }));
+    return link;
   }
 
   function currentFilters() {
@@ -254,11 +266,7 @@
     sources.append(node("h4", { text: "Official sources" }));
     const sourceList = node("ol", { className: "source-list" });
     record.sources.forEach((source) => {
-      const link = node("a", { text: source.title });
-      link.href = source.url;
-      link.target = "_blank";
-      link.rel = "noopener";
-      link.append(node("span", { className: "visually-hidden", text: ", opens in a new tab" }));
+      const link = sourceNode(source);
       const item = node("li");
       item.append(link);
       sourceList.append(item);
@@ -359,11 +367,7 @@
       });
       const sources = node("ol", { className: "brief-sources" });
       record.sources.forEach((source) => {
-        const link = node("a", { text: source.title });
-        link.href = source.url;
-        link.target = "_blank";
-        link.rel = "noopener";
-        link.append(node("span", { className: "visually-hidden", text: ", opens in a new tab" }));
+        const link = sourceNode(source);
         const sourceItem = node("li");
         sourceItem.append(link);
         sources.append(sourceItem);

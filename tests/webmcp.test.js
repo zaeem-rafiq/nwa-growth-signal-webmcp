@@ -79,7 +79,7 @@ test("invalid hostile input emits a bounded typed failure and the next call reco
   assert.ok(JSON.stringify(events).length < 1000);
 });
 
-test("an unknown record emits a generic bounded failure and the next call recovers", async () => {
+test("an unknown record emits a bounded not-found receipt and the next call recovers", async () => {
   const registered = [];
   const events = [];
   await registerPlanningTools({
@@ -95,7 +95,7 @@ test("an unknown record emits a generic bounded failure and the next call recove
 
   assert.deepEqual(events.slice(0, 2), [
     { id: 1, tool: "inspect_case_record", status: "started", code: "CALL_STARTED", summary: "Call started." },
-    { id: 1, tool: "inspect_case_record", status: "failed", code: "TOOL_FAILED", summary: "Call failed safely." },
+    { id: 1, tool: "inspect_case_record", status: "failed", code: "NOT_FOUND", summary: "Call rejected: unknown record." },
   ]);
   assert.equal(JSON.stringify(events).includes("UNKNOWN"), false);
   assert.deepEqual(events.slice(2).map(({ id, status }) => ({ id, status })), [
@@ -466,4 +466,36 @@ test("the status change tool returns the two moved filings with dated official s
   ]);
   assert.match(bentonville.changes[3].to.note, /Absent from the reissued September 1 agenda/);
   assert.equal(events.at(-1).summary, "0 filings changed since 2026-08-25.");
+});
+
+test("handler errors never echo the caller's input, even when it is huge or unknown", async () => {
+  const registered = [];
+  const events = [];
+  await registerPlanningTools({
+    modelContext: { registerTool: async (tool) => registered.push(tool) },
+    cases,
+    onBrief: () => {},
+    onActivity: (event) => events.push(event),
+  });
+  const tools = Object.fromEntries(registered.map((tool) => [tool.name, tool]));
+  const huge = "A".repeat(2_000_000);
+  const hostileId = "<img src=x onerror=1>";
+
+  const audience = await tools.stage_source_backed_brief.execute({ case_ids: ["RZ26-0041"], audience: huge }).catch((error) => error);
+  const unknownStage = await tools.stage_source_backed_brief.execute({ case_ids: [hostileId], audience: "Lending and title" }).catch((error) => error);
+  const unknownInspect = await tools.inspect_case_record.execute({ case_id: hostileId }).catch((error) => error);
+
+  assert.equal(audience.code, "VALIDATION_FAILED");
+  assert.equal(audience.message, "Unsupported brief audience.");
+  assert.equal(unknownStage.code, "NOT_FOUND");
+  assert.equal(unknownStage.message, "Unknown planning record.");
+  assert.equal(unknownInspect.code, "NOT_FOUND");
+  assert.equal(unknownInspect.message, "Unknown planning record.");
+  assert.equal(JSON.stringify(events).includes(hostileId), false);
+  assert.ok(JSON.stringify(events).length < 1000);
+  assert.deepEqual(events.filter(({ status }) => status === "failed").map(({ code, summary }) => [code, summary]), [
+    ["VALIDATION_FAILED", "Call rejected: invalid input."],
+    ["NOT_FOUND", "Call rejected: unknown record."],
+    ["NOT_FOUND", "Call rejected: unknown record."],
+  ]);
 });
