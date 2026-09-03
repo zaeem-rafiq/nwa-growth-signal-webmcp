@@ -1,6 +1,6 @@
 # NWA Growth Signal
 
-> **Facts and production snapshot verified September 2, 2026.** Production serves the four-call demo release (all six site files match `main` commit `c259281`); native runs in the ChatGPT desktop browser on September 2 completed the three-tool demo task against the previous release and all four tools against this one. The video was re-recorded September 2 against the four-tool release, so its on-screen statuses match the September 2 snapshot.
+> **Facts and production snapshot verified September 2, 2026.** Production serves the hardened four-call release (all six site files match `main` commit `2967d20`, with a strict Content-Security-Policy on every response); native runs in the ChatGPT desktop browser on September 2 completed the three-tool demo task against the previous release and all four tools against this one. The video was re-recorded September 2 against the four-tool release, so its on-screen statuses match the September 2 snapshot.
 
 ## One-line Summary
 
